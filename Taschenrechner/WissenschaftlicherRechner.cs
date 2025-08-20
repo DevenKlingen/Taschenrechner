@@ -101,9 +101,20 @@ namespace MeinTaschenrechner
                 return;
             }
 
-            var wissenschaftlicheFunktionen = historie
-                .Where(h => IsWissenschaftlicheFunktion(h.Operation))
-                .TakeLast(10);
+             var wissenschaftlicheFunktionen = historie
+                .Where(h =>
+                {
+                    // Prüfen, ob es sich um eine Grundrechenart handelt
+                    if (h.Operation == "+" || h.Operation == "-" || h.Operation == "*" || h.Operation == "/")
+                    {
+                        // Zusätzliche Bedingung: Mehr als 2 Eingaben
+                        return h.Eingaben.Count() > 2;
+                    }
+
+                // Für andere Operationen nur die wissenschaftliche Prüfung
+                return IsWissenschaftlicheFunktion(h.Operation);
+            })
+        .TakeLast(10);
 
             Console.WriteLine("Wissenschaftliche Funktionen:");
             foreach (var berechnung in wissenschaftlicheFunktionen)
