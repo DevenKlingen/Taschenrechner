@@ -78,7 +78,6 @@ namespace MeinTaschenrechner
                 }
 
                 string zeitstempel = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backup = "Backups";
                 string backupOrdner = Path.Join("Benutzer", akt.Name, "Backups");
 
                 Console.WriteLine($"Backupordner: {backupOrdner}");
