@@ -108,7 +108,7 @@ namespace MeinTaschenrechner
             help.Write("Wonach willst du suchen? ");
             string input = Console.ReadLine();
 
-            if (konstanten.ContainsKey(input))
+            if (konstanten.ContainsKey(input) && input != null)
             {
                 help.Write(konstanten[input].ToString());
             }

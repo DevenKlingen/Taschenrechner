@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj": {}
+    "c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj": {}
   },
   "projects": {
-    "C:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj": {
+    "c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj",
+        "projectUniqueName": "c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj",
         "projectName": "Taschenrechner",
-        "projectPath": "C:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj",
+        "projectPath": "c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj",
         "packagesPath": "C:\\Users\\klingen\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\obj\\",
+        "outputPath": "c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -16,8 +16,6 @@ namespace MeinTaschenrechner
             bool BackupMenuAktiv = true;
             while (BackupMenuAktiv)
             {
-                help.Mischen();
-
                 help.Write("\n=== BACKUPS ===");
                 help.Write("1. Backup erstellen");
                 help.Write("2. Backups anzeigen");
@@ -89,7 +87,7 @@ namespace MeinTaschenrechner
                 }
 
                 string[] zuSicherndeDateien = {
-            Path.Combine(programm.benutzer, "Backups", "berechnungen.txt")
+            Path.Combine(akt.Name, "Backups", "berechnungen.txt")
         };
 
                 foreach (string datei in zuSicherndeDateien)
