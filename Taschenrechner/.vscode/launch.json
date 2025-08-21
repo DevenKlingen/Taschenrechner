@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "dotnet: build",
+      "program": "C:/Users/klingen/Documents/GitHub projects/Taschenrechner/Taschenrechner/Taschenrechner/bin/Debug/net9.0/Taschenrechner.dll",
+      "args": [],
+      "cwd": "C:/Users/klingen/Documents/GitHub projects/Taschenrechner/Taschenrechner/Taschenrechner",
+      "stopAtEntry": false,
+      "console": "externalTerminal"
+    }
+  ]
+}

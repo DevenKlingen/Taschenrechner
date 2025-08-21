@@ -1,0 +1,20 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dotnet",
+			"task": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "dotnet: build"
+		},
+		{
+			"type": "dotnet",
+			"task": "build c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj",
+			"file": "c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "dotnet: build c:\\Users\\klingen\\Documents\\GitHub projects\\Taschenrechner\\Taschenrechner\\Taschenrechner\\Taschenrechner.csproj"
+		}
+	]
+}
