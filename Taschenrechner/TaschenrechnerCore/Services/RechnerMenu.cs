@@ -1,3 +1,4 @@
+using System.Net;
 using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
 
@@ -16,6 +17,11 @@ public class RechnerMenu : IMenu
     static DecimalRechner decimalR = new DecimalRechner();
     static StatistikMenu statistikM = new StatistikMenu();
     static MatrixMenu matrixR = new MatrixMenu();
+    static ListRechnerMenu listR = new ListRechnerMenu();
+    static MehrfachRechnerMenu mehrfachRechnerMenu = new MehrfachRechnerMenu();
+    static Fibonacci f = new Fibonacci();
+    static PrimzahlenRechner primzahlenR = new PrimzahlenRechner();
+    static Konstanten konst = new Konstanten();
     public void Show()
     {
         bool programmLaeuft = true;
@@ -79,22 +85,22 @@ public class RechnerMenu : IMenu
                     statistikM.Show();
                     break;
                 case 11:
-                    matrixrechner.MatrixRechnerMenu();
+                    matrixR.Show();
                     break;
                 case 12:
-                    listrechner.ListRechnerMenu();
+                    listR.Show();
                     break;
                 case 13:
-                    mehrfachrechner.MehrfachBerechnungenMenu();
+                    mehrfachRechnerMenu.Show();
                     break;
                 case 14:
-                    Fibonacci();
+                    f.FibonacciErstellen();
                     break;
                 case 15:
-                    PrimzahlenRechner();
+                    primzahlenR.PrimzahlenErmitteln();
                     break;
                 case 16:
-                    grundrechenArten.Suche();
+                    konst.Suche();
                     break;
                 case 17:
                     programmLaeuft = false;

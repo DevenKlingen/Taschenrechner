@@ -1,7 +1,14 @@
+using TaschenrechnerCore.Utils;
+using System.Text;
+
 namespace TaschenrechnerCore.Services;
 
 public class WaehrungsRechner
 {
+    static Hilfsfunktionen help = new();
+    static HistorienBearbeitung historienB = new();
+    static DatenbankBerechnungen datenbankB = new();
+    
     /// <summary>
     /// Rechnet Euro in Dollar mit einem Wechselkurs von 1.1 um
     /// </summary>
@@ -18,14 +25,11 @@ public class WaehrungsRechner
                 decimal dollar = euro * 1.1m; // Beispiel-Wechselkurs
                 help.Write($"{euro}€ = ${dollar}");
 
-                string berechnung = $"{euro} + {1.1m} = {dollar}";
-                historiemenu.HistorieHinzufuegen(berechnung);
-
                 double euroDouble = (double)euro;
                 double dollarDouble = (double)dollar;
                 double[] eingaben = { euroDouble };
-                historiemenu.BerechnungHinzufuegen("$", eingaben, dollarDouble);
-                datenbankmenu.BerechnungInDatenbankSpeichern("$", eingaben, dollarDouble);
+                historienB.BerechnungHinzufuegen("$", eingaben, dollarDouble);
+                datenbankB.BerechnungInDatenbankSpeichern("$", eingaben, dollarDouble);
                 umgerechnet = true;
             }
             else

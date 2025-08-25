@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TaschenrechnerConsole")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09e83ececc2862d02b00c6d85be21ff10683fab4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6b7cebf3fa4651e07440643eaee07915bc8f78da")]
 [assembly: System.Reflection.AssemblyProductAttribute("TaschenrechnerConsole")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TaschenrechnerConsole")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

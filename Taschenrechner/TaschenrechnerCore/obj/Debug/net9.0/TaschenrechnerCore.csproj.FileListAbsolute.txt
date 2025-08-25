@@ -1,0 +1,5 @@
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.AssemblyInfoInputs.cache
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.AssemblyInfo.cs
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.csproj.CoreCompileInputs.cache
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.sourcelink.json

@@ -1,3 +1,6 @@
+using TaschenrechnerConsole;
+using TaschenrechnerCore.Models;
+
 namespace TaschenrechnerCore.Utils;
 
 public class Hilfsfunktionen

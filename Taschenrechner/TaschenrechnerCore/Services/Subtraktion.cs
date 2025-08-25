@@ -1,7 +1,13 @@
+using TaschenrechnerCore.Utils;
+
 namespace TaschenrechnerCore.Services;
 
 public class Subtraktion
 {
+    static Hilfsfunktionen help = new Hilfsfunktionen();
+    static HistorienBearbeitung historienB = new();
+    static DatenbankBerechnungen datenbankB = new();
+    
     /// <summary>
     /// Subtraktion zweier Zahlen
     /// </summary>
@@ -13,13 +19,10 @@ public class Subtraktion
         double ergebnis = zahl1 - zahl2;
         help.Write($"Ergebnis: {zahl1} - {zahl2} = {ergebnis}");
 
-        string berechnung = $"{zahl1} - {zahl2} = {ergebnis}";
-        historiemenu.HistorieHinzufuegen(berechnung);
-
         double[] eingaben = { zahl1, zahl2 };
-        historiemenu.BerechnungHinzufuegen("-", eingaben, ergebnis);
+        historienB.BerechnungHinzufuegen("-", eingaben, ergebnis);
 
-        datenbankmenu.BerechnungInDatenbankSpeichern("-", eingaben, ergebnis);
+        datenbankB.BerechnungInDatenbankSpeichern("-", eingaben, ergebnis);
     }
 
     /// <summary>
@@ -59,10 +62,8 @@ public class Subtraktion
         string berechnung = $"{string.Join(" - ", zahlen)} = {ergebnis}";
         help.Write($"Ergebnis: {berechnung}");
 
-        historiemenu.BerechnungHinzufuegen("-", zahlen.ToArray(), ergebnis);
+        historienB.BerechnungHinzufuegen("-", zahlen.ToArray(), ergebnis);
 
-        datenbankmenu.BerechnungInDatenbankSpeichern("-", zahlen.ToArray(), ergebnis);
-
-        historiemenu.HistorieHinzufuegen(berechnung);
+        datenbankB.BerechnungInDatenbankSpeichern("-", zahlen.ToArray(), ergebnis);
     }
 }

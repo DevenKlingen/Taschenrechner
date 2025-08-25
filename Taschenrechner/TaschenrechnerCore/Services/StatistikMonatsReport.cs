@@ -1,11 +1,16 @@
+using TaschenrechnerCore.Utils;
+using TaschenrechnerCore.Models;
+using TaschenrechnerConsole;
+
 namespace TaschenrechnerCore.Services;
 
 public class StatistikMonatsReport
 {
-
-    static void MonatsReport()
+    static Hilfsfunktionen help = new Hilfsfunktionen();
+    static Program program = new Program();
+    public void MonatsReport()
     {
-        Benutzer akt = programm.getAktBenutzer();
+        Benutzer akt = program.getAktBenutzer();
         if (akt == null)
         {
             help.Write("Kein Benutzer angemeldet!");

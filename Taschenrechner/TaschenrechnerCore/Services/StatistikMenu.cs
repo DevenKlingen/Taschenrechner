@@ -1,10 +1,19 @@
+using TaschenrechnerConsole;
+using TaschenrechnerCore.Interfaces;
+using TaschenrechnerCore.Utils;
+using TaschenrechnerCore.Models;
+
 namespace TaschenrechnerCore.Services;
 
-public class StatistikMenu
+public class StatistikMenu : IMenu
 {
-    public void StatistikMenu()
+    static Hilfsfunktionen help = new Hilfsfunktionen();
+    static Program program = new Program();
+    static Statistiken stats = new Statistiken();
+    static StatistikMonatsReport statsM = new StatistikMonatsReport();
+    public void Show()
     {
-        Benutzer aktuellerBenutzer = programm.getAktBenutzer();
+        Benutzer aktuellerBenutzer = program.getAktBenutzer();
         bool statistikMenuAktiv = true;
 
         while (statistikMenuAktiv)
@@ -21,13 +30,13 @@ public class StatistikMenu
             switch (wahl)
             {
                 case 1:
-                    BenutzerStatistiken();
+                    stats.BenutzerStatistiken();
                     break;
                 case 2:
-                    MonatsReport();
+                    statsM.MonatsReport();
                     break;
                 case 3:
-                    Wachstumstrend();
+                    stats.Wachstumstrend();
                     break;
                 case 4:
                     statistikMenuAktiv = false;
@@ -43,5 +52,10 @@ public class StatistikMenu
                 Console.ReadLine();
             }
         }
+    }
+
+    public string GetMenuTitle(int optionNumber)
+    {
+        return $"{optionNumber}. Statistik Menu";
     }
 }

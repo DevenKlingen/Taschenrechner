@@ -11,7 +11,7 @@ public class MehrfachRechnerMenu : IMenu
     static Multiplikation m = new Multiplikation();
     static Division d = new Division();
     
-    void IMenu.Show()
+    public void Show()
     {
         bool mehrfachBerechnungenAktiv = true;
         while (mehrfachBerechnungenAktiv)
@@ -55,7 +55,7 @@ public class MehrfachRechnerMenu : IMenu
         }
     }
 
-    string IMenu.GetMenuTitle(int optionTitle)
+    public string GetMenuTitle(int optionTitle)
     {
         return $"{optionTitle}. MehfrachRechner";
     }

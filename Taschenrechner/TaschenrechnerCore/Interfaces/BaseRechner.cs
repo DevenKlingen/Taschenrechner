@@ -1,15 +1,12 @@
-using System;
-using TaschenrechnerConsole;
-
 namespace TaschenrechnerCore.Interfaces;
 
 
 using TaschenrechnerCore.Models;
+using TaschenrechnerCore.Services;
 
 public abstract class BaseRechner
 {
-    public Program program = new Program();
-    static Datenbankmenu datenbankmenu = new Datenbankmenu();
+    static DatenbankBerechnungen datenbankmenu = new();
     // Protected Felder - nur für abgeleitete Klassen sichtbar
     protected List<BerechnungErgebnis> historie;
     protected string rechnerTyp;

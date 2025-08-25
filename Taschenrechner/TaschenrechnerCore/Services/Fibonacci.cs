@@ -9,7 +9,7 @@ public class Fibonacci
     /// <summary>
     /// Erstellt die Fibonacci-Sequenz der ersten n Zahlen, wobei n vom Nutzer festgelegt wird
     /// </summary>
-    static void FibonacciErstellen()
+    public void FibonacciErstellen()
     {
         help.Write("Gib die Anzahl der Fibonacci-Zahlen ein: ");
         string eingabe = Console.ReadLine();

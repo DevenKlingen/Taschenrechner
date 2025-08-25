@@ -1,10 +1,16 @@
+using TaschenrechnerConsole;
+using TaschenrechnerCore.Utils;
+using TaschenrechnerCore.Models;
+
 namespace TaschenrechnerCore.Services;
 
 public class Statistiken
 {
-    static void BenutzerStatistiken()
+    static Program program = new Program();
+    static Hilfsfunktionen help = new Hilfsfunktionen();
+    public void BenutzerStatistiken()
     {
-        Benutzer akt = programm.getAktBenutzer();
+        Benutzer akt = program.getAktBenutzer();
         Benutzer aktuellerBenutzer = akt;
 
         if (aktuellerBenutzer == null)
@@ -136,7 +142,7 @@ public class Statistiken
         }
     }
 
-    static void Wachstumstrend()
+    public void Wachstumstrend()
     {
         help.Write("Für welchen Tag möchtest du den Wachstumstrend bestimmen (dd.MM.yyyy)? ");
         string eingabe = Console.ReadLine();
@@ -148,7 +154,7 @@ public class Statistiken
             return;
         }
 
-        Benutzer akt = programm.getAktBenutzer();
+        Benutzer akt = program.getAktBenutzer();
 
         if (akt == null)
         {
