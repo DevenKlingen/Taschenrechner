@@ -1,47 +1,35 @@
-﻿using TaschenrechnerCore.Models;
-using TaschenrechnerCore.Services;
-using TaschenrechnerCore.Enums;
-using TaschenrechnerCore.Interfaces;
+﻿using TaschenrechnerCore.Services;
 using TaschenrechnerCore.Utils;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace TaschenrechnerConsole;
 
 public class Program
 {
-    public List<string> berechnungsHistorie = new List<string>();
-    public string historieDatei = "berechnungen.txt";
-
-    public string konfigJson = "config.json";
-    public string konfigToml = "config.toml";
-
-    public TaschenrechnerKonfiguration config = new TaschenrechnerKonfiguration();
-
-    public List<Berechnung> detaillierteBerechnungen = new List<Berechnung>();
-
-    public string benutzer = "";
-
-    static Benutzer aktuellerBenutzer = null;
-
-    private static TaschenrechnerContext DbContext;
-
+    static BenutzerManagement benutzerManagement = new();
+    static Hilfsfunktionen help = new();
+    static HistorieVerwaltung historieVerwaltung = new();
+    static BenutzerEinstellungen benutzerEinstellungen = new();
+    static Backup backup = new();
+    static RechnerMenu rechnerMenu = new();
+    static HistorienMenu historienMenu = new();
+    static KonfigMenu konfigMenu = new();
+    static BackupMenu backupMenu = new();
+    static DatenbankMenu datenbankMenu = new();
+    static StatistikMenu statistikMenu = new();
+    static OptimierterRechner optRechner = new();
 
     static void Main(string[] args)
     {
-        DbContext = new TaschenrechnerContext();
-        DbContext.Database.EnsureCreated();
-
         bool programmLaeuft = true;
 
-        program.BenutzerAnmelden();
+        benutzerManagement.BenutzerAnmelden();
 
         help.Write("Lade gespeicherte Historie...");
-        historiemenu.HistorieLaden();
+        historieVerwaltung.HistorieLaden();
 
-        if (program.config.AutoSpeichern)
+        if (benutzerEinstellungen.config.AutoSpeichern)
         {
-            backupmenu.BackupErstellen();
+            backup.BackupErstellen();
         }
 
         while (programmLaeuft)
@@ -66,35 +54,35 @@ public class Program
             switch (wahl)
             {
                 case 1:
-                    grundrechnung.RechenMenu();
+                    rechnerMenu.Show();
                     break;
                 case 2:
-                    historiemenu.HistorieMenu();
+                    historienMenu.Show();
                     break;
                 case 3:
-                    konfigmenu.KonfigMenu();
+                    konfigMenu.Show();
                     break;
                 case 4:
-                    backupmenu.BackupMenu();
+                    backupMenu.Show();
                     break;
                 case 5:
-                    program.BenutzerWechseln();
+                    benutzerManagement.BenutzerWechseln();
                     break;
                 case 6:
-                    program.BenutzerLöschen();
+                    benutzerManagement.BenutzerLöschen();
                     break;
                 case 7:
-                    datenbankmenu.DatenbankMenu();
+                    datenbankMenu.Show();
                     break;
                 case 8:
-                    statistikmenu.StatistikMenu();
+                    statistikMenu.Show();
                     break;
                 case 9:
                     optRechner.Start();
                     break;
                 case 10:
                     help.Write("Speichere Historie...");
-                    historiemenu.HistorieSpeichern();
+                    historieVerwaltung.HistorieSpeichern();
 
                     programmLaeuft = false;
                     help.Write("Auf Wiedersehen!");

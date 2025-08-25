@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 using System.Xml;
@@ -7,8 +6,9 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorieImport
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
+    static BenutzerManagement benutzerManagement = new();
+    static HistorieVerwaltung historieVerwaltung = new();
 
     /// <summary>
     /// Importiert die Historie aus einer XML-Datei
@@ -17,7 +17,7 @@ public class HistorieImport
     {
         try
         {
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string xmlDatei = $"Benutzer/{akt.Name}/Backups/berechnungen.xml";
 
             if (!File.Exists(xmlDatei))
@@ -68,8 +68,8 @@ public class HistorieImport
                     //Kommentar
                     berechnung.Kommentar = node.SelectSingleNode("Kommentar")?.InnerText ?? "";
 
-                    program.detaillierteBerechnungen.Add(berechnung);
-                    program.berechnungsHistorie.Add(berechnung.ToString());
+                    historieVerwaltung.detaillierteBerechnungen.Add(berechnung);
+                    historieVerwaltung.berechnungsHistorie.Add(berechnung.ToString());
                     importiert++;
                 }
                 catch (Exception ex)

@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
 
@@ -6,7 +5,6 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankMenu : IMenu
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
     static DatenbankHistorie datenbankH = new DatenbankHistorie();
     static DatenbankBerechnungen datenbankB = new DatenbankBerechnungen();

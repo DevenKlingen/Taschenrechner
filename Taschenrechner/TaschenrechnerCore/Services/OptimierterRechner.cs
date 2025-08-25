@@ -1,6 +1,5 @@
 using TaschenrechnerCore.Models;
 using TaschenrechnerCore.Interfaces;
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Enums;
 
@@ -9,7 +8,6 @@ namespace TaschenrechnerCore.Services;
 public class OptimierterRechner
 {
     static RechnerManager rechnerManager = new RechnerManager();
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
     static KonfigVerwaltung konfigV = new KonfigVerwaltung();
     static HistorieVerwaltung historieV = new HistorieVerwaltung();
@@ -21,10 +19,12 @@ public class OptimierterRechner
     static BenutzerMenu benutzerM = new BenutzerMenu();
     static Backup backup = new Backup();
     static WissenschaftlicherRechner wissenschaftsRechner = new WissenschaftlicherRechner();
+    static BenutzerManagement benutzerManagement = new();
+    static BenutzerEinstellungen benutzerEinstellungen = new();
 
     public void Start()
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         help.Write("=== TASCHENRECHNER v2.0 (OOP) ===");
 
         // Bestehende Funktionen
@@ -34,7 +34,7 @@ public class OptimierterRechner
         // Neues Feature: Rechner-Auswahl beim Start
         if (akt == null)
         {
-            program.BenutzerAnmelden();
+            benutzerManagement.BenutzerAnmelden();
         }
         using var context = new TaschenrechnerContext();
 
@@ -114,7 +114,7 @@ public class OptimierterRechner
                         datenbankH.DatenbankHistorieAnzeigen();
                         break;
                     case 6: // Statistiken
-                        statistikM.StatistikMenu();
+                        statistikM.Show();
                         break;
                     case 7: // Einstellungen
                         konfigB.KonfigurationAendern();
@@ -143,7 +143,7 @@ public class OptimierterRechner
         }
 
         // Cleanup
-        if (program.config.AutoSpeichern)
+        if (benutzerEinstellungen.config.AutoSpeichern)
         {
             konfigV.KonfigurationSpeichern();
             backup.BackupErstellen();
@@ -155,7 +155,7 @@ public class OptimierterRechner
 
     static void ZeigeErweitertesMenue()
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         help.Mischen();
         Console.Clear();
         string aktueller = rechnerManager.AktuellerRechner?.RechnerTyp ?? "Kein Rechner aktiv";
@@ -246,7 +246,7 @@ public class OptimierterRechner
         try
         {
             double ergebnis = rechnerManager.AktuellerRechner.Berechnen(operation, werte.ToArray());
-            help.Write($"Ergebnis: {FormatUtils.FormatiereZahl(ergebnis, program.config.Nachkommastellen)}");
+            help.Write($"Ergebnis: {FormatUtils.FormatiereZahl(ergebnis, benutzerEinstellungen.config.Nachkommastellen)}");
         }
         catch (Exception ex)
         {

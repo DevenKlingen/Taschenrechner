@@ -1,11 +1,10 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Models;
 
 namespace TaschenrechnerCore.Services;
 
 public class HistorienBearbeitung
 {
-    static Program program = new Program();
+    static HistorieVerwaltung historieVerwaltung = new();
 
     /// <summary>
     /// Fügt eine Berechnung zur Historie hinzu
@@ -14,7 +13,7 @@ public class HistorienBearbeitung
     public void HistorieHinzufuegen(string berechnung)
     {
         string timestamp = DateTime.Now.ToString("HH:mm:ss");
-        program.berechnungsHistorie.Add($"[{timestamp}] {berechnung}");
+        historieVerwaltung.berechnungsHistorie.Add($"[{timestamp}] {berechnung}");
     }
 
     /// <summary>
@@ -35,7 +34,7 @@ public class HistorienBearbeitung
             Kommentar = kommentar
         };
 
-        program.detaillierteBerechnungen.Add(berechnung);
+        historieVerwaltung.detaillierteBerechnungen.Add(berechnung);
 
         // Alte string-basierte Historie auch aktualisieren
         HistorieHinzufuegen(berechnung.ToString());

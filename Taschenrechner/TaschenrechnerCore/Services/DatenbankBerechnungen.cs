@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 using System.Text.Json;
@@ -7,12 +6,12 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankBerechnungen
 {
-    static Program program = new Program();
+    static BenutzerManagement benutzerManagement = new();
     static Hilfsfunktionen help = new Hilfsfunktionen();
 
     public void BerechnungInDatenbankSpeichern(string operation, double[] eingaben, double ergebnis, string kommentar = "", string rechnertyp = "Basis")
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         if (akt == null)
         {
             help.Write("Kein Benutzer angemeldet!");
@@ -47,7 +46,7 @@ public class DatenbankBerechnungen
 
     public void BerechnungenSuchen()
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         if (akt == null)
         {
             help.Write("Kein Benutzer angemeldet!");

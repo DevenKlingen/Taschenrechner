@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 
@@ -6,12 +5,12 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankReinigung
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
+    static BenutzerManagement benutzerManagement = new();
 
     public void DatenbankBereinigen()
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         if (akt == null)
         {
             help.Write("Kein Benutzer angemeldet!");

@@ -1,8 +1,7 @@
-namespace TaschenrechnerCore.Interfaces;
-
-
 using TaschenrechnerCore.Models;
 using TaschenrechnerCore.Services;
+
+namespace TaschenrechnerCore.Interfaces;
 
 public abstract class BaseRechner
 {

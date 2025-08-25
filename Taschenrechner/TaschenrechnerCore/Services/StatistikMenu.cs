@@ -1,19 +1,16 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
-using TaschenrechnerCore.Models;
 
 namespace TaschenrechnerCore.Services;
 
 public class StatistikMenu : IMenu
 {
     static Hilfsfunktionen help = new Hilfsfunktionen();
-    static Program program = new Program();
     static Statistiken stats = new Statistiken();
     static StatistikMonatsReport statsM = new StatistikMonatsReport();
+
     public void Show()
     {
-        Benutzer aktuellerBenutzer = program.getAktBenutzer();
         bool statistikMenuAktiv = true;
 
         while (statistikMenuAktiv)

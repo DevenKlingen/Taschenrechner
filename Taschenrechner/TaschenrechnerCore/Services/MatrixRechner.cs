@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
@@ -7,10 +6,9 @@ namespace TaschenrechnerCore.Services;
 
 public class MatrixRechner : BaseRechner
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
     static RechnerManager rechnerManager = new RechnerManager();
-    
+    static BenutzerManagement benutzerManagement = new();
 
     public MatrixRechner() : base("Matrix-Rechner")
     {
@@ -89,7 +87,7 @@ public class MatrixRechner : BaseRechner
 
     public void ZeigeMatrixMenue()
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         help.Mischen();
         Console.Clear();
         string aktueller = rechnerManager.AktuellerRechner?.RechnerTyp ?? "Kein Rechner aktiv";

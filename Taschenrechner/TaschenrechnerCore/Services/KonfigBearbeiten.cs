@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 
@@ -6,9 +5,10 @@ namespace TaschenrechnerCore.Services;
 
 public class KonfigBearbeiten
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
     static KonfigVerwaltung konfigV = new KonfigVerwaltung();
+    static BenutzerManagement benutzerManagement = new();
+    static BenutzerEinstellungen benutzerEinstellungen = new();
 
     /// <summary>
     /// Erlaubt dem Nutzer, die Konfiguration zu ändern
@@ -16,7 +16,7 @@ public class KonfigBearbeiten
     public void KonfigurationAendern()
     {
         help.Mischen();
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
 
         using var context = new TaschenrechnerContext();
         var userSetting = context.Einstellungen
@@ -24,7 +24,7 @@ public class KonfigBearbeiten
 
         help.Write("=== KONFIGURATION ÄNDERN ===");
 
-        Console.Write($"Thema ({program.config.Thema}): ");
+        Console.Write($"Thema ({benutzerEinstellungen.config.Thema}): ");
         string eingabe = Console.ReadLine().ToLower();
 
         switch (eingabe)
@@ -32,7 +32,7 @@ public class KonfigBearbeiten
             case "hell":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                program.config.Thema = "Hell";
+                benutzerEinstellungen.config.Thema = "Hell";
                 userSetting.Wert = "Hell";
                 context.SaveChanges();
                 Console.Clear();
@@ -41,7 +41,7 @@ public class KonfigBearbeiten
             case "dunkel":
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.Black;
-                program.config.Thema = "Dunkel";
+                benutzerEinstellungen.config.Thema = "Dunkel";
                 userSetting.Wert = "Dunkel";
                 context.SaveChanges();
                 Console.Clear();
@@ -50,7 +50,7 @@ public class KonfigBearbeiten
             case "grün":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Green;
-                program.config.Thema = "Grün";
+                benutzerEinstellungen.config.Thema = "Grün";
                 userSetting.Wert = "Grün";
                 context.SaveChanges();
                 Console.Clear();
@@ -59,7 +59,7 @@ public class KonfigBearbeiten
             case "gelb":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Yellow;
-                program.config.Thema = "Gelb";
+                benutzerEinstellungen.config.Thema = "Gelb";
                 userSetting.Wert = "Gelb";
                 context.SaveChanges();
                 Console.Clear();
@@ -68,7 +68,7 @@ public class KonfigBearbeiten
             case "blau":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Blue;
-                program.config.Thema = "Blau";
+                benutzerEinstellungen.config.Thema = "Blau";
                 userSetting.Wert = "Blau";
                 context.SaveChanges();
                 Console.Clear();
@@ -77,7 +77,7 @@ public class KonfigBearbeiten
             case "rot":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Red;
-                program.config.Thema = "Rot";
+                benutzerEinstellungen.config.Thema = "Rot";
                 userSetting.Wert = "Rot";
                 context.SaveChanges();
                 Console.Clear();
@@ -86,21 +86,21 @@ public class KonfigBearbeiten
             case "lila":
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.DarkMagenta;
-                program.config.Thema = "Lila";
+                benutzerEinstellungen.config.Thema = "Lila";
                 userSetting.Wert = "Lila";
                 context.SaveChanges();
                 Console.Clear();
                 Console.WriteLine("Farbe wurde geändert!");
                 break;
             case "bunt":
-                program.config.Thema = "Bunt";
+                benutzerEinstellungen.config.Thema = "Bunt";
                 userSetting.Wert = "Bunt";
                 context.SaveChanges();
                 Console.Clear();
                 Console.WriteLine("Farbe wurde geändert!");
                 break;
             case "matrix":
-                program.config.Thema = "Matrix";
+                benutzerEinstellungen.config.Thema = "Matrix";
                 userSetting.Wert = "Matrix";
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.BackgroundColor = ConsoleColor.Black;
@@ -113,7 +113,7 @@ public class KonfigBearbeiten
                 break;
         }
 
-        help.Write($"Nachkommastellen ({program.config.Nachkommastellen}): ");
+        help.Write($"Nachkommastellen ({benutzerEinstellungen.config.Nachkommastellen}): ");
         eingabe = Console.ReadLine();
 
         userSetting = context.Einstellungen
@@ -121,12 +121,12 @@ public class KonfigBearbeiten
 
         if (int.TryParse(eingabe, out int stellen) && stellen >= 0 && stellen <= 10)
         {
-            program.config.Nachkommastellen = stellen;
+            benutzerEinstellungen.config.Nachkommastellen = stellen;
             userSetting.Wert = stellen.ToString();
             context.SaveChanges();
         }
 
-        help.Write($"Standardrechner ({program.config.Standardrechner}): ");
+        help.Write($"Standardrechner ({benutzerEinstellungen.config.Standardrechner}): ");
         eingabe = Console.ReadLine();
 
         userSetting = context.Einstellungen
@@ -134,12 +134,12 @@ public class KonfigBearbeiten
 
         if (eingabe == "Basis" || eingabe == "Wissenschaftlich")
         {
-            program.config.Standardrechner = eingabe;
+            benutzerEinstellungen.config.Standardrechner = eingabe;
             userSetting.Wert = eingabe;
             context.SaveChanges();
         }
 
-        help.Write($"Auto-Speichern (j/n, aktuell: {(program.config.AutoSpeichern ? "j" : "n")}): ");
+        help.Write($"Auto-Speichern (j/n, aktuell: {(benutzerEinstellungen.config.AutoSpeichern ? "j" : "n")}): ");
         eingabe = Console.ReadLine().ToLower();
 
         userSetting = context.Einstellungen
@@ -147,12 +147,12 @@ public class KonfigBearbeiten
 
         if (eingabe == "j" || eingabe == "n")
         {
-            program.config.AutoSpeichern = eingabe == "j";
-            userSetting.Wert = program.config.AutoSpeichern ? "j" : "n";
+            benutzerEinstellungen.config.AutoSpeichern = eingabe == "j";
+            userSetting.Wert = benutzerEinstellungen.config.AutoSpeichern ? "j" : "n";
             context.SaveChanges();
         }
 
-        help.Write($"Sprache ({program.config.Sprache}): ");
+        help.Write($"Sprache ({benutzerEinstellungen.config.Sprache}): ");
         eingabe = Console.ReadLine();
 
         userSetting = context.Einstellungen
@@ -160,12 +160,12 @@ public class KonfigBearbeiten
 
         if (eingabe == "Deutsch" || eingabe == "Englisch" || eingabe == "Spanisch" || eingabe == "Italienisch" || eingabe == "Französisch")
         {
-            program.config.Sprache = eingabe;
+            benutzerEinstellungen.config.Sprache = eingabe;
             userSetting.Wert = eingabe;
             context.SaveChanges();
         }
 
-        help.Write($"Zeige Zeitstempel (j/n, aktuell: {(program.config.ZeigeZeitstempel ? "j" : "n")}): ");
+        help.Write($"Zeige Zeitstempel (j/n, aktuell: {(benutzerEinstellungen.config.ZeigeZeitstempel ? "j" : "n")}): ");
         eingabe = Console.ReadLine().ToLower();
 
         userSetting = context.Einstellungen
@@ -173,12 +173,12 @@ public class KonfigBearbeiten
 
         if (eingabe == "j" || eingabe == "n")
         {
-            program.config.ZeigeZeitstempel = eingabe == "j";
-            userSetting.Wert = program.config.ZeigeZeitstempel ? "j" : "n";
+            benutzerEinstellungen.config.ZeigeZeitstempel = eingabe == "j";
+            userSetting.Wert = benutzerEinstellungen.config.ZeigeZeitstempel ? "j" : "n";
             context.SaveChanges();
         }
 
-        var aktuellerBenutzer = program.getAktBenutzer();
+        var aktuellerBenutzer = benutzerManagement.getBenutzer();
         string konfig = "Konfig";
         string KonfigOrdner = Path.Combine(aktuellerBenutzer.Name, konfig);
         if (!Directory.Exists(KonfigOrdner))
@@ -196,7 +196,7 @@ public class KonfigBearbeiten
     /// </summary>
     public void SetzeKonfigDateiPfad()
     {
-        var akt = program.getAktBenutzer();
+        var akt = benutzerManagement.getBenutzer();
         string konfigOrdner = $"Benutzer/{akt.Name}/Konfig";
 
         if (!Directory.Exists(Path.Combine(konfigOrdner)))
@@ -204,7 +204,7 @@ public class KonfigBearbeiten
             Directory.CreateDirectory(Path.Combine(konfigOrdner));
         }
 
-        program.konfigJson = Path.Combine(konfigOrdner, "config.json");
-        program.konfigToml = Path.Combine(konfigOrdner, "config.toml");
+        konfigV.konfigJson = Path.Combine(konfigOrdner, "config.json");
+        konfigV.konfigToml = Path.Combine(konfigOrdner, "config.toml");
     }
 }

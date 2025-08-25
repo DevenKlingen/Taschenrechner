@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 
@@ -6,9 +5,12 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorieVerwaltung
 {
-    static Program program = new Program();
+    static string historieDatei = "berechnungen.txt";
+    static BenutzerManagement benutzerManagement = new();
     static Hilfsfunktionen help = new Hilfsfunktionen();
     static HistorienExport historieE = new HistorienExport();
+    public List<Berechnung> detaillierteBerechnungen = new List<Berechnung>();
+    public List<string> berechnungsHistorie = new List<string>();
 
     /// <summary>
     /// Speichert die Historie in einer Textdatei
@@ -17,8 +19,8 @@ public class HistorieVerwaltung
     {
         try
         {
-            var akt = program.getAktBenutzer();
-            string pfad = Path.Join("Benutzer", akt.Name, "Backups", program.historieDatei);
+            var akt = benutzerManagement.getBenutzer();
+            string pfad = Path.Join("Benutzer", akt.Name, "Backups", historieDatei);
 
             // Prüfe die Größe der Datei im Backup-Ordner
             if (File.Exists(pfad) && new FileInfo(pfad).Length > 1_000_000)
@@ -27,7 +29,7 @@ public class HistorieVerwaltung
                 return;
             }
 
-            File.WriteAllLines(pfad, program.berechnungsHistorie);
+            File.WriteAllLines(pfad, berechnungsHistorie);
             help.Write($"Historie gespeichert in {pfad}");
         }
         catch (Exception ex)
@@ -44,7 +46,7 @@ public class HistorieVerwaltung
         try
         {
             // Benutzerverzeichnis ermitteln
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string benutzerVerzeichnis = Path.Join("Benutzer", akt.Name, "Backups");
 
             // Allerelevanten Dateinamen/Pattern
@@ -75,7 +77,7 @@ public class HistorieVerwaltung
                 }
             }
 
-            program.berechnungsHistorie.Clear();
+            berechnungsHistorie.Clear();
             if (geloescht == 0)
                 help.Write("Keine Historie-Dateien gefunden.");
             else
@@ -110,10 +112,10 @@ public class HistorieVerwaltung
     {
         try
         {
-            if (File.Exists(program.historieDatei))
+            if (File.Exists(historieDatei))
             {
-                string[] zeilen = File.ReadAllLines(program.historieDatei);
-                program.berechnungsHistorie.AddRange(zeilen);
+                string[] zeilen = File.ReadAllLines(historieDatei);
+                berechnungsHistorie.AddRange(zeilen);
                 help.Write($"{zeilen.Length} Einträge aus Historie geladen.");
             }
             else
@@ -125,5 +127,10 @@ public class HistorieVerwaltung
         {
             help.Write($"Fehler beim Laden: {ex.Message}");
         }
+    }
+
+    public string getHistorieDatei()
+    {
+        return historieDatei;
     }
 }

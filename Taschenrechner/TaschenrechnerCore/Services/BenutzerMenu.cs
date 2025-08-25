@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
 
@@ -6,7 +5,7 @@ namespace TaschenrechnerCore.Services;
 
 public class BenutzerMenu : IMenu
 {
-    static Program program = new Program();
+    static BenutzerManagement benutzerManagement = new();
     static Hilfsfunktionen help = new Hilfsfunktionen();
 
     public void Show()
@@ -19,10 +18,10 @@ public class BenutzerMenu : IMenu
         switch (wahl)
         {
             case 1:
-                program.BenutzerWechseln();
+                benutzerManagement.BenutzerWechseln();
                 break;
             case 2:
-                program.BenutzerLöschen();
+                benutzerManagement.BenutzerLöschen();
                 break;
             case 3:
                 return; // Zurück zum Hauptmenü

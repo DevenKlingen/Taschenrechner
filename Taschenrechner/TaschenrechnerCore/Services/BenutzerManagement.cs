@@ -7,8 +7,10 @@ public class BenutzerManagement
 {
     static Hilfsfunktionen help = new();
     static BenutzerEinstellungen benutzerE = new();
-    private Benutzer aktuellerBenutzer = null;
+    protected Benutzer aktuellerBenutzer = null;
     private static TaschenrechnerContext DbContext;
+    static KonfigVerwaltung konfigV = new();
+
     public void BenutzerAnmelden()
     {
         DbContext = new TaschenrechnerContext();
@@ -49,7 +51,7 @@ public class BenutzerManagement
             help.Write($"Angemeldet als: {aktuellerBenutzer.Name}");
 
             string benutzerOrdner = Path.Join("Benutzer", aktuellerBenutzer.Name);
-            konfigmenu.KonfigurationLaden();
+            konfigV.KonfigurationLaden();
 
             if (!Directory.Exists(benutzerOrdner))
             {
@@ -61,7 +63,7 @@ public class BenutzerManagement
             help.Write("ACHTUNG! " + ex);
         }
         // Benutzereinstellungen laden
-        BenutzereinstellungenLaden();
+        benutzerE.BenutzereinstellungenLaden();
     }
 
     static Benutzer BenutzerErstellen(string name, TaschenrechnerContext context)
@@ -82,7 +84,7 @@ public class BenutzerManagement
             context.SaveChanges();
 
             // Standard-Einstellungen erstellen
-            program.StandardEinstellungenErstellen(neuerBenutzer.Id, context);
+            benutzerE.StandardEinstellungenErstellen(neuerBenutzer.Id, context);
 
             help.Write($"Benutzer '{name}' erfolgreich erstellt!");
             return neuerBenutzer;
@@ -96,7 +98,7 @@ public class BenutzerManagement
 
     public void BenutzerWechseln()
     {
-        program.BenutzerAnmelden();
+        BenutzerAnmelden();
     }
 
     public void BenutzerLöschen()
@@ -144,5 +146,8 @@ public class BenutzerManagement
         }
     }
 
-
+    public Benutzer getBenutzer()
+    {
+        return aktuellerBenutzer;
+    }
 }

@@ -1,13 +1,12 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 
 namespace TaschenrechnerCore.Services;
 
 public class Backup
 {
-    static Program program = new Program();
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static HistorienExport historienEx = new HistorienExport();
+    static BenutzerManagement benutzerManagement = new();
+    static Hilfsfunktionen help = new();
+    static HistorienExport historienEx = new();
 
     /// <summary>
     /// Erstellt ein Backup der aktuellen Historie und speichert es in einem Backup-Ordner
@@ -16,7 +15,7 @@ public class Backup
     {
         try
         {
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
 
             help.Write("Möchtest du auch ein Datenbank-Backup erstellen? (j/n)");
             string? datenbankBackupWahl = Console.ReadLine()?.Trim().ToLower();
@@ -59,7 +58,7 @@ public class Backup
 
             // XML-Export als zusätzliches Backup
             historienEx.HistorieAlsXMLExportieren();
-            string xmlDatei = Path.Combine(program.benutzer, "Backups", "berechnungen.xml");
+            string xmlDatei = Path.Combine(akt.Name, "Backups", "berechnungen.xml");
             string xmlBackup = Path.Combine(backupOrdner, $"berechnungen_{zeitstempel}.xml");
             if (File.Exists(xmlDatei))
             {

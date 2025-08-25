@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 using System.Text;
@@ -8,8 +7,9 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorieZeigen
 {
-    static Program program = new Program();
+    static HistorieVerwaltung historieVerwaltung = new();
     static Hilfsfunktionen help = new Hilfsfunktionen();
+    static BenutzerEinstellungen benutzerEinstellungen = new();
 
     /// <summary>
     /// Zeigt die aktuelle Historie an
@@ -21,14 +21,14 @@ public class HistorieZeigen
         if (wahl == 1)
         {
             help.Write("\n=== BERECHNUNGSHISTORIE ===");
-            if (program.berechnungsHistorie.Count == 0)
+            if (historieVerwaltung.berechnungsHistorie.Count == 0)
             {
                 help.Write("Keine Berechnungen durchgeführt.");
                 return;
             }
             else
             {
-                foreach (var eintrag in program.berechnungsHistorie)
+                foreach (var eintrag in historieVerwaltung.berechnungsHistorie)
                 {
                     help.Write(eintrag);
                 }
@@ -71,21 +71,21 @@ public class HistorieZeigen
                         if (berechnung.Operation == "$")
                         {
                             Console.OutputEncoding = Encoding.UTF8;
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingaben[0]}€ = ${berechnung.Ergebnis.ToString($"F{program.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingaben[0]}€ = ${berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
                         else if (berechnung.Operation == "/, *")
                         {
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} / {eingaben[1]}) * {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{program.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} / {eingaben[1]}) * {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
                         else if (berechnung.Operation == "*, /")
                         {
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} * {eingaben[1]}) / {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{program.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} * {eingaben[1]}) / {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
                         else
                         {
                             string eingabenStr = string.Join($" {berechnung.Operation} ", eingaben);
 
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingabenStr} = {berechnung.Ergebnis.ToString($"F{program.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingabenStr} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
 
                         if (!string.IsNullOrEmpty(berechnung.Kommentar))

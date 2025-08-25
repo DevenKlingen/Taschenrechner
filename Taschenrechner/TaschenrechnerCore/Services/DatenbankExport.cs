@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 using System.Text.Json;
@@ -7,12 +6,11 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankExport
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
-
+    static BenutzerManagement benutzerManagement = new();
     public void DatenbankExportieren()
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         if (akt == null)
         {
             help.Write("Kein Benutzer angemeldet!");

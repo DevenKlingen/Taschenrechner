@@ -1,12 +1,11 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Models;
+using TaschenrechnerCore.Services;
 
 namespace TaschenrechnerCore.Utils;
 
 public class Hilfsfunktionen
 {
-    public Program program = new Program();
-
+    static BenutzerManagement benutzerManagement = new();
     public void Write(string input)
     {
         Mischen();
@@ -29,7 +28,7 @@ public class Hilfsfunktionen
     /// </summary>
     public void Mischen()
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         using var context = new TaschenrechnerContext();
         if (akt != null)
         {

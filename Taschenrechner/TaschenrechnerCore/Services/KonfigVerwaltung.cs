@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using System.Text.Json;
 using TaschenrechnerCore.Services;
@@ -9,9 +8,12 @@ namespace TaschenrechnerCore;
 
 public class KonfigVerwaltung
 {
-    static Program program = new Program();
+    public string konfigJson = "config.json";
+    public string konfigToml = "config.toml";
     static Hilfsfunktionen help = new Hilfsfunktionen();
     static KonfigBearbeiten konfigB = new KonfigBearbeiten();
+    static BenutzerEinstellungen benutzerEinstellungen = new();
+    static BenutzerManagement benutzerManagement = new();
 
     /// <summary>
     /// Lädt die Konfiguration aus einer Datei (TOML oder JSON)
@@ -21,16 +23,16 @@ public class KonfigVerwaltung
         try
         {
             konfigB.SetzeKonfigDateiPfad();
-            if (File.Exists(program.konfigToml))
+            if (File.Exists(konfigToml))
             {
-                string tomlString = File.ReadAllText(program.konfigToml);
-                program.config = Toml.ToModel<TaschenrechnerKonfiguration>(tomlString);
+                string tomlString = File.ReadAllText(konfigToml);
+                benutzerEinstellungen.config = Toml.ToModel<TaschenrechnerKonfiguration>(tomlString);
                 help.Write("Konfiguration aus TOML geladen.");
             }
-            else if (File.Exists(program.konfigJson))
+            else if (File.Exists(konfigJson))
             {
-                string jsonString = File.ReadAllText(program.konfigJson);
-                program.config = JsonSerializer.Deserialize<TaschenrechnerKonfiguration>(jsonString);
+                string jsonString = File.ReadAllText(konfigJson);
+                benutzerEinstellungen.config = JsonSerializer.Deserialize<TaschenrechnerKonfiguration>(jsonString);
                 help.Write("Konfiguration aus JSON geladen.");
             }
             else
@@ -42,10 +44,10 @@ public class KonfigVerwaltung
         catch (Exception ex)
         {
             help.Write($"Fehler beim Laden der Konfiguration: {ex.Message}");
-            program.config = new TaschenrechnerKonfiguration(); // Fallback
+            benutzerEinstellungen.config = new TaschenrechnerKonfiguration(); // Fallback
         }
 
-        var akt = program.getAktBenutzer();
+        var akt = benutzerManagement.getBenutzer();
         using var context = new TaschenrechnerContext();
         var userSetting = context.Einstellungen
                 .FirstOrDefault(us => us.BenutzerId == akt.Id && us.Schluessel == "Thema");
@@ -54,42 +56,42 @@ public class KonfigVerwaltung
             case "hell":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                program.config.Thema = "Hell";
+                benutzerEinstellungen.config.Thema = "Hell";
                 break;
             case "dunkel":
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.Black;
-                program.config.Thema = "Dunkel";
+                benutzerEinstellungen.config.Thema = "Dunkel";
                 break;
             case "grün":
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.Green;
-                program.config.Thema = "Grün";
+                benutzerEinstellungen.config.Thema = "Grün";
                 break;
             case "gelb":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Yellow;
-                program.config.Thema = "Gelb";
+                benutzerEinstellungen.config.Thema = "Gelb";
                 break;
             case "blau":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Blue;
-                program.config.Thema = "Blau";
+                benutzerEinstellungen.config.Thema = "Blau";
                 break;
             case "rot":
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Red;
-                program.config.Thema = "Rot";
+                benutzerEinstellungen.config.Thema = "Rot";
                 break;
             case "lila":
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.DarkMagenta;
-                program.config.Thema = "Lila";
+                benutzerEinstellungen.config.Thema = "Lila";
                 break;
             case "matrix":
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.BackgroundColor = ConsoleColor.Black;
-                program.config.Thema = "Matrix";
+                benutzerEinstellungen.config.Thema = "Matrix";
                 break;
             default:
                 help.Write("Ungültige Wahl!");
@@ -104,15 +106,15 @@ public class KonfigVerwaltung
     {
         try
         {
-            string jsonString = JsonSerializer.Serialize(program.config, new JsonSerializerOptions
+            string jsonString = JsonSerializer.Serialize(benutzerEinstellungen.config, new JsonSerializerOptions
             {
                 WriteIndented = true
             });
             konfigB.SetzeKonfigDateiPfad();
-            File.WriteAllText(program.konfigJson, jsonString);
+            File.WriteAllText(konfigJson, jsonString);
 
-            string tomlString = Toml.FromModel(program.config);
-            File.WriteAllText(program.konfigToml, tomlString);
+            string tomlString = Toml.FromModel(benutzerEinstellungen.config);
+            File.WriteAllText(konfigToml, tomlString);
 
             help.Write("Konfiguration gespeichert.");
         }
@@ -128,11 +130,27 @@ public class KonfigVerwaltung
     public void KonfigurationAnzeigen()
     {
         help.Write("=== AKTUELLE KONFIGURATION ===");
-        help.Write($"Thema: {program.config.Thema}");
-        help.Write($"Nachkommastellen: {program.config.Nachkommastellen}");
-        help.Write($"Standardrechner: {program.config.Standardrechner}");
-        help.Write($"Auto-Speichern: {program.config.AutoSpeichern}");
-        help.Write($"Sprache: {program.config.Sprache}");
-        help.Write($"Zeitstempel anzeigen: {program.config.ZeigeZeitstempel}");
+        help.Write($"Thema: {benutzerEinstellungen.config.Thema}");
+        help.Write($"Nachkommastellen: {benutzerEinstellungen.config.Nachkommastellen}");
+        help.Write($"Standardrechner: {benutzerEinstellungen.config.Standardrechner}");
+        help.Write($"Auto-Speichern: {benutzerEinstellungen.config.AutoSpeichern}");
+        help.Write($"Sprache: {benutzerEinstellungen.config.Sprache}");
+        help.Write($"Zeitstempel anzeigen: {benutzerEinstellungen.config.ZeigeZeitstempel}");
+    }
+
+    public string getJsonPath()
+    {
+        return konfigJson;
+    }
+
+    public string getTomlPath()
+    {
+        return konfigToml;
+    }
+
+    public void SetzeKonfigDateiPfad(string konfigOrdner)
+    {
+        konfigJson = Path.Combine(konfigOrdner, "config.json");
+        konfigToml = Path.Combine(konfigOrdner, "config.toml");
     }
 }

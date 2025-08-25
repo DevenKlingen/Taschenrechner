@@ -1,4 +1,3 @@
-using SQLitePCL;
 using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
 

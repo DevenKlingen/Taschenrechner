@@ -1,9 +1,13 @@
-using System;
+using TaschenrechnerCore.Models;
+using TaschenrechnerCore.Utils;
 
 namespace TaschenrechnerCore.Services;
 
 public class BenutzerEinstellungen
 {
+    static Hilfsfunktionen help = new();
+    static BenutzerManagement benutzerManagement = new();
+    public TaschenrechnerKonfiguration config = new TaschenrechnerKonfiguration();
     public void StandardEinstellungenErstellen(int benutzerId, TaschenrechnerContext context)
     {
         // Anzahl der benötigten IDs (entspricht der Anzahl der Standard-Einstellungen)
@@ -59,8 +63,9 @@ public class BenutzerEinstellungen
         }
     }
 
-    static void BenutzereinstellungenLaden()
+    public void BenutzereinstellungenLaden()
     {
+        var aktuellerBenutzer = benutzerManagement.getBenutzer();
         if (aktuellerBenutzer == null)
         {
             help.Write("Kein Benutzer angemeldet! Konnte keine Einstellungen laden!");
@@ -79,24 +84,24 @@ public class BenutzerEinstellungen
             {
                 case "Nachkommastellen":
                     if (int.TryParse(einstellung.Wert, out int stellen))
-                        program.config.Nachkommastellen = stellen;
+                        config.Nachkommastellen = stellen;
                     break;
                 case "Thema":
-                    program.config.Thema = einstellung.Wert;
+                        config.Thema = einstellung.Wert;
                     break;
                 case "AutoSpeichern":
                     if (bool.TryParse(einstellung.Wert, out bool autoSave))
-                        program.config.AutoSpeichern = autoSave;
+                        config.AutoSpeichern = autoSave;
                     break;
                 case "Sprache":
-                    program.config.Sprache = einstellung.Wert;
+                    config.Sprache = einstellung.Wert;
                     break;
                 case "Standardrechner":
-                    program.config.Standardrechner = einstellung.Wert;
+                    config.Standardrechner = einstellung.Wert;
                     break;
                 case "ZeigeZeitstempel":
                     if (bool.TryParse(einstellung.Wert, out bool zeigeZeitstempel))
-                        program.config.ZeigeZeitstempel = zeigeZeitstempel;
+                        config.ZeigeZeitstempel = zeigeZeitstempel;
                     break;
 
             }

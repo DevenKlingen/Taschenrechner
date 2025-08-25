@@ -1,14 +1,14 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 
 namespace TaschenrechnerCore.Services;
 
 public class BackupsVerwalten
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
     static KonfigVerwaltung konfigV = new KonfigVerwaltung();
     static HistorienBearbeitung historieB = new HistorienBearbeitung();
+    static BenutzerManagement benutzerManagement = new();
+    static HistorieVerwaltung historieVerwaltung = new();
 
     /// <summary>
     /// Zeigt alle verfügbaren Backups im Backup-Ordner an
@@ -17,7 +17,7 @@ public class BackupsVerwalten
     {
         try
         {
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string backup = "Backups";
             string backupOrdner = Path.Join("Benutzer", akt.Name, backup);
 
@@ -55,7 +55,7 @@ public class BackupsVerwalten
     {
         try
         {
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string backup = "Backups";
             string backupOrdner = Path.Join("Benutzer", akt.Name, backup);
 
@@ -83,7 +83,7 @@ public class BackupsVerwalten
     {
         try
         {
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string backup = "Backups";
             string backupOrdner = Path.Join("Benutzer", akt.Name, backup);
 
@@ -112,7 +112,7 @@ public class BackupsVerwalten
                 return;
             }
             string gewaehltesBackup = backupDateien[wahl - 1];
-            File.Copy(gewaehltesBackup, program.historieDatei, true);
+            File.Copy(gewaehltesBackup, historieVerwaltung.getHistorieDatei(), true);
             konfigV.KonfigurationLaden(); // Konfiguration neu laden
             historieB.HistorieHinzufuegen($"Backup wiederhergestellt: {gewaehltesBackup}");
 

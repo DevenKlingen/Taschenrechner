@@ -1,5 +1,4 @@
 using System.Xml;
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using System.IO.Compression;
 
@@ -7,8 +6,9 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorienExport
 {
-    static Program program = new Program();
     static Hilfsfunktionen help = new Hilfsfunktionen();
+    static BenutzerManagement benutzerManagement = new();
+    static HistorieVerwaltung historieVerwaltung = new();
 
     /// <summary>
     /// Exportiert die Historie als Zip datei
@@ -17,7 +17,7 @@ public class HistorienExport
     {
         try
         {
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string zipDatei = Path.Join("Benutzer", akt.Name, "Backups", "berechnungen.zip");
             using (FileStream fs = new FileStream(zipDatei, FileMode.Create))
             using (ZipArchive archive = new ZipArchive(fs, ZipArchiveMode.Create))
@@ -39,7 +39,7 @@ public class HistorienExport
     {
         try
         {
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string xmlDatei = $"Benutzer/{akt.Name}/Backups/berechnungen.xml";
 
             XmlDocument doc = new XmlDocument();
@@ -52,7 +52,7 @@ public class HistorienExport
             XmlElement root = doc.CreateElement("Berechnungen");
             doc.AppendChild(root);
 
-            foreach (var berechnung in program.detaillierteBerechnungen)
+            foreach (var berechnung in historieVerwaltung.detaillierteBerechnungen)
             {
                 XmlElement berechnungElement = doc.CreateElement("Berechnung");
 
@@ -109,7 +109,7 @@ public class HistorienExport
         try
         {
 
-            var akt = program.getAktBenutzer();
+            var akt = benutzerManagement.getBenutzer();
             string csvDatei = $"Benutzer/{akt.Name}/Backups/berechnungen.csv";
 
             List<string> csvZeilen = new List<string>();
@@ -117,7 +117,7 @@ public class HistorienExport
             // Header
             csvZeilen.Add("Zeitstempel;Operation;Eingaben;Ergebnis;Kommentar");
 
-            foreach (var berechnung in program.detaillierteBerechnungen)
+            foreach (var berechnung in historieVerwaltung.detaillierteBerechnungen)
             {
                 string eingabenString = string.Join(" ", berechnung.Eingaben);
                 string zeile = $"{berechnung.Zeitstempel:yyyy-MM-dd HH:mm:ss};" +

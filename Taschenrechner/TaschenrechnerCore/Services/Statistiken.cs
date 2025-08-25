@@ -1,4 +1,3 @@
-using TaschenrechnerConsole;
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 
@@ -6,13 +5,13 @@ namespace TaschenrechnerCore.Services;
 
 public class Statistiken
 {
-    static Program program = new Program();
+    static BenutzerManagement benutzerManagement = new();
     static Hilfsfunktionen help = new Hilfsfunktionen();
     public void BenutzerStatistiken()
     {
-        Benutzer akt = program.getAktBenutzer();
-        Benutzer aktuellerBenutzer = akt;
-
+        Benutzer aktuellerBenutzer = benutzerManagement.getBenutzer();
+        Benutzer akt = aktuellerBenutzer;
+        
         if (aktuellerBenutzer == null)
         {
             help.Write("Kein Benutzer angemeldet!");
