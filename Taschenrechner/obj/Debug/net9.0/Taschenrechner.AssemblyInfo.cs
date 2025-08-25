@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Taschenrechner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f8191cc5dd8d7a426e5fde44431a5d36d6ba557d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09e83ececc2862d02b00c6d85be21ff10683fab4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Taschenrechner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Taschenrechner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
