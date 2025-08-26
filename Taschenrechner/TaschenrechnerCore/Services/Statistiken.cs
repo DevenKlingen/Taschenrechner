@@ -153,7 +153,7 @@ public class Statistiken
             return;
         }
 
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
 
         if (akt == null)
         {

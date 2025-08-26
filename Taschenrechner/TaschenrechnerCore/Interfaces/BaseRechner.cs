@@ -5,6 +5,7 @@ namespace TaschenrechnerCore.Interfaces;
 
 public abstract class BaseRechner
 {
+    static BenutzerManagement benutzerManagement = new();
     static DatenbankBerechnungen datenbankmenu = new();
     // Protected Felder - nur für abgeleitete Klassen sichtbar
     protected List<BerechnungErgebnis> historie;
@@ -38,7 +39,7 @@ public abstract class BaseRechner
     // Virtuelle Methode - kann in abgeleiteten Klassen überschrieben werden
     public virtual void BerechnungSpeichern(string operation, double[] eingaben, double ergebnis)
     {
-        Benutzer akt = program.getAktBenutzer();
+        Benutzer akt = benutzerManagement.getBenutzer();
         var berechnungErgebnis = new BerechnungErgebnis
         {
             Zeitstempel = DateTime.Now,

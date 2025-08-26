@@ -3,3 +3,11 @@ C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschen
 C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.AssemblyInfo.cs
 C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.csproj.CoreCompileInputs.cache
 C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.sourcelink.json
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.csproj.AssemblyReference.cache
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\bin\Debug\net9.0\TaschenrechnerCore.deps.json
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\bin\Debug\net9.0\TaschenrechnerCore.dll
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\bin\Debug\net9.0\TaschenrechnerCore.pdb
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.dll
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\refint\TaschenrechnerCore.dll
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\TaschenrechnerCore.pdb
+C:\Users\klingen\Documents\GitHub projects\Taschenrechner\Taschenrechner\Taschenrechner\TaschenrechnerCore\obj\Debug\net9.0\ref\TaschenrechnerCore.dll

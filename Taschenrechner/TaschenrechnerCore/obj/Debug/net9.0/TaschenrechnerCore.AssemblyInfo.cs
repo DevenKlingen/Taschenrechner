@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TaschenrechnerCore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6144f4142e6f49e7667679da49a3bb7fb5846fa0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0643a271f626ada5534bd16b09c2982777231c83")]
 [assembly: System.Reflection.AssemblyProductAttribute("TaschenrechnerCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TaschenrechnerCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

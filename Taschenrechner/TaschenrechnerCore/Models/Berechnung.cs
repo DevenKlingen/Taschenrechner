@@ -1,10 +1,10 @@
-using TaschenrechnerConsole;
+using TaschenrechnerCore.Services;
 
 namespace TaschenrechnerCore.Models;
 
 public class Berechnung
 {
-    public Program program = new Program();
+    static BenutzerEinstellungen benutzerEinstellungen = new();
     public DateTime Zeitstempel { get; set; }
     public string Operation { get; set; }
     public List<double> Eingaben { get; set; } = new List<double>();
@@ -13,9 +13,9 @@ public class Berechnung
 
     public override string ToString()
     {
-        string zeitString = program.config.ZeigeZeitstempel
+        string zeitString = benutzerEinstellungen.config.ZeigeZeitstempel
             ? $"[{Zeitstempel:HH:mm:ss}] "
             : "";
-        return $"{zeitString}{string.Join($" {Operation} ", Eingaben)} = {Ergebnis.ToString($"F{program.config.Nachkommastellen}")}";
+        return $"{zeitString}{string.Join($" {Operation} ", Eingaben)} = {Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")}";
     }
 }
