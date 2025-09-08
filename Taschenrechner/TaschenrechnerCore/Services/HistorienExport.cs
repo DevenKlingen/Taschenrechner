@@ -6,9 +6,21 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorienExport
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static BenutzerManagement benutzerManagement = new();
-    static HistorieVerwaltung historieVerwaltung = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly HistorieVerwaltung _historieVerwaltung;
+
+    public HistorienExport(
+        Hilfsfunktionen help, 
+        BenutzerManagement benutzerManagement, 
+        HistorieVerwaltung historieVerwaltung)
+    {
+        _help = help;
+        _benutzerManagement = benutzerManagement;
+        _historieVerwaltung = historieVerwaltung;
+    }
+
+
 
     /// <summary>
     /// Exportiert die Historie als Zip datei
@@ -17,18 +29,18 @@ public class HistorienExport
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string zipDatei = Path.Join("Benutzer", akt.Name, "Backups", "berechnungen.zip");
             using (FileStream fs = new FileStream(zipDatei, FileMode.Create))
             using (ZipArchive archive = new ZipArchive(fs, ZipArchiveMode.Create))
             {
                 archive.CreateEntryFromFile(pfad, Path.GetFileName(pfad));
-                help.Write($"Historie als ZIP exportiert: {zipDatei}");
+                _help.Write($"Historie als ZIP exportiert: {zipDatei}");
             }
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim ZIP-Export: {ex.Message}");
+            _help.Write($"Fehler beim ZIP-Export: {ex.Message}");
         }
     }
 
@@ -39,7 +51,7 @@ public class HistorienExport
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string xmlDatei = $"Benutzer/{akt.Name}/Backups/berechnungen.xml";
 
             XmlDocument doc = new XmlDocument();
@@ -52,7 +64,7 @@ public class HistorienExport
             XmlElement root = doc.CreateElement("Berechnungen");
             doc.AppendChild(root);
 
-            foreach (var berechnung in historieVerwaltung.detaillierteBerechnungen)
+            foreach (var berechnung in _historieVerwaltung._detaillierteBerechnungen)
             {
                 XmlElement berechnungElement = doc.CreateElement("Berechnung");
 
@@ -93,11 +105,11 @@ public class HistorienExport
             }
 
             doc.Save(xmlDatei);
-            help.Write($"Historie als XML exportiert: {xmlDatei}");
+            _help.Write($"Historie als XML exportiert: {xmlDatei}");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim XML-Export: {ex.Message}");
+            _help.Write($"Fehler beim XML-Export: {ex.Message}");
         }
     }
 
@@ -109,7 +121,7 @@ public class HistorienExport
         try
         {
 
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string csvDatei = $"Benutzer/{akt.Name}/Backups/berechnungen.csv";
 
             List<string> csvZeilen = new List<string>();
@@ -117,7 +129,7 @@ public class HistorienExport
             // Header
             csvZeilen.Add("Zeitstempel;Operation;Eingaben;Ergebnis;Kommentar");
 
-            foreach (var berechnung in historieVerwaltung.detaillierteBerechnungen)
+            foreach (var berechnung in _historieVerwaltung._detaillierteBerechnungen)
             {
                 string eingabenString = string.Join(" ", berechnung.Eingaben);
                 string zeile = $"{berechnung.Zeitstempel:yyyy-MM-dd HH:mm:ss};" +
@@ -129,12 +141,12 @@ public class HistorienExport
             }
 
             File.WriteAllLines(csvDatei, csvZeilen);
-            help.Write($"Historie als CSV exportiert: {csvDatei}");
-            help.Write("Die Datei kann in Excel geöffnet werden.");
+            _help.Write($"Historie als CSV exportiert: {csvDatei}");
+            _help.Write("Die Datei kann in Excel geöffnet werden.");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim CSV-Export: {ex.Message}");
+            _help.Write($"Fehler beim CSV-Export: {ex.Message}");
         }
     }
 }

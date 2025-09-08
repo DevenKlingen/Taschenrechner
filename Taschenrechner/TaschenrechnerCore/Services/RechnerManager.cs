@@ -1,5 +1,6 @@
 using TaschenrechnerCore.Enums;
 using TaschenrechnerCore.Interfaces;
+using TaschenrechnerCore.Utils;
 
 namespace TaschenrechnerCore.Services;
 
@@ -7,6 +8,7 @@ public class RechnerManager
 {
     private Dictionary<RechnerTyp, BaseRechner> aktiveRechner;
     private BaseRechner aktuellerRechner;
+    private Hilfsfunktionen _help;
 
     public BaseRechner AktuellerRechner
     {
@@ -14,9 +16,10 @@ public class RechnerManager
         private set { aktuellerRechner = value; }
     }
 
-    public RechnerManager()
+    public RechnerManager(Hilfsfunktionen help)
     {
         aktiveRechner = new Dictionary<RechnerTyp, BaseRechner>();
+        _help = help;
     }
 
     public BaseRechner WechsleZuRechner(RechnerTyp typ)
@@ -25,29 +28,29 @@ public class RechnerManager
         if (!aktiveRechner.ContainsKey(typ))
         {
             aktiveRechner[typ] = RechnerFactory.ErstelleRechner(typ);
-            Console.WriteLine($"{typ}-Rechner wurde erstellt.");
+            _help.Write($"{typ}-Rechner wurde erstellt.");
         }
 
         AktuellerRechner = aktiveRechner[typ];
-        Console.WriteLine($"Gewechselt zu: {AktuellerRechner.RechnerTyp}");
+        _help.Write($"Gewechselt zu: {AktuellerRechner.RechnerTyp}");
 
         return AktuellerRechner;
     }
 
     public void ZeigeAktiveRechner()
     {
-        Console.WriteLine("=== AKTIVE RECHNER ===");
+        _help.Write("\n=== AKTIVE RECHNER ===");
 
         if (aktiveRechner.Count == 0)
         {
-            Console.WriteLine("Keine Rechner aktiv.");
+            _help.Write("Keine Rechner aktiv.");
             return;
         }
 
         foreach (var kvp in aktiveRechner)
         {
             string marker = (kvp.Value == AktuellerRechner) ? " [AKTIV]" : "";
-            Console.WriteLine($"- {kvp.Key}: {kvp.Value.AnzahlBerechnungen} Berechnungen{marker}");
+            _help.Write($"- {kvp.Key}: {kvp.Value.AnzahlBerechnungen} Berechnungen{marker}");
         }
     }
 
@@ -61,7 +64,7 @@ public class RechnerManager
             }
 
             aktiveRechner.Remove(typ);
-            Console.WriteLine($"{typ}-Rechner wurde geschlossen.");
+            _help.Write($"{typ}-Rechner wurde geschlossen.");
         }
     }
 
@@ -69,6 +72,6 @@ public class RechnerManager
     {
         aktiveRechner.Clear();
         AktuellerRechner = null;
-        Console.WriteLine("Alle Rechner wurden geschlossen.");
+        _help.Write("Alle Rechner wurden geschlossen.");
     }
 }

@@ -5,9 +5,20 @@ namespace TaschenrechnerCore.Services;
 
 public class BenutzerEinstellungen
 {
-    static Hilfsfunktionen help = new();
-    static BenutzerManagement benutzerManagement = new();
-    public TaschenrechnerKonfiguration config = new TaschenrechnerKonfiguration();
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerManagement _benutzerManagement;
+    private TaschenrechnerKonfiguration _config;
+   
+    public BenutzerEinstellungen(
+        Hilfsfunktionen help, 
+        BenutzerManagement benutzerManagement, 
+        TaschenrechnerKonfiguration config)
+    {
+        _help = help;
+        _benutzerManagement = benutzerManagement;
+        _config = config;
+    }
+
     public void StandardEinstellungenErstellen(int benutzerId, TaschenrechnerContext context)
     {
         // Anzahl der benötigten IDs (entspricht der Anzahl der Standard-Einstellungen)
@@ -55,20 +66,20 @@ public class BenutzerEinstellungen
         {
             context.Einstellungen.AddRange(fehlendeEinstellungen);
             context.SaveChanges();
-            help.Write($"Es wurden {fehlendeEinstellungen.Count} fehlende Standardeinstellungen hinzugefügt.");
+            _help.Write($"Es wurden {fehlendeEinstellungen.Count} fehlende Standardeinstellungen hinzugefügt.");
         }
         else
         {
-            help.Write("Alle Standardeinstellungen sind bereits vorhanden.");
+            _help.Write("Alle Standardeinstellungen sind bereits vorhanden.");
         }
     }
 
     public void BenutzereinstellungenLaden()
     {
-        var aktuellerBenutzer = benutzerManagement.getBenutzer();
+        var aktuellerBenutzer = _benutzerManagement.getBenutzer();
         if (aktuellerBenutzer == null)
         {
-            help.Write("Kein Benutzer angemeldet! Konnte keine Einstellungen laden!");
+            _help.Write("Kein Benutzer angemeldet! Konnte keine Einstellungen laden!");
             return;
         }
         using var context = new TaschenrechnerContext();
@@ -84,29 +95,33 @@ public class BenutzerEinstellungen
             {
                 case "Nachkommastellen":
                     if (int.TryParse(einstellung.Wert, out int stellen))
-                        config.Nachkommastellen = stellen;
+                        _config.Nachkommastellen = stellen;
                     break;
                 case "Thema":
-                        config.Thema = einstellung.Wert;
+                        _config.Thema = einstellung.Wert;
                     break;
                 case "AutoSpeichern":
                     if (bool.TryParse(einstellung.Wert, out bool autoSave))
-                        config.AutoSpeichern = autoSave;
+                        _config.AutoSpeichern = autoSave;
                     break;
                 case "Sprache":
-                    config.Sprache = einstellung.Wert;
+                    _config.Sprache = einstellung.Wert;
                     break;
                 case "Standardrechner":
-                    config.Standardrechner = einstellung.Wert;
+                    _config.Standardrechner = einstellung.Wert;
                     break;
                 case "ZeigeZeitstempel":
                     if (bool.TryParse(einstellung.Wert, out bool zeigeZeitstempel))
-                        config.ZeigeZeitstempel = zeigeZeitstempel;
+                        _config.ZeigeZeitstempel = zeigeZeitstempel;
                     break;
 
             }
         }
 
-        help.Write("Benutzereinstellungen geladen.");
+        _help.Write("Benutzereinstellungen geladen.");
     }
+
+    public TaschenrechnerKonfiguration getConfig() {  return _config; }
+    
+    public void setConfig(TaschenrechnerKonfiguration config) { _config = config; }
 }

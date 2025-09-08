@@ -5,22 +5,30 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankReinigung
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static BenutzerManagement benutzerManagement = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerManagement _benutzerManagement;
+
+    public DatenbankReinigung(
+        Hilfsfunktionen help, 
+        BenutzerManagement benutzerManagement)
+    {
+        _help = help;
+        _benutzerManagement = benutzerManagement;
+    }
 
     public void DatenbankBereinigen()
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
+        Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            help.Write("Kein Benutzer angemeldet!");
+            _help.Write("Kein Benutzer angemeldet!");
             return;
         }
 
-        help.Write("=== DATENBANK BEREINIGEN ===");
-        help.Write("Warnung: Diese Aktion löscht alte Berechnungen unwiderruflich!");
+        _help.Write("\n=== DATENBANK BEREINIGEN ===");
+        _help.Write("Warnung: Diese Aktion löscht alte Berechnungen unwiderruflich!");
 
-        int tage = (int)help.ZahlEinlesen("Berechnungen älter als wie viele Tage löschen? ");
+        int tage = (int)_help.ZahlEinlesen("Berechnungen älter als wie viele Tage löschen? ");
 
         var grenzDatum = DateTime.Now.AddDays(-tage);
 
@@ -31,8 +39,8 @@ public class DatenbankReinigung
                        b.Zeitstempel < grenzDatum)
             .ToList();
 
-        help.Write($"{zuLoeschendeEintraege.Count} Berechnungen würden gelöscht werden.");
-        help.Write("Fortfahren? (ja/nein): ");
+        _help.Write($"{zuLoeschendeEintraege.Count} Berechnungen würden gelöscht werden.");
+        _help.Write("Fortfahren? (ja/nein): ");
 
         if (Console.ReadLine()?.ToLower() == "ja")
         {
@@ -40,16 +48,16 @@ public class DatenbankReinigung
             {
                 context.Berechnungen.RemoveRange(zuLoeschendeEintraege);
                 context.SaveChanges();
-                help.Write($"{zuLoeschendeEintraege.Count} Berechnungen gelöscht.");
+                _help.Write($"{zuLoeschendeEintraege.Count} Berechnungen gelöscht.");
             }
             catch (Exception ex)
             {
-                help.Write($"Fehler beim Löschen: {ex.Message}");
+                _help.Write($"Fehler beim Löschen: {ex.Message}");
             }
         }
         else
         {
-            help.Write("Bereinigung abgebrochen.");
+            _help.Write("Bereinigung abgebrochen.");
         }
     }
 }

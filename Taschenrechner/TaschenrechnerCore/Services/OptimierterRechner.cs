@@ -7,34 +7,63 @@ namespace TaschenrechnerCore.Services;
 
 public class OptimierterRechner
 {
-    static RechnerManager rechnerManager = new RechnerManager();
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static KonfigVerwaltung konfigV = new KonfigVerwaltung();
-    static HistorieVerwaltung historieV = new HistorieVerwaltung();
-    static HistorieZeigen historieZ = new HistorieZeigen();
-    static KonfigBearbeiten konfigB = new KonfigBearbeiten();
-    static DatenbankHistorie datenbankH = new DatenbankHistorie();
-    static StatistikMenu statistikM = new StatistikMenu();
-    static MatrixRechner matrixR = new MatrixRechner();
-    static BenutzerMenu benutzerM = new BenutzerMenu();
-    static Backup backup = new Backup();
-    static WissenschaftlicherRechner wissenschaftsRechner = new WissenschaftlicherRechner();
-    static BenutzerManagement benutzerManagement = new();
-    static BenutzerEinstellungen benutzerEinstellungen = new();
+    private readonly RechnerManager _rechnerManager;
+    private readonly Hilfsfunktionen _help;
+    private readonly KonfigVerwaltung _konfigVerwaltung;
+    private readonly HistorieVerwaltung _historieVerwaltung;
+    private readonly KonfigBearbeiten _konfigBearbeiten;
+    private readonly DatenbankHistorie _datenbankHistorie;
+    private readonly StatistikMenu _statistikMenu;
+    private readonly MatrixRechner _matrixRechner;
+    private readonly BenutzerMenu _benutzerMemi;
+    private readonly Backup _backup;
+    private readonly WissenschaftlicherRechner _wissenschaftsRechner;
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public OptimierterRechner(
+        RechnerManager rechnerManager, 
+        Hilfsfunktionen help, 
+        KonfigVerwaltung konfigVerwaltung, 
+        HistorieVerwaltung historieVerwaltung,
+        KonfigBearbeiten konfigBearbeiten, 
+        DatenbankHistorie datenbankHistorie, 
+        StatistikMenu statistikMenu, 
+        MatrixRechner matrixRechner, 
+        BenutzerMenu benutzerMenu, 
+        Backup backup, 
+        WissenschaftlicherRechner wissenschaftsRechner, 
+        BenutzerManagement benutzerManagement, 
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _rechnerManager = rechnerManager;
+        _help = help;
+        _konfigVerwaltung = konfigVerwaltung;
+        _historieVerwaltung = historieVerwaltung;
+        _konfigBearbeiten = konfigBearbeiten;
+        _datenbankHistorie = datenbankHistorie;
+        _statistikMenu = statistikMenu;
+        _matrixRechner = matrixRechner;
+        _benutzerMemi = benutzerMenu;
+        _backup = backup;
+        _wissenschaftsRechner = wissenschaftsRechner;
+        _benutzerManagement = benutzerManagement;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
 
     public void Start()
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
-        help.Write("=== TASCHENRECHNER v2.0 (OOP) ===");
+        Benutzer akt = _benutzerManagement.getBenutzer();
+        _help.Write("\n=== TASCHENRECHNER v2.0 (OOP) ===");
 
         // Bestehende Funktionen
-        historieV.HistorieLaden();
-        konfigV.KonfigurationLaden();
+        _historieVerwaltung.HistorieLaden();
+        _konfigVerwaltung.KonfigurationLaden();
 
         // Neues Feature: Rechner-Auswahl beim Start
         if (akt == null)
         {
-            benutzerManagement.BenutzerAnmelden();
+            _benutzerManagement.BenutzerAnmelden();
         }
         using var context = new TaschenrechnerContext();
 
@@ -45,28 +74,28 @@ public class OptimierterRechner
         switch (userSetting?.Wert.ToLower())
         {
             case "basis":
-                rechnerManager.WechsleZuRechner(RechnerTyp.Basis);
-                help.Write("Basisrechner ausgewählt");
+                _rechnerManager.WechsleZuRechner(RechnerTyp.Basis);
+                _help.Write("Basisrechner ausgewählt");
                 break;
             case "wissenschaftlich":
-                rechnerManager.WechsleZuRechner(RechnerTyp.Wissenschaftlich);
-                help.Write("Wissenschaftlicher rechner ausgewählt");
+                _rechnerManager.WechsleZuRechner(RechnerTyp.Wissenschaftlich);
+                _help.Write("Wissenschaftlicher rechner ausgewählt");
                 break;
             case "finanz":
-                rechnerManager.WechsleZuRechner(RechnerTyp.Finanz);
-                help.Write("Finanzrechner ausgewählt");
+                _rechnerManager.WechsleZuRechner(RechnerTyp.Finanz);
+                _help.Write("Finanzrechner ausgewählt");
                 break;
             case "matrix":
-                rechnerManager.WechsleZuRechner(RechnerTyp.Matrix);
-                help.Write("Matrixrechner ausgewählt");
+                _rechnerManager.WechsleZuRechner(RechnerTyp.Matrix);
+                _help.Write("Matrixrechner ausgewählt");
                 break;
             case "statistik":
-                rechnerManager.WechsleZuRechner(RechnerTyp.Statistik);
-                help.Write("StatistikRechner ausgewählt");
+                _rechnerManager.WechsleZuRechner(RechnerTyp.Statistik);
+                _help.Write("StatistikRechner ausgewählt");
                 break;
             default:
-                help.Write("Ungültiger Standardrechner in der Konfiguration! Wechsle zu Basis-Rechner.");
-                rechnerManager.WechsleZuRechner(RechnerTyp.Basis);
+                _help.Write("Ungültiger Standardrechner in der Konfiguration! Wechsle zu Basis-Rechner.");
+                _rechnerManager.WechsleZuRechner(RechnerTyp.Basis);
                 break;
         }
 
@@ -74,16 +103,16 @@ public class OptimierterRechner
 
         while (programmLaeuft)
         {
-            string aktueller = rechnerManager.AktuellerRechner.RechnerTyp;
+            string aktueller = _rechnerManager.AktuellerRechner.RechnerTyp;
             if (aktueller.ToLower() == "matrix-rechner")
             {
-                matrixR.ZeigeMatrixMenue();
+                _matrixRechner.ZeigeMatrixMenue();
             }
             else
             {
                 ZeigeErweitertesMenue();
             }
-            int wahl = (int)help.ZahlEinlesen("Deine Wahl: ");
+            int wahl = (int)_help.ZahlEinlesen("Deine Wahl: ");
             try
             {
                 switch (wahl)
@@ -91,7 +120,7 @@ public class OptimierterRechner
                     case 1: // Berechnung durchführen
                         if (aktueller.ToLower() == "matrix-rechner")
                         {
-                            matrixR.ZeigeBerechnungen();
+                            _matrixRechner.ZeigeBerechnungen();
                         }
                         else
                         {
@@ -102,102 +131,100 @@ public class OptimierterRechner
                         RechnerWechseln();
                         break;
                     case 3: // Historie anzeigen
-                        if (rechnerManager.AktuellerRechner != null)
-                            rechnerManager.AktuellerRechner.HistorieAnzeigen();
+                        if (_rechnerManager.AktuellerRechner != null)
+                            _rechnerManager.AktuellerRechner.HistorieAnzeigen();
                         else
-                            help.Write("Kein Rechner aktiv!");
+                            _help.Write("Kein Rechner aktiv!");
                         break;
                     case 4: // Aktive Rechner anzeigen
-                        rechnerManager.ZeigeAktiveRechner();
+                        _rechnerManager.ZeigeAktiveRechner();
                         break;
                     case 5: // Datenbank-Historie
-                        datenbankH.DatenbankHistorieAnzeigen();
+                        _datenbankHistorie.DatenbankHistorieAnzeigen();
                         break;
                     case 6: // Statistiken
-                        statistikM.Show();
+                        _statistikMenu.Show();
                         break;
                     case 7: // Einstellungen
-                        konfigB.KonfigurationAendern();
+                        _konfigBearbeiten.KonfigurationAendern();
                         break;
                     case 8: // Benutzer-Management
-                        benutzerM.Show();
+                        _benutzerMemi.Show();
                         break;
                     case 0:
                         programmLaeuft = false;
                         break;
                     default:
-                        help.Write("Ungültige Wahl!");
+                        _help.Write("Ungültige Wahl!");
                         break;
                 }
             }
             catch (Exception ex)
             {
-                help.Write($"Fehler: {ex.Message}");
+                _help.Write($"Fehler: {ex.Message}");
             }
 
             if (programmLaeuft)
             {
-                help.Write("\nDrücke Enter für Hauptmenü...");
-                Console.ReadLine();
+                _help.Einlesen("\nDrücke Enter für Hauptmenü...");
             }
         }
 
         // Cleanup
-        if (benutzerEinstellungen.config.AutoSpeichern)
+        if (_benutzerEinstellungen.getConfig().AutoSpeichern)
         {
-            konfigV.KonfigurationSpeichern();
-            backup.BackupErstellen();
+            _konfigVerwaltung.KonfigurationSpeichern();
+            _backup.BackupErstellen();
         }
 
-        rechnerManager.SchliesseAlleRechner();
-        help.Write("Auf Wiedersehen!");
+        _rechnerManager.SchliesseAlleRechner();
+        _help.Write("Auf Wiedersehen!");
     }
 
-    static void ZeigeErweitertesMenue()
+    public void ZeigeErweitertesMenue()
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
-        help.Mischen();
-        Console.Clear();
-        string aktueller = rechnerManager.AktuellerRechner?.RechnerTyp ?? "Kein Rechner aktiv";
-        help.Write($"=== TASCHENRECHNER v2.0 ===");
-        help.Write($"Aktueller Rechner: {aktueller}");
-        help.Write($"Benutzer: {akt?.Name ?? "Nicht angemeldet"}");
-        Console.WriteLine();
-        help.Write("1. Berechnung durchführen");
-        help.Write("2. Rechner wechseln");
-        help.Write("3. Historie anzeigen");
-        help.Write("4. Aktive Rechner anzeigen");
-        help.Write("5. Datenbank-Historie");
-        help.Write("6. Statistiken");
-        help.Write("7. Einstellungen");
-        help.Write("8. Benutzer-Management");
-        help.Write("0. Beenden");
-        Console.WriteLine();
+        Benutzer akt = _benutzerManagement.getBenutzer();
+        _help.Mischen();
+        _help.Clear();
+        string aktueller = _rechnerManager.AktuellerRechner?.RechnerTyp ?? "Kein Rechner aktiv";
+        _help.Write($"\n=== TASCHENRECHNER v2.0 ===");
+        _help.Write($"Aktueller Rechner: {aktueller}");
+        _help.Write($"Benutzer: {akt?.Name ?? "Nicht angemeldet"}");
+        _help.Write("");
+        _help.Write("1. Berechnung durchführen");
+        _help.Write("2. Rechner wechseln");
+        _help.Write("3. Historie anzeigen");
+        _help.Write("4. Aktive Rechner anzeigen");
+        _help.Write("5. Datenbank-Historie");
+        _help.Write("6. Statistiken");
+        _help.Write("7. Einstellungen");
+        _help.Write("8. Benutzer-Management");
+        _help.Write("0. Beenden");
+        _help.Write("");
     }
 
-    static void BerechnungDurchfuehren()
+    public void BerechnungDurchfuehren()
     {
-        string aktueller = rechnerManager.AktuellerRechner.RechnerTyp;
+        string aktueller = _rechnerManager.AktuellerRechner.RechnerTyp;
 
-        if (rechnerManager.AktuellerRechner == null)
+        if (_rechnerManager.AktuellerRechner == null)
         {
-            help.Write("Kein Rechner aktiv! Wechsle zuerst zu einem Rechner.");
+            _help.Write("Kein Rechner aktiv! Wechsle zuerst zu einem Rechner.");
             return;
         }
 
-        help.Write($"=== {rechnerManager.AktuellerRechner.RechnerTyp} ===");
+        _help.Write($"=== {_rechnerManager.AktuellerRechner.RechnerTyp} ===");
 
         // Operationen je nach Rechner-Typ anzeigen
-        ZeigeVerfuegbareOperationen(rechnerManager.AktuellerRechner);
+        ZeigeVerfuegbareOperationen(_rechnerManager.AktuellerRechner);
 
-        help.Write("Operation: ");
-        string operation = Console.ReadLine();
+        string operation = _help.Einlesen("Operation: ");
 
         if (string.IsNullOrEmpty(operation))
             return;
 
         List<double> werte = new List<double>();
-        help.Write("Gib Werte ein (beende mit 'fertig'):");
+        _help.Write("Gib Werte ein (beende mit 'fertig'):");
 
         bool zahlenSamm = true;
         int wertAnzahl = 0;
@@ -210,8 +237,7 @@ public class OptimierterRechner
                 break;
             }
 
-            help.Write($"Wert {werte.Count + 1}: ");
-            string eingabe = Console.ReadLine();
+            string eingabe = _help.Einlesen($"Wert {werte.Count + 1}: ");
 
             if (eingabe?.ToLower() == "fertig")
             {
@@ -228,38 +254,38 @@ public class OptimierterRechner
             {
                 double ergebnis;
                 // Konstante direkt ersetzen
-                ergebnis = wissenschaftsRechner.BerechneMitKonstante(eingabe);
+                ergebnis = _wissenschaftsRechner.BerechneMitKonstante(eingabe);
                 werte.Add(ergebnis);
             }
             else
             {
-                help.Write("Ungültige Eingabe!");
+                _help.Write("Ungültige Eingabe!");
             }
         }
 
         if (werte.Count == 0)
         {
-            help.Write("Keine Werte eingegeben!");
+            _help.Write("Keine Werte eingegeben!");
             return;
         }
 
         try
         {
-            double ergebnis = rechnerManager.AktuellerRechner.Berechnen(operation, werte.ToArray());
-            help.Write($"Ergebnis: {FormatUtils.FormatiereZahl(ergebnis, benutzerEinstellungen.config.Nachkommastellen)}");
+            double ergebnis = _rechnerManager.AktuellerRechner.Berechnen(operation, werte.ToArray());
+            _help.Write($"Ergebnis: {FormatUtils.FormatiereZahl(ergebnis, _benutzerEinstellungen.getConfig().Nachkommastellen)}");
         }
         catch (Exception ex)
         {
-            help.Write($"Berechnungsfehler: {ex.Message}");
+            _help.Write($"Berechnungsfehler: {ex.Message}");
         }
     }
 
-    static void RechnerWechseln()
+    public void RechnerWechseln()
     {
-        help.Write("=== RECHNER WECHSELN ===");
+        _help.Write("=== RECHNER WECHSELN ===");
         RechnerFactory.ZeigeVerfuegbareRechner();
 
-        int wahl = (int)help.ZahlEinlesen("Rechner wählen (Nummer): ");
+        int wahl = (int)_help.ZahlEinlesen("Rechner wählen (Nummer): ");
 
         var verfuegbareTypen = RechnerFactory.GetVerfuegbareRechnerTypen();
 
@@ -267,31 +293,31 @@ public class OptimierterRechner
         {
             string typName = verfuegbareTypen[wahl - 1];
             RechnerTyp typ = (RechnerTyp)Enum.Parse(typeof(RechnerTyp), typName);
-            rechnerManager.WechsleZuRechner(typ);
+            _rechnerManager.WechsleZuRechner(typ);
         }
         else
         {
-            help.Write("Ungültige Wahl!");
+            _help.Write("Ungültige Wahl!");
         }
     }
 
-    static void ZeigeVerfuegbareOperationen(BaseRechner rechner)
+    public void ZeigeVerfuegbareOperationen(BaseRechner rechner)
     {
-        help.Write("Verfügbare Operationen:");
+        _help.Write("Verfügbare Operationen:");
 
         switch (rechner.RechnerTyp)
         {
             case "Basis-Rechner":
-                help.Write("  +, -, *, /");
+                _help.Write("  +, -, *, /");
                 break;
             case "Wissenschaftlich":
-                help.Write("  +, -, *, /, sin, cos, sqrt, pow, log, ln");
+                _help.Write("  +, -, *, /, sin, cos, sqrt, pow, log, ln");
                 break;
             case "Finanz-Rechner":
-                help.Write("  zinsen, zinseszinsen, annuitaet, barwert, Kreditplan erstellen");
+                _help.Write("  zinsen, zinseszinsen, annuitaet, barwert, Kreditplan erstellen");
                 break;
             case "Statistik-Rechner":
-                help.Write("  mittelwert, median, standardabweichung, min, max, spannweite");
+                _help.Write("  mittelwert, median, standardabweichung, min, max, spannweite");
                 break;
         }
     }

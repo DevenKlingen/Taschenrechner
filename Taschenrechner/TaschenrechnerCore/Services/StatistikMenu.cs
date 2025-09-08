@@ -5,9 +5,19 @@ namespace TaschenrechnerCore.Services;
 
 public class StatistikMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static Statistiken stats = new Statistiken();
-    static StatistikMonatsReport statsM = new StatistikMonatsReport();
+    private readonly Hilfsfunktionen help;
+    private readonly Statistiken stats;
+    private readonly StatistikMonatsReport statsM;
+
+    public StatistikMenu(
+        Hilfsfunktionen help, 
+        Statistiken stats, 
+        StatistikMonatsReport statsM)
+    {
+        this.help = help;
+        this.stats = stats;
+        this.statsM = statsM;
+    }
 
     public void Show()
     {
@@ -16,7 +26,7 @@ public class StatistikMenu : IMenu
         while (statistikMenuAktiv)
         {
             help.Mischen();
-            help.Write("\n=== DATENBANK-MENÜ ===");
+            help.Write("\n=== STATISTIK-MENÜ ===");
             help.Write("1. Benutzer Statistik anzeigen");
             help.Write("2. Monatsreport");
             help.Write("3. Wachstumstrend für einen Tag");
@@ -45,14 +55,13 @@ public class StatistikMenu : IMenu
             }
             if (statistikMenuAktiv)
             {
-                help.Write("\nDrücke Enter für Menü...");
-                Console.ReadLine();
+                help.Einlesen("\nDrücke Enter für Menü...");
             }
         }
     }
 
     public string GetMenuTitle(int optionNumber)
     {
-        return $"{optionNumber}. Statistik Menu";
+        return $"{optionNumber}. Statistik-Menu";
     }
 }

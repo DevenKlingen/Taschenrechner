@@ -5,56 +5,72 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static DatenbankHistorie datenbankH = new DatenbankHistorie();
-    static DatenbankBerechnungen datenbankB = new DatenbankBerechnungen();
-    static DatenbankExport datenbankE = new DatenbankExport();
-    static DatenbankReinigung datenbankR = new DatenbankReinigung();
-    static Backup backup = new Backup();
+    private readonly Hilfsfunktionen _help;
+    private readonly DatenbankHistorie _datenbankHistorie;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly DatenbankExport _datenbankExport;
+    private readonly DatenbankReinigung _datenbankReinigung;
+    private readonly Backup _backup;
+
+    public DatenbankMenu(
+        Hilfsfunktionen help, 
+        DatenbankHistorie datenbankHistorie, 
+        DatenbankBerechnungen datenbankBerechnungen, 
+        DatenbankExport datenbankExport, 
+        DatenbankReinigung datenbankReinigung, 
+        Backup backup)
+    {
+        _help = help;
+        _datenbankHistorie = datenbankHistorie;
+        _datenbankBerechnungen = datenbankBerechnungen;
+        _datenbankExport = datenbankExport;
+        _datenbankReinigung = datenbankReinigung;
+        _backup = backup;
+    }
 
     public void Show()
     {
         bool datenbankMenuAktiv = true;
         while (datenbankMenuAktiv)
         {
-            help.Mischen();
-            help.Write("\n=== DATENBANK-MENÜ ===");
-            help.Write("1. Datenbank-Historie anzeigen");
-            help.Write("2. Berechnungen suchen");
-            help.Write("3. Datenbank exportieren");
-            help.Write("4. Datenbank bereinigen");
-            help.Write("5. Datenbank Backup");
-            help.Write("6. Zurück zum Hauptmenü");
-            help.Write("Deine Wahl (1-6): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Mischen();
+            _help.Write("\n=== DATENBANK-MENÜ ===");
+            _help.Write("1. Datenbank-Historie anzeigen");
+            _help.Write("2. Berechnungen suchen");
+            _help.Write("3. Datenbank exportieren");
+            _help.Write("4. Datenbank bereinigen");
+            _help.Write("5. Datenbank Backup");
+            _help.Write("6. Zurück zum Hauptmenü");
+            _help.Write("Deine Wahl (1-6): ");
+            int wahl = _help.MenuWahlEinlesen();
             switch (wahl)
             {
                 case 1:
-                    datenbankH.DatenbankHistorieAnzeigen();
+                    _datenbankHistorie.DatenbankHistorieAnzeigen();
                     break;
                 case 2:
-                    datenbankB.BerechnungenSuchen();
+                    _datenbankBerechnungen.BerechnungenSuchen();
                     break;
                 case 3:
-                    datenbankE.DatenbankExportieren();
+                    _datenbankExport.DatenbankExportieren();
                     break;
                 case 4:
-                    datenbankR.DatenbankBereinigen();
+                    _datenbankReinigung.DatenbankBereinigen();
                     break;
                 case 5:
-                    backup.DatenbankBackup();
+                    _backup.DatenbankBackup();
                     break;
                 case 6:
                     datenbankMenuAktiv = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    _help.Write("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    help.Write("Ungültige Wahl!");
+                    _help.Write("Ungültige Wahl!");
                     break;
             }
             if (datenbankMenuAktiv)
             {
-                help.Write("\nDrücke Enter für Menü...");
+                _help.Write("\nDrücke Enter für Menü...");
                 Console.ReadLine();
             }
         }
@@ -62,6 +78,6 @@ public class DatenbankMenu : IMenu
 
     public string GetMenuTitle(int optionTitle)
     {
-        return $"{optionTitle}. Datenbank Menu";
+        return $"{optionTitle}. Datenbank-Menu";
     }
 }

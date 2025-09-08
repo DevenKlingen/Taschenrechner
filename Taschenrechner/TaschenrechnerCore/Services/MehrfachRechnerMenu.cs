@@ -5,52 +5,65 @@ namespace TaschenrechnerCore.Services;
 
 public class MehrfachRechnerMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static Addition a = new Addition();
-    static Subtraktion s = new Subtraktion();
-    static Multiplikation m = new Multiplikation();
-    static Division d = new Division();
+    private readonly Hilfsfunktionen _help;
+    private readonly Addition _addition;
+    private readonly Subtraktion _subtraktion;
+    private readonly Multiplikation _multiplikation;
+    private readonly Division _division;
     
+    public MehrfachRechnerMenu(
+        Hilfsfunktionen help, 
+        Addition addition, 
+        Subtraktion subtraktion, 
+        Multiplikation multiplikation, 
+        Division division)
+    {
+        _help = help;
+        _addition = addition;
+        _subtraktion = subtraktion;
+        _multiplikation = multiplikation;
+        _division = division;
+    }
+
     public void Show()
     {
         bool mehrfachBerechnungenAktiv = true;
         while (mehrfachBerechnungenAktiv)
         {
-            help.Mischen();
-            help.Write("\n=== MEHRFACH-BERECHNUNGEN ===");
-            help.Write("1. Addition");
-            help.Write("2. Subtraktion");
-            help.Write("3. Multiplikation");
-            help.Write("4. Division");
-            help.Write("5. Zurück zum Rechenmenü");
-            help.Write("Deine Wahl (1-5): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Mischen();
+            _help.Write("\n=== MEHRFACH-BERECHNUNGEN ===");
+            _help.Write("1. Addition");
+            _help.Write("2. Subtraktion");
+            _help.Write("3. Multiplikation");
+            _help.Write("4. Division");
+            _help.Write("5. Zurück zum Rechenmenü");
+            _help.Write("Deine Wahl (1-5): ");
+            int wahl = _help.MenuWahlEinlesen();
             switch (wahl)
             {
                 case 1:
-                    a.MehrfachAddition();
+                    _addition.MehrfachAddition();
                     break;
                 case 2:
-                    s.MehrfachSubtrahieren();
+                    _subtraktion.MehrfachSubtrahieren();
                     break;
                 case 3:
-                    m.MehrfachMultiplizieren();
+                    _multiplikation.MehrfachMultiplizieren();
                     break;
                 case 4:
-                    d.MehrfachDividieren();
+                    _division.MehrfachDividieren();
                     break;
                 case 5:
                     mehrfachBerechnungenAktiv = false;
-                    help.Write("Zurückzum Hauptmenü.");
+                    _help.Write("Zurückzum Hauptmenü.");
                     break;
                 default:
-                    help.Write("UngültigeWahl!");
+                    _help.Write("UngültigeWahl!");
                     break;
             }
             if (mehrfachBerechnungenAktiv)
             {
-                help.Write("\nDrücke Enter fürMenü...");
-                Console.ReadLine();
+                _help.Einlesen("\nDrücke Enter fürMenü...");
             }
         }
     }

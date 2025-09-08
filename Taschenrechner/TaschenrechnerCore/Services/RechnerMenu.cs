@@ -6,115 +6,145 @@ namespace TaschenrechnerCore.Services;
 
 public class RechnerMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static Addition a = new Addition();
-    static Subtraktion s = new Subtraktion();
-    static Multiplikation m = new Multiplikation();
-    static Division d = new Division();
-    static WaehrungsRechner wR = new WaehrungsRechner();
-    static Potenzierer p = new Potenzierer();
-    static ProzentMenu pR = new ProzentMenu();
-    static DecimalRechner decimalR = new DecimalRechner();
-    static StatistikMenu statistikM = new StatistikMenu();
-    static MatrixMenu matrixR = new MatrixMenu();
-    static ListRechnerMenu listR = new ListRechnerMenu();
-    static MehrfachRechnerMenu mehrfachRechnerMenu = new MehrfachRechnerMenu();
-    static Fibonacci f = new Fibonacci();
-    static PrimzahlenRechner primzahlenR = new PrimzahlenRechner();
-    static Konstanten konst = new Konstanten();
+    private readonly Hilfsfunktionen _help;
+    private readonly Addition _addition;
+    private readonly Subtraktion _subtraktion;
+    private readonly Multiplikation _multiplikation;
+    private readonly Division _division;
+    private readonly WaehrungsRechner _waehrungsRechner;
+    private readonly Potenzierer _potenzierer;
+    private readonly ProzentMenu _ProzentMenu;
+    private readonly DecimalRechner _decimalRechner;
+    private readonly MatrixMenu _matrixMenu;
+    private readonly ListRechnerMenu _listRechnerMenu;
+    private readonly MehrfachRechnerMenu _mehrfachRechnerMenu;
+    private readonly Fibonacci _fibonacci;
+    private readonly PrimzahlenRechner _primzahlenRechner;
+    private readonly Konstanten _konstanten;
+
+    public RechnerMenu(
+        Hilfsfunktionen help, 
+        Addition addition, 
+        Subtraktion subtraktion, 
+        Multiplikation multiplikation, 
+        Division division, 
+        WaehrungsRechner waehrungsRechner, 
+        Potenzierer potenzierer, 
+        ProzentMenu prozentMenu, 
+        DecimalRechner decimalRechner, 
+        StatistikRechner statistikRechner, 
+        MatrixMenu matrixMenu, 
+        ListRechnerMenu listRechnerMenu, 
+        MehrfachRechnerMenu mehrfachRechnerMenu, 
+        Fibonacci fibonacci, 
+        PrimzahlenRechner primzahlenRechner, 
+        Konstanten konstanten)
+    {
+        _help = help;
+        _addition = addition;
+        _subtraktion = subtraktion;
+        _multiplikation = multiplikation;
+        _division = division;
+        _waehrungsRechner = waehrungsRechner;
+        _potenzierer = potenzierer;
+        _ProzentMenu = prozentMenu;
+        _decimalRechner = decimalRechner;
+        _matrixMenu = matrixMenu;
+        _listRechnerMenu = listRechnerMenu;
+        _mehrfachRechnerMenu = mehrfachRechnerMenu;
+        _fibonacci = fibonacci;
+        _primzahlenRechner = primzahlenRechner;
+        _konstanten = konstanten;
+    }
+
     public void Show()
     {
         bool programmLaeuft = true;
 
         while (programmLaeuft)
         {
-            help.Mischen();
+            _help.Mischen();
 
-            help.Write("\n=== RECHENMENÜ ===");
-            help.Write("Wähle eine Operation:");
-            help.Write("1. Addition");
-            help.Write("2. Subtraktion");
-            help.Write("3. Multiplikation");
-            help.Write("4. Division");
-            help.Write("5. Währungsrechner");
-            help.Write("6. Potenz");
-            help.Write("7. Prozentrechner");
-            help.Write("8. Zahl in Binär umwandeln");
-            help.Write("9. Zahl in Hexadezimal umwandeln");
-            help.Write("10. Statistik-Rechner");
-            help.Write("11. Matrix-Rechner");
-            help.Write("12. Listen-Rechner");
-            help.Write("13. Mehrfach-Berechnungen");
-            help.Write("14. Fibonacci-Zahlen");
-            help.Write("15. Primzahlen-Rechner");
-            help.Write("16. Suche im Dictionary");
-            help.Write("17. Zurück zum Hauptmenü");
-            help.Write("Deine Wahl (1-17): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Write("\n=== RECHENMENÜ ===");
+            _help.Write("Wähle eine Operation:");
+            _help.Write("1. Addition");
+            _help.Write("2. Subtraktion");
+            _help.Write("3. Multiplikation");
+            _help.Write("4. Division");
+            _help.Write("5. Währungsrechner");
+            _help.Write("6. Potenz");
+            _help.Write("7. Prozentrechner");
+            _help.Write("8. Zahl in Binär umwandeln");
+            _help.Write("9. Zahl in Hexadezimal umwandeln");
+            _help.Write("10. Matrix-Rechner");
+            _help.Write("11. Listen-Rechner");
+            _help.Write("12. Mehrfach-Berechnungen");
+            _help.Write("13. Fibonacci-Zahlen");
+            _help.Write("14. Primzahlen-Rechner");
+            _help.Write("15. Suche im Dictionary");
+            _help.Write("16. Zurück zum Hauptmenü");
+            _help.Write("Deine Wahl (1-16): ");
+            int wahl = _help.MenuWahlEinlesen();
 
             switch (wahl)
             {
                 case 1:
-                    a.Addieren();
+                    _addition.Addieren();
                     break;
                 case 2:
-                    s.Subtrahieren();
+                    _subtraktion.Subtrahieren();
                     break;
                 case 3:
-                    m.Multiplizieren();
+                    _multiplikation.Multiplizieren();
                     break;
                 case 4:
-                    d.Dividieren();
+                    _division.Dividieren();
                     break;
                 case 5:
-                    wR.WaehrungsRechnung();
+                    _waehrungsRechner.WaehrungsRechnung();
                     break;
                 case 6:
-                    p.Potenz();
+                    _potenzierer.Potenz();
                     break;
                 case 7:
-                    pR.Show();
+                    _ProzentMenu.Show();
                     break;
                 case 8:
-                    decimalR.ToBinary();
+                    _decimalRechner.ToBinary();
                     break;
                 case 9:
-                    decimalR.ToHexadecimal();
+                    _decimalRechner.ToHexadecimal();
                     break;
                 case 10:
-                    statistikM.Show();
+                    _matrixMenu.Show();
                     break;
                 case 11:
-                    matrixR.Show();
+                    _listRechnerMenu.Show();
                     break;
                 case 12:
-                    listR.Show();
+                    _mehrfachRechnerMenu.Show();
                     break;
                 case 13:
-                    mehrfachRechnerMenu.Show();
+                    _fibonacci.FibonacciErstellen();
                     break;
                 case 14:
-                    f.FibonacciErstellen();
+                    _primzahlenRechner.PrimzahlenErmitteln();
                     break;
                 case 15:
-                    primzahlenR.PrimzahlenErmitteln();
+                    _konstanten.Suche();
                     break;
                 case 16:
-                    konst.Suche();
-                    break;
-                case 17:
                     programmLaeuft = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    _help.Write("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    help.Write("Ungültige Wahl!");
+                    _help.Write("Ungültige Wahl!");
                     break;
             }
 
             if (programmLaeuft)
             {
-                help.Write("\nDrücke Enter für Menü...");
-                Console.ReadLine();
+                _help.Einlesen("\nDrücke Enter für Menü...");
             }
         }
     }

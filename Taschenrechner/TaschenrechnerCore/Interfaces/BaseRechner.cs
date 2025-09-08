@@ -5,8 +5,9 @@ namespace TaschenrechnerCore.Interfaces;
 
 public abstract class BaseRechner
 {
-    static BenutzerManagement benutzerManagement = new();
-    static DatenbankBerechnungen datenbankmenu = new();
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly DatenbankBerechnungen _datenbankmenu;
+
     // Protected Felder - nur für abgeleitete Klassen sichtbar
     protected List<BerechnungErgebnis> historie;
     protected string rechnerTyp;
@@ -26,8 +27,10 @@ public abstract class BaseRechner
     }
 
     // Konstruktor
-    protected BaseRechner(string typ, int maxHistorie = 100)
+    protected BaseRechner(BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen, string typ, int maxHistorie = 100)
     {
+        _benutzerManagement = benutzerManagement;
+        _datenbankmenu = datenbankBerechnungen;
         rechnerTyp = typ;
         maxHistorieGroesse = maxHistorie;
         historie = new List<BerechnungErgebnis>();
@@ -39,7 +42,7 @@ public abstract class BaseRechner
     // Virtuelle Methode - kann in abgeleiteten Klassen überschrieben werden
     public virtual void BerechnungSpeichern(string operation, double[] eingaben, double ergebnis)
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
+        Benutzer akt = _benutzerManagement.getBenutzer();
         var berechnungErgebnis = new BerechnungErgebnis
         {
             Zeitstempel = DateTime.Now,
@@ -57,7 +60,7 @@ public abstract class BaseRechner
         // In Datenbank speichern (falls Benutzer angemeldet)
         if (akt != null)
         {
-            datenbankmenu.BerechnungInDatenbankSpeichern(operation, eingaben, ergebnis, "", rechnerTyp);
+            _datenbankmenu.BerechnungInDatenbankSpeichern(operation, eingaben, ergebnis, "", rechnerTyp);
         }
     }
 

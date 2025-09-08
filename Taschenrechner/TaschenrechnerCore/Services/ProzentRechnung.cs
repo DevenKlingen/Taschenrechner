@@ -4,25 +4,40 @@ namespace TaschenrechnerCore.Services;
 
 public class ProzentRechnung
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static HistorienBearbeitung historienB = new HistorienBearbeitung();
-    static DatenbankBerechnungen datenbankB = new DatenbankBerechnungen();
+    private readonly Hilfsfunktionen _help;
+    private readonly HistorienBearbeitung _historienBearbeitung;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public ProzentRechnung(
+        Hilfsfunktionen help, 
+        HistorienBearbeitung historienB, 
+        DatenbankBerechnungen datenbankB,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _historienBearbeitung = historienB;
+        _datenbankBerechnungen = datenbankB;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
+
 
     /// <summary>
     /// Berechnet den Prozentwert anhand des gegebenen Grundwertes und Prozentsatzes
     /// </summary>
     public void Prozentwert()
     {
-        double grundwert = help.ZahlEinlesen("Gib den Grundwert ein: ");
-        double prozentsatz = help.ZahlEinlesen("Gib den Prozentsatz ein: ");
+        double grundwert = _help.ZahlEinlesen("Gib den Grundwert ein: ");
+        double prozentsatz = _help.ZahlEinlesen("Gib den Prozentsatz ein: ");
         double prozentwert = (prozentsatz / 100) * grundwert;
 
-        help.Write($"Der Prozentwert von {grundwert} bei {prozentsatz}% ist {prozentwert}");
+        _help.Write($"Der Prozentwert von {grundwert} bei {prozentsatz}% ist {prozentwert}");
 
         double[] eingaben = { prozentsatz, 100, grundwert };
-        historienB.BerechnungHinzufuegen("/, *", eingaben, prozentwert);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "/, *", eingaben, prozentwert);
 
-        datenbankB.BerechnungInDatenbankSpeichern("/, *", eingaben, prozentwert);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("/, *", eingaben, prozentwert);
     }
 
     /// <summary>
@@ -30,16 +45,16 @@ public class ProzentRechnung
     /// </summary>
     public void ProzentualerAnteil()
     {
-        double grundwert = help.ZahlEinlesen("Gib den Grundwert ein: ");
-        double prozentwert = help.ZahlEinlesen("Gib den Prozentwert ein: ");
+        double grundwert = _help.ZahlEinlesen("Gib den Grundwert ein: ");
+        double prozentwert = _help.ZahlEinlesen("Gib den Prozentwert ein: ");
         double prozentsatz = (prozentwert / grundwert) * 100;
 
-        help.Write($"Der Prozentsatz von {prozentwert} bei {grundwert} ist {prozentsatz}%");
+        _help.Write($"Der Prozentsatz von {prozentwert} bei {grundwert} ist {prozentsatz}%");
 
         double[] eingaben = { prozentwert, grundwert, 100 };
-        historienB.BerechnungHinzufuegen("/, *", eingaben, prozentsatz);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "/, *", eingaben, prozentsatz);
 
-        datenbankB.BerechnungInDatenbankSpeichern("/, *", eingaben, prozentsatz);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("/, *", eingaben, prozentsatz);
     }
 
     /// <summary>
@@ -47,15 +62,15 @@ public class ProzentRechnung
     /// </summary>
     public void Grundwert()
     {
-        double prozentwert = help.ZahlEinlesen("Gib den Prozentwert ein: ");
-        double prozentsatz = help.ZahlEinlesen("Gib den Prozentsatz ein: ");
+        double prozentwert = _help.ZahlEinlesen("Gib den Prozentwert ein: ");
+        double prozentsatz = _help.ZahlEinlesen("Gib den Prozentsatz ein: ");
         double grundwert = (prozentwert * 100) / prozentsatz;
 
-        help.Write($"Der Grundwert von {prozentwert} bei {prozentsatz}% ist {grundwert}");
+        _help.Write($"Der Grundwert von {prozentwert} bei {prozentsatz}% ist {grundwert}");
 
         double[] eingaben = { prozentwert, 100, prozentsatz };
-        historienB.BerechnungHinzufuegen("*, /", eingaben, grundwert);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "*, /", eingaben, grundwert);
 
-        datenbankB.BerechnungInDatenbankSpeichern("*, /", eingaben, grundwert);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("*, /", eingaben, grundwert);
     }
 }

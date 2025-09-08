@@ -4,32 +4,47 @@ namespace TaschenrechnerCore.Services;
 
 public class DecimalRechner
 {
-    static HistorienBearbeitung historieB = new HistorienBearbeitung();
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static DatenbankBerechnungen datenbankB = new DatenbankBerechnungen();
+    private readonly HistorienBearbeitung _historieBearbeitung;
+    private readonly Hilfsfunktionen _help;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public DecimalRechner(
+        HistorienBearbeitung historieBearbeitung, 
+        Hilfsfunktionen help, 
+        DatenbankBerechnungen datenbankBerechnungen,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _historieBearbeitung = historieBearbeitung;
+        _help = help;
+        _datenbankBerechnungen = datenbankBerechnungen;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
+
 
     /// <summary>
     /// Wandelt eine Dezimalzahl in die dazugehörige Binärzahl um
     /// </summary>
     public void ToBinary()
     {
-        help.Write("Gib eine Zahl ein: ");
+        _help.Write("Gib eine Zahl ein: ");
         while (true)
         {
-            if (int.TryParse(Console.ReadLine(), out int zahl))
+            if (int.TryParse(_help.Einlesen("Deine Zahl: "), out int zahl))
             {
                 string binär = Convert.ToString(zahl, 2);
-                help.Write($"Die Binärdarstellung von {zahl} ist {binär}");
+                _help.Write($"Die Binärdarstellung von {zahl} ist {binär}");
 
                 double.TryParse(binär, out double bin);
                 double[] eingaben = { zahl };
-                historieB.BerechnungHinzufuegen("binary", eingaben, bin);
-                datenbankB.BerechnungInDatenbankSpeichern("binary", eingaben, bin);
+                _historieBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "binary", eingaben, bin);
+                _datenbankBerechnungen.BerechnungInDatenbankSpeichern("binary", eingaben, bin);
                 break;
             }
             else
             {
-                help.Write("Ungültige Eingabe!");
+                _help.Write("Ungültige Eingabe!");
             }
         }
     }
@@ -39,23 +54,23 @@ public class DecimalRechner
     /// </summary>
     public void ToHexadecimal()
     {
-        help.Write("Gib eine Zahl ein: ");
+        _help.Write("Gib eine Zahl ein: ");
         while (true)
         {
-            if (int.TryParse(Console.ReadLine(), out int zahl))
-            {
+            if (int.TryParse(_help.Einlesen("Deine Zahl: "), out int zahl))
+            { 
                 string hexadezimal = Convert.ToString(zahl, 16).ToUpper();
-                help.Write($"Die Hexadezimaldarstellung von {zahl} ist {hexadezimal}");
+                _help.Write($"Die Hexadezimaldarstellung von {zahl} ist {hexadezimal}");
 
                 double.TryParse(hexadezimal, out double hex);
                 double[] eingaben = { zahl };
-                historieB.BerechnungHinzufuegen("hexadecimal", eingaben, hex);
-                datenbankB.BerechnungInDatenbankSpeichern("hexadecimal", eingaben, hex);
+                _historieBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen,"hexadecimal", eingaben, hex);
+                _datenbankBerechnungen.BerechnungInDatenbankSpeichern("hexadecimal", eingaben, hex);
                 break;
             }
             else
             {
-                help.Write("Ungültige Eingabe!");
+                _help.Write("Ungültige Eingabe!");
             }
         }
     }

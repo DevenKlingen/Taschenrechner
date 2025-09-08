@@ -4,7 +4,12 @@ namespace TaschenrechnerCore.Services;
 
 public class ListManipulation
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
+    private readonly Hilfsfunktionen _help;
+
+    public ListManipulation(Hilfsfunktionen help)
+    {  
+        _help = help; 
+    }
 
     /// <summary>
     /// Sortiert zwei Listen
@@ -19,8 +24,8 @@ public class ListManipulation
         sortiert1.Sort();
         sortiert2.Sort();
 
-        help.Write($"Liste 1 sortiert: [{string.Join(", ", sortiert1)}]");
-        help.Write($"Liste 2 sortiert: [{string.Join(", ", sortiert2)}]");
+        _help.Write($"Liste 1 sortiert: [{string.Join(", ", sortiert1)}]");
+        _help.Write($"Liste 2 sortiert: [{string.Join(", ", sortiert2)}]");
     }
 
     /// <summary>
@@ -33,8 +38,8 @@ public class ListManipulation
         HashSet<int> unique1 = new HashSet<int>(liste1);
         HashSet<int> unique2 = new HashSet<int>(liste2);
 
-        help.Write($"Liste 1 ohne Duplikate: [{string.Join(", ", unique1)}]");
-        help.Write($"Liste 2 ohne Duplikate: [{string.Join(", ", unique2)}]");
+        _help.Write($"Liste 1 ohne Duplikate: [{string.Join(", ", unique1)}]");
+        _help.Write($"Liste 2 ohne Duplikate: [{string.Join(", ", unique2)}]");
     }
 
     /// <summary>
@@ -50,7 +55,7 @@ public class ListManipulation
         HashSet<int> schnittmenge = new HashSet<int>(unique1);
         schnittmenge.IntersectWith(unique2);
 
-        help.Write($"Schnittmenge: [{string.Join(", ", schnittmenge)}]");
+        _help.Write($"Schnittmenge: [{string.Join(", ", schnittmenge)}]");
     }
 
     /// <summary>
@@ -66,6 +71,6 @@ public class ListManipulation
         HashSet<int> vereinigung = new HashSet<int>(unique1);
         vereinigung.UnionWith(unique2);
 
-        help.Write($"Vereinigung: [{string.Join(", ", vereinigung)}]");
+        _help.Write($"Vereinigung: [{string.Join(", ", vereinigung)}]");
     }
 }

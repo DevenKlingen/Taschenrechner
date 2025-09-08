@@ -4,8 +4,10 @@ namespace TaschenrechnerCore.Services;
 
 public class BasisRechner : BaseRechner
 {
-    public BasisRechner() : base("Basis-Rechner")
+    public BasisRechner(BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen) 
+        : base(benutzerManagement, datenbankBerechnungen, "Basis-Rechner")
     {
+
     }
 
     public override double Berechnen(string operation, params double[] werte)

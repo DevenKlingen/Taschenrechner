@@ -5,12 +5,29 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorieVerwaltung
 {
-    static string historieDatei = "berechnungen.txt";
-    static BenutzerManagement benutzerManagement = new();
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static HistorienExport historieE = new HistorienExport();
-    public List<Berechnung> detaillierteBerechnungen = new List<Berechnung>();
-    public List<string> berechnungsHistorie = new List<string>();
+    private const string HISTORIE_DATEI = "berechnungen.txt";
+ 
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly Hilfsfunktionen _help;
+    private HistorienExport _historieExport;
+
+    public List<Berechnung> _detaillierteBerechnungen;
+    public List<string> _berechnungsHistorie;
+
+    public HistorieVerwaltung(
+        BenutzerManagement benutzerManagement, 
+        Hilfsfunktionen help)
+    {
+        _benutzerManagement = benutzerManagement;
+        _help = help;
+        _detaillierteBerechnungen = new List<Berechnung>();
+        _berechnungsHistorie = new List<string>();
+    }
+
+    public void setHistorienExport(HistorienExport historienExport)
+    {
+        _historieExport = historienExport;
+    }
 
     /// <summary>
     /// Speichert die Historie in einer Textdatei
@@ -19,22 +36,22 @@ public class HistorieVerwaltung
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
-            string pfad = Path.Join("Benutzer", akt.Name, "Backups", historieDatei);
+            var akt = _benutzerManagement.getBenutzer();
+            string pfad = Path.Join("Benutzer", akt.Name, "Backups", HISTORIE_DATEI);
 
             // Prüfe die Größe der Datei im Backup-Ordner
             if (File.Exists(pfad) && new FileInfo(pfad).Length > 1_000_000)
             {
-                historieE.HistorieAlsZipExportieren(pfad);
+                _historieExport.HistorieAlsZipExportieren(pfad);
                 return;
             }
 
-            File.WriteAllLines(pfad, berechnungsHistorie);
-            help.Write($"Historie gespeichert in {pfad}");
+            File.WriteAllLines(pfad, _berechnungsHistorie);
+            _help.Write($"Historie gespeichert in {pfad}");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Speichern: {ex.Message}");
+            _help.Write($"Fehler beim Speichern: {ex.Message}");
         }
     }
 
@@ -46,7 +63,7 @@ public class HistorieVerwaltung
         try
         {
             // Benutzerverzeichnis ermitteln
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string benutzerVerzeichnis = Path.Join("Benutzer", akt.Name, "Backups");
 
             // Allerelevanten Dateinamen/Pattern
@@ -67,24 +84,23 @@ public class HistorieVerwaltung
                     try
                     {
                         File.Delete(datei);
-                        help.Write($"Datei gelöscht:{Path.GetFileName(datei)}");
+                        _help.Write($"Datei gelöscht:{Path.GetFileName(datei)}");
                         geloescht++;
                     }
                     catch (Exception ex)
                     {
-                        help.Write($"Fehler beim Löschen von{datei}: {ex.Message}");
+                        _help.Write($"Fehler beim Löschen von{datei}: {ex.Message}");
                     }
                 }
             }
 
-            berechnungsHistorie.Clear();
+            _berechnungsHistorie.Clear();
             if (geloescht == 0)
-                help.Write("Keine Historie-Dateien gefunden.");
+                _help.Write("Keine Historie-Dateien gefunden.");
             else
-                help.Write("Alle Historie-Dateien wurden gelöscht!");
+                _help.Write("Alle Historie-Dateien wurden gelöscht!");
 
-            help.Write("Möchtest du auch die Datenbankhistorie löschen? (j/n)");
-            string eingabe = Console.ReadLine()?.ToLower();
+            string eingabe = _help.Einlesen("Möchtest du auch die Datenbankhistorie löschen? (j/n)")?.ToLower();
 
             if (eingabe == "j")
             {
@@ -92,16 +108,16 @@ public class HistorieVerwaltung
                 var berechnungen = context.Berechnungen.ToList();
                 context.Berechnungen.RemoveRange(berechnungen);
                 context.SaveChanges();
-                help.Write("Datenbankhistorie gelöscht.");
+                _help.Write("Datenbankhistorie gelöscht.");
             }
             else if (eingabe != "n")
             {
-                help.Write("Ungültige Eingabe! Es wird keine Datenbankhistorie gelöscht.");
+                _help.Write("Ungültige Eingabe! Es wird keine Datenbankhistorie gelöscht.");
             }
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Löschen:{ex.Message}");
+            _help.Write($"Fehler beim Löschen:{ex.Message}");
         }
     }
 
@@ -112,25 +128,25 @@ public class HistorieVerwaltung
     {
         try
         {
-            if (File.Exists(historieDatei))
+            if (File.Exists(HISTORIE_DATEI))
             {
-                string[] zeilen = File.ReadAllLines(historieDatei);
-                berechnungsHistorie.AddRange(zeilen);
-                help.Write($"{zeilen.Length} Einträge aus Historie geladen.");
+                string[] zeilen = File.ReadAllLines(HISTORIE_DATEI);
+                _berechnungsHistorie.AddRange(zeilen);
+                _help.Write($"{zeilen.Length} Einträge aus Historie geladen.");
             }
             else
             {
-                help.Write("Keine gespeicherteHistorie gefunden.");
+                _help.Write("Keine gespeicherteHistorie gefunden.");
             }
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Laden: {ex.Message}");
+            _help.Write($"Fehler beim Laden: {ex.Message}");
         }
     }
 
     public string getHistorieDatei()
     {
-        return historieDatei;
+        return HISTORIE_DATEI;
     }
 }

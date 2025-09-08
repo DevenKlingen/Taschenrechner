@@ -4,24 +4,37 @@ namespace TaschenrechnerCore.Services;
 
 public class Potenzierer
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static HistorienBearbeitung historienB = new HistorienBearbeitung();
-    static DatenbankBerechnungen datenbankB = new DatenbankBerechnungen();
+    private readonly Hilfsfunktionen _help;
+    private readonly HistorienBearbeitung _historienBearbeitung;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public Potenzierer(
+        Hilfsfunktionen help, 
+        HistorienBearbeitung historienB, 
+        DatenbankBerechnungen datenbankB,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _historienBearbeitung = historienB;
+        _datenbankBerechnungen = datenbankB;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
 
     /// <summary>
     /// Rechnet eine Potenz einer Zahl aus
     /// </summary>
     public void Potenz()
     {
-        double zahl = help.ZahlEinlesen("Gib die erste Zahl ein: ");
-        double potenz = help.ZahlEinlesen("Gib die Potenz ein: ");
+        double zahl = _help.ZahlEinlesen("Gib die erste Zahl ein: ");
+        double potenz = _help.ZahlEinlesen("Gib die Potenz ein: ");
 
         double ergebnis = Math.Pow(zahl, potenz);
-        help.Write($"Ergebnis: {zahl} ^ {potenz} = {ergebnis}");
+        _help.Write($"Ergebnis: {zahl} ^ {potenz} = {ergebnis}");
 
         double[] eingaben = { zahl, potenz };
-        historienB.BerechnungHinzufuegen("^", eingaben, ergebnis);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "^", eingaben, ergebnis);
 
-        datenbankB.BerechnungInDatenbankSpeichern("^", eingaben, ergebnis);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("^", eingaben, ergebnis);
     }
 }

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
 
@@ -5,8 +6,13 @@ namespace TaschenrechnerCore.Services;
 
 public class WissenschaftlicherRechner : BaseRechner
 {
-    public WissenschaftlicherRechner() : base("Wissenschaftlich")
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly BenutzerManagement _benutzerManagement;
+    public WissenschaftlicherRechner(BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen)
+        : base(benutzerManagement, datenbankBerechnungen, "Wissenschaftlich")
     {
+        _datenbankBerechnungen = datenbankBerechnungen;
+        _benutzerManagement = benutzerManagement;
     }
 
     public override double Berechnen(string operation, params double[] werte)
@@ -85,7 +91,7 @@ public class WissenschaftlicherRechner : BaseRechner
 
             default:
                 // Fallback auf Basis-Rechner für einfache Operationen
-                var basisRechner = new BasisRechner();
+                var basisRechner = new BasisRechner(_benutzerManagement, _datenbankBerechnungen);
                 return basisRechner.Berechnen(operation, werte);
         }
 
@@ -96,7 +102,7 @@ public class WissenschaftlicherRechner : BaseRechner
     // Überschriebene Historie-Anzeige mit mehr Details
     public override void HistorieAnzeigen()
     {
-        Console.WriteLine($"=== WISSENSCHAFTLICHE HISTORIE ===");
+        Console.WriteLine($"\n=== WISSENSCHAFTLICHE HISTORIE ===");
 
         if (historie.Count == 0)
         {

@@ -5,11 +5,22 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorienMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static HistorieImport historieI = new HistorieImport();
-    static HistorienExport historieE = new HistorienExport();
-    static HistorieVerwaltung historieV = new HistorieVerwaltung();
-    static HistorieZeigen historieZ = new HistorieZeigen();
+    private readonly Hilfsfunktionen _help;
+    private readonly HistorieImport _historieImport;
+    private readonly HistorienExport _historieExport;
+    private readonly HistorieVerwaltung _historieVerwaltung;
+    private readonly HistorieZeigen _historieZeigen;
+
+    public HistorienMenu(Hilfsfunktionen help, HistorieImport historieI, HistorienExport historieE, HistorieVerwaltung historieV, HistorieZeigen historieZ)
+    {
+        _help = help;
+        _historieImport = historieI;
+        _historieExport = historieE;
+        _historieVerwaltung = historieV;
+        _historieZeigen = historieZ;
+    }
+
+
 
     /// <summary>
     /// Zeigt das Historiemenü an, wertet die Eingabe aus und führt die dazugehörige Funktion aus
@@ -19,57 +30,56 @@ public class HistorienMenu : IMenu
         bool historieMenuAktiv = true;
         while (historieMenuAktiv)
         {
-            help.Mischen();
+            _help.Mischen();
 
-            help.Write("\n=== HISTORIE ===");
-            help.Write("1. Historie ansehen");
-            help.Write("2. Historie speichern");
-            help.Write("3. Historie löschen");
-            help.Write("4. Als XML Exportieren");
-            help.Write("5. Von XML Importieren");
-            help.Write("6. Als CSV Exportieren");
-            help.Write("7. Zurück zum Hauptmenü");
-            help.Write("Deine Wahl (1-7): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Write("\n=== HISTORIE ===");
+            _help.Write("1. Historie ansehen");
+            _help.Write("2. Historie speichern");
+            _help.Write("3. Historie löschen");
+            _help.Write("4. Als XML Exportieren");
+            _help.Write("5. Von XML Importieren");
+            _help.Write("6. Als CSV Exportieren");
+            _help.Write("7. Zurück zum Hauptmenü");
+            _help.Write("Deine Wahl (1-7): ");
+            int wahl = _help.MenuWahlEinlesen();
             switch (wahl)
             {
                 case 1:
-                    historieZ.HistorieAnzeigen();
+                    _historieZeigen.HistorieAnzeigen();
                     break;
                 case 2:
-                    historieV.HistorieSpeichern();
+                    _historieVerwaltung.HistorieSpeichern();
                     break;
                 case 3:
-                    historieV.HistorieLöschen();
+                    _historieVerwaltung.HistorieLöschen();
                     break;
                 case 4:
-                    historieE.HistorieAlsXMLExportieren();
+                    _historieExport.HistorieAlsXMLExportieren();
                     break;
                 case 5:
-                    historieI.HistorieVonXMLImportieren();
+                    _historieImport.HistorieVonXMLImportieren();
                     break;
                 case 6:
-                    historieE.HistorieAlsCSVExportieren();
+                    _historieExport.HistorieAlsCSVExportieren();
                     break;
                 case 7:
                     historieMenuAktiv = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    _help.Write("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    help.Write("Ungültige Wahl!");
+                    _help.Write("Ungültige Wahl!");
                     break;
             }
 
             if (historieMenuAktiv)
             {
-                help.Write("\nDrücke Enter für Menü...");
-                Console.ReadLine();
+                _help.Einlesen("\nDrücke Enter für Menü...");
             }
         }
     }
 
     public string GetMenuTitle(int optionTitle)
     {
-        return $"{optionTitle}. Historien Menu";
+        return $"{optionTitle}. Historien-Menu";
     }
 }

@@ -4,9 +4,19 @@ namespace TaschenrechnerCore.Services;
 
 public class Backup
 {
-    static BenutzerManagement benutzerManagement = new();
-    static Hilfsfunktionen help = new();
-    static HistorienExport historienEx = new();
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly Hilfsfunktionen _help;
+    private readonly HistorienExport _historienExport;
+
+    public Backup(
+        BenutzerManagement benutzerManagement,
+        Hilfsfunktionen help,
+        HistorienExport historienExport)
+    {
+        _benutzerManagement = benutzerManagement;
+        _help = help;
+        _historienExport = historienExport;
+    }
 
     /// <summary>
     /// Erstellt ein Backup der aktuellen Historie und speichert es in einem Backup-Ordner
@@ -15,23 +25,22 @@ public class Backup
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
 
-            help.Write("Möchtest du auch ein Datenbank-Backup erstellen? (j/n)");
-            string? datenbankBackupWahl = Console.ReadLine()?.Trim().ToLower();
+            string? datenbankBackupWahl = _help.Einlesen("Möchtest du auch ein Datenbank-Backup erstellen? (j/n)")?.Trim().ToLower();
             if (datenbankBackupWahl == "j")
             {
                 DatenbankBackup();
             }
             else if (datenbankBackupWahl != "n")
             {
-                help.Write("Ungültige Eingabe! Es wird kein Datenbank-Backup erstellt.");
+                _help.Write("Ungültige Eingabe! Es wird kein Datenbank-Backup erstellt.");
             }
 
             string zeitstempel = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string backupOrdner = Path.Join("Benutzer", akt.Name, "Backups");
 
-            Console.WriteLine($"Backupordner: {backupOrdner}");
+            _help.Write($"Backupordner: {backupOrdner}");
 
             // Backup-Ordner erstellen, falls nicht vorhanden
             if (!Directory.Exists(backupOrdner))
@@ -41,7 +50,7 @@ public class Backup
 
             string[] zuSicherndeDateien = {
             Path.Combine(akt.Name, "Backups", "berechnungen.txt")
-        };
+            };
 
             foreach (string datei in zuSicherndeDateien)
             {
@@ -52,12 +61,12 @@ public class Backup
                     string backupDatei = Path.Combine(backupOrdner, $"{dateiName}_{zeitstempel}{erweiterung}");
 
                     File.Copy(datei, backupDatei);
-                    help.Write($"Backup erstellt: {backupDatei}");
+                    _help.Write($"Backup erstellt: {backupDatei}");
                 }
             }
 
             // XML-Export als zusätzliches Backup
-            historienEx.HistorieAlsXMLExportieren();
+            _historienExport.HistorieAlsXMLExportieren();
             string xmlDatei = Path.Combine(akt.Name, "Backups", "berechnungen.xml");
             string xmlBackup = Path.Combine(backupOrdner, $"berechnungen_{zeitstempel}.xml");
             if (File.Exists(xmlDatei))
@@ -67,7 +76,7 @@ public class Backup
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Backup: {ex.Message}");
+            _help.Write($"Fehler beim Backup: {ex.Message}");
         }
     }
 
@@ -81,20 +90,20 @@ public class Backup
             if (File.Exists(quellDatei))
             {
                 File.Copy(quellDatei, backupDatei);
-                help.Write($"Datenbank-Backup erstellt: {backupDatei}");
+                _help.Write($"Datenbank-Backup erstellt: {backupDatei}");
 
                 // Dateigröße anzeigen
                 var info = new FileInfo(backupDatei);
-                help.Write($"Backup-Größe: {info.Length / 1024.0:F1} KB");
+                _help.Write($"Backup-Größe: {info.Length / 1024.0:F1} KB");
             }
             else
             {
-                help.Write("Keine Datenbank-Datei gefunden!");
+                _help.Write("Keine Datenbank-Datei gefunden!");
             }
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Backup: {ex.Message}");
+            _help.Write($"Fehler beim Backup: {ex.Message}");
         }
     }
 }

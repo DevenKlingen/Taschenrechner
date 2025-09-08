@@ -4,27 +4,44 @@ namespace TaschenrechnerCore.Services;
 
 public class Addition
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static DatenbankBerechnungen datenbankB = new DatenbankBerechnungen();
-    static HistorienBearbeitung historienB = new HistorienBearbeitung();
-    static MatrixLesen matrixL = new MatrixLesen();
-    static MatrixAusgabe matrixAus = new MatrixAusgabe();
+    private readonly Hilfsfunktionen _help;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly HistorienBearbeitung _historienBearbeitung;
+    private readonly MatrixLesen _matrixLesen;
+    private readonly MatrixAusgabe _matrixAusgabe;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public Addition(
+        Hilfsfunktionen help, 
+        DatenbankBerechnungen datenbankBerechnungen, 
+        HistorienBearbeitung historienBearbeitung, 
+        MatrixLesen matrixLesen, 
+        MatrixAusgabe matrixAusgabe,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _datenbankBerechnungen = datenbankBerechnungen;
+        _historienBearbeitung = historienBearbeitung;
+        _matrixLesen = matrixLesen;
+        _matrixAusgabe = matrixAusgabe;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
 
     /// <summary>
     /// Addition zweier Zahlen
     /// </summary>
     public void Addieren()
     {
-        double zahl1 = help.ZahlEinlesen("Gib die erste Zahl ein: ");
-        double zahl2 = help.ZahlEinlesen("Gib die zweite Zahl ein: ");
+        double zahl1 = _help.ZahlEinlesen("Gib die erste Zahl ein: ");
+        double zahl2 = _help.ZahlEinlesen("Gib die zweite Zahl ein: ");
 
         double ergebnis = zahl1 + zahl2;
-        help.Write($"Ergebnis: {zahl1} + {zahl2} = {ergebnis}");
+        _help.Write($"Ergebnis: {zahl1} + {zahl2} = {ergebnis}");
 
         double[] eingaben = { zahl1, zahl2 };
-        historienB.BerechnungHinzufuegen("+", eingaben, ergebnis);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "+", eingaben, ergebnis);
 
-        datenbankB.BerechnungInDatenbankSpeichern("+", eingaben, ergebnis);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("+", eingaben, ergebnis);
     }
 
     /// <summary>
@@ -32,15 +49,14 @@ public class Addition
     /// </summary>
     public void MehrfachAddition()
     {
-        help.Write("\n===MEHRFACH-ADDITION ===");
-        help.Write("Gibmehrere Zahlenein (beendemit 'fertig'):");
+        _help.Write("\n===MEHRFACH-ADDITION ===");
+        _help.Write("Gibmehrere Zahlenein (beendemit 'fertig'):");
 
         List<double> zahlen = new List<double>();
 
         while (true)
         {
-            help.Write($"Zahl {zahlen.Count + 1}: ");
-            string eingabe = Console.ReadLine();
+            string eingabe = _help.Einlesen($"Zahl {zahlen.Count + 1}: ");
 
             if (eingabe.ToLower() == "fertig")
                 break;
@@ -53,18 +69,18 @@ public class Addition
 
         if (zahlen.Count < 2)
         {
-            help.Write("Mindestens 2 Zahlen erforderlich!");
+            _help.Write("Mindestens 2 Zahlen erforderlich!");
             return;
         }
 
         double summe = zahlen.Sum();
 
         string berechnung = $"{string.Join(" + ", zahlen)} = {summe}";
-        help.Write($"Ergebnis: {berechnung}");
+        _help.Write($"Ergebnis: {berechnung}");
 
-        historienB.BerechnungHinzufuegen("+", zahlen.ToArray(), summe);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "+", zahlen.ToArray(), summe);
 
-        datenbankB.BerechnungInDatenbankSpeichern("+", zahlen.ToArray(), summe);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("+", zahlen.ToArray(), summe);
     }
 
     /// <summary>
@@ -72,8 +88,8 @@ public class Addition
     /// </summary>
     public void MatrixAddition()
     {
-        double[,] matrixA = matrixL.MatrixEinlesen("Matrix A");
-        double[,] matrixB = matrixL.MatrixEinlesen("Matrix B");
+        double[,] matrixA = _matrixLesen.MatrixEinlesen("Matrix A");
+        double[,] matrixB = _matrixLesen.MatrixEinlesen("Matrix B");
 
         double[,] ergebnis = new double[2, 2];
 
@@ -85,11 +101,11 @@ public class Addition
             }
         }
 
-        help.Write("\nErgebnis:");
-        matrixAus.MatrixAusgeben(matrixA, "Matrix A");
-        help.Write("+");
-        matrixAus.MatrixAusgeben(matrixB, "Matrix B");
-        help.Write("=");
-        matrixAus.MatrixAusgeben(ergebnis, "Ergebnis");
+        _help.Write("\nErgebnis:");
+        _matrixAusgabe.MatrixAusgeben(matrixA, "Matrix A");
+        _help.Write("+");
+        _matrixAusgabe.MatrixAusgeben(matrixB, "Matrix B");
+        _help.Write("=");
+        _matrixAusgabe.MatrixAusgeben(ergebnis, "Ergebnis");
     }
 }

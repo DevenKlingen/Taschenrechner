@@ -4,23 +4,30 @@ namespace TaschenrechnerCore.Services;
 
 public class ListenStatistikMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static ListenStatistik listS = new ListenStatistik();
+    private readonly Hilfsfunktionen _help;
+    private readonly ListenStatistik _listStatistiken;
     
+    public ListenStatistikMenu(
+        Hilfsfunktionen help,
+        ListenStatistik listenStatistik)
+    {
+        _help = help;
+        _listStatistiken = listenStatistik;
+    }
+
     /// <summary>
     /// Erstellt eine Statistik für eingegebene Zahlen (Liste)
     /// </summary>
     public void StatsRechnerMenu()
     {
-        help.Write("\n=== STATISTIK-RECHNER ===");
-        help.Write("Gib mehrere Zahlen ein (beende mit 'fertig'):");
+        _help.Write("\n=== STATISTIK-RECHNER ===");
+        _help.Write("Gib mehrere Zahlen ein (beende mit 'fertig'):");
 
         List<double> zahlen = new List<double>();
 
         while (true)
         {
-            help.Write($"Zahl {zahlen.Count + 1} (oder 'fertig'): ");
-            string eingabe = Console.ReadLine();
+            string eingabe = _help.Einlesen($"Zahl {zahlen.Count + 1} (oder 'fertig'): ");
 
             if (eingabe.ToLower() == "fertig")
                 break;
@@ -31,23 +38,23 @@ public class ListenStatistikMenu
             }
             else
             {
-                help.Write("Ungültige Eingabe!");
+                _help.Write("Ungültige Eingabe!");
             }
         }
 
         if (zahlen.Count == 0)
         {
-            help.Write("Keine Zahlen eingegeben!");
+            _help.Write("Keine Zahlen eingegeben!");
             return;
         }
 
         // Liste in Array umwandeln für die Statistik-Methoden
         double[] zahlenArray = zahlen.ToArray();
 
-        help.Write($"\nAnzahl Werte: {zahlenArray.Length}");
-        help.Write($"Minimum: {listS.FindeMinimum(zahlenArray)}");
-        help.Write($"Maximum: {listS.FindeMaximum(zahlenArray)}");
-        help.Write($"Summe: {listS.BerechneSumme(zahlenArray)}");
-        help.Write($"Durchschnitt: {listS.BerechneDurchschnitt(zahlenArray):F2}");
+        _help.Write($"\nAnzahl Werte: {zahlenArray.Length}");
+        _help.Write($"Minimum: {_listStatistiken.FindeMinimum(zahlenArray)}");
+        _help.Write($"Maximum: {_listStatistiken.FindeMaximum(zahlenArray)}");
+        _help.Write($"Summe: {_listStatistiken.BerechneSumme(zahlenArray)}");
+        _help.Write($"Durchschnitt: {_listStatistiken.BerechneDurchschnitt(zahlenArray):F2}");
     }
 }

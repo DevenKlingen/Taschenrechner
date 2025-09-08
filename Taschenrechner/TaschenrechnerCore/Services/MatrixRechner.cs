@@ -6,12 +6,19 @@ namespace TaschenrechnerCore.Services;
 
 public class MatrixRechner : BaseRechner
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static RechnerManager rechnerManager = new RechnerManager();
-    static BenutzerManagement benutzerManagement = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly RechnerManager _rechnerManager;
+    private readonly BenutzerManagement _benutzerManagement;
 
-    public MatrixRechner() : base("Matrix-Rechner")
+    public MatrixRechner(
+        Hilfsfunktionen help, 
+        RechnerManager rechnerManager, 
+        BenutzerManagement benutzerManagement,
+        DatenbankBerechnungen datenbankBerechnungen) : base(benutzerManagement, datenbankBerechnungen, "Matrix-Rechner")
     {
+        _help = help;
+        _rechnerManager = rechnerManager;
+        _benutzerManagement = benutzerManagement;
     }
 
     public override double Berechnen(string operation, params double[] werte)
@@ -73,80 +80,75 @@ public class MatrixRechner : BaseRechner
         int zeilen = matrix.GetLength(0);
         int spalten = matrix.GetLength(1);
 
-        Console.WriteLine($"{name} ({zeilen}x{spalten}):");
+        _help.WriteInline($"{name} ({zeilen}x{spalten}):");
         for (int i = 0; i < zeilen; i++)
         {
-            Console.Write("| ");
+            _help.WriteInline("| ");
             for (int j = 0; j < spalten; j++)
             {
-                Console.Write($"{matrix[i, j]:F2} ");
+                _help.WriteInline($"{matrix[i, j]:F2} ");
             }
-            Console.WriteLine("|");
+            _help.Write("|");
         }
     }
 
     public void ZeigeMatrixMenue()
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
-        help.Mischen();
-        Console.Clear();
-        string aktueller = rechnerManager.AktuellerRechner?.RechnerTyp ?? "Kein Rechner aktiv";
-        help.Write($"=== TASCHENRECHNER v2.0 ===");
-        help.Write($"Aktueller Rechner: {aktueller}");
-        help.Write($"Benutzer: {akt?.Name ?? "Nicht angemeldet"}");
-        Console.WriteLine();
-        help.Write("1. Mögliche Berechnungen ansehen");
-        help.Write("2. Rechner wechseln");
-        help.Write("3. Historie anzeigen");
-        help.Write("4. Aktive Rechner anzeigen");
-        help.Write("5. Datenbank-Historie");
-        help.Write("6. Statistiken");
-        help.Write("7. Einstellungen");
-        help.Write("8. Benutzer-Management");
-        help.Write("0. Beenden");
-        Console.WriteLine();
+        Benutzer akt = _benutzerManagement.getBenutzer();
+        _help.Mischen();
+        _help.Clear();
+        string aktueller = _rechnerManager.AktuellerRechner?.RechnerTyp ?? "Kein Rechner aktiv";
+        _help.Write($"\n=== TASCHENRECHNER v2.0 ===");
+        _help.Write($"Aktueller Rechner: {aktueller}");
+        _help.Write($"Benutzer: {akt?.Name ?? "Nicht angemeldet"}");
+        _help.Write("");
+        _help.Write("1. Mögliche Berechnungen ansehen");
+        _help.Write("2. Rechner wechseln");
+        _help.Write("3. Historie anzeigen");
+        _help.Write("4. Aktive Rechner anzeigen");
+        _help.Write("5. Datenbank-Historie");
+        _help.Write("6. Statistiken");
+        _help.Write("7. Einstellungen");
+        _help.Write("8. Benutzer-Management");
+        _help.Write("0. Beenden");
+        _help.Write("");
     }
 
     public void MatrixBerechnen(string berechnung)
     {
 
-        help.Write("Wie viele Zeilen und Spalten sollen die Matrizen haben?");
+        _help.Write("Wie viele Zeilen und Spalten sollen die Matrizen haben?");
 
         int zeilenA;
-        Console.Write("Anzahl der Zeilen (A): ");
-        int.TryParse(Console.ReadLine(), out zeilenA);
+        int.TryParse(_help.Einlesen("Anzahl der Zeilen (A): "), out zeilenA);
 
         int spaltenA;
-        Console.Write("Anzahl der Spalten (A) : ");
-        int.TryParse(Console.ReadLine(), out spaltenA);
+        int.TryParse(_help.Einlesen("Anzahl der Spalten (A): "), out spaltenA);
 
         double[,] matrixA = new double[zeilenA, spaltenA];
 
         int zeilenB;
-        Console.Write("Anzahl der Zeilen (B): ");
-        int.TryParse(Console.ReadLine(), out zeilenB);
+        int.TryParse(_help.Einlesen("Anzahl der Zeilen (B): "), out zeilenB);
 
         int spaltenB;
-        Console.Write("Anzahl der Spalten (B) : ");
-        int.TryParse(Console.ReadLine(), out spaltenB);
+        int.TryParse(_help.Einlesen("Anzahl der Spalten (B): "), out spaltenB);
 
         if (berechnung.ToLower() == "multiplikation" && zeilenA != spaltenB)
         {
-            help.Write("Für die Multiplikation müssen die Zeilen von Matrix A gleich den Spalten von Matrix B sein.");
+            _help.Write("Für die Multiplikation müssen die Zeilen von Matrix A gleich den Spalten von Matrix B sein.");
             return;
         }
 
         int mengeA = zeilenA * spaltenA;
-        help.Write($"Gib die Werte für die {mengeA} Elemente der Matrix A ein:");
+        _help.Write($"Gib die Werte für die {mengeA} Elemente der Matrix A ein:");
         for (int i = 0; i < zeilenA; i++)
         {
             for (int j = 0; j < spaltenA; j++)
             {
-                Console.Write($"Element [{i + 1}, {j + 1}]: ");
                 double wert;
-                while (!double.TryParse(Console.ReadLine(), out wert))
+                while (!double.TryParse(_help.Einlesen($"Element [{i + 1}, {j + 1}]: "), out wert))
                 {
-                    help.Write("Ungültige Eingabe! Bitte eine Zahl eingeben.");
+                    _help.Write("Ungültige Eingabe! Bitte eine Zahl eingeben.");
                 }
                 matrixA[i, j] = wert;
             }
@@ -154,16 +156,15 @@ public class MatrixRechner : BaseRechner
 
         int mengeB = zeilenB * spaltenB;
         double[,] matrixB = new double[zeilenB, spaltenB];
-        help.Write($"Gib die Werte für die {mengeB} Elemente der Matrix B ein:");
+        _help.Write($"Gib die Werte für die {mengeB} Elemente der Matrix B ein:");
         for (int i = 0; i < zeilenB; i++)
         {
             for (int j = 0; j < spaltenB; j++)
             {
-                Console.Write($"Element [{i + 1}, {j + 1}]: ");
                 double wert;
-                while (!double.TryParse(Console.ReadLine(), out wert))
+                while (!double.TryParse(_help.Einlesen($"Element [{i + 1}, {j + 1}]: "), out wert))
                 {
-                    help.Write("Ungültige Eingabe! Bitte eine Zahl eingeben.");
+                    _help.Write("Ungültige Eingabe! Bitte eine Zahl eingeben.");
                 }
                 matrixB[i, j] = wert;
             }
@@ -180,22 +181,22 @@ public class MatrixRechner : BaseRechner
                 MatrixAusgeben(ergebnisMult, "Ergebnis der Multiplikation");
                 break;
             default:
-                help.Write("Ungültige Berechnung!");
+                _help.Write("Ungültige Berechnung!");
                 break;
         }
     }
     
     public void ZeigeBerechnungen()
     {
-        help.Mischen();
-        Console.Clear();
-        help.Write("=== Mögliche Matrix-Berechnungen ===");
-        help.Write("1. Matrix Addition");
-        help.Write("2. Matrix Multiplikation");
-        help.Write("0. Zurück zum Hauptmenü");
-        Console.WriteLine();
+        _help.Mischen();
+        _help.Clear();
+        _help.Write("\n=== Mögliche Matrix-Berechnungen ===");
+        _help.Write("1. Matrix Addition");
+        _help.Write("2. Matrix Multiplikation");
+        _help.Write("0. Zurück zum Hauptmenü");
+        _help.Write("");
 
-        int wahl = help.MenuWahlEinlesen();
+        int wahl = _help.MenuWahlEinlesen();
         switch (wahl)
         {
             case 1:
@@ -205,10 +206,10 @@ public class MatrixRechner : BaseRechner
                 MatrixBerechnen("Multiplikation");
                 break;
             case 0:
-                help.Write("Zurück zum Hauptmenü.");
+                _help.Write("Zurück zum Hauptmenü.");
                 break;
             default:
-                help.Write("Ungültige Wahl!");
+                _help.Write("Ungültige Wahl!");
                 break;
         }
     }

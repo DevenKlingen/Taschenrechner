@@ -4,7 +4,12 @@ namespace TaschenrechnerCore.Services;
 
 public class ListEinlesen
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
+    private readonly Hilfsfunktionen _help;
+
+    public ListEinlesen(Hilfsfunktionen help)
+    {
+        _help = help; 
+    }
     
     /// <summary>
     /// Liest eine Liste ein und prüft, ob die Eingabe valide ist
@@ -13,13 +18,12 @@ public class ListEinlesen
     /// <returns></returns>
     public List<int> ZahlenListeEinlesen(string name)
     {
-        help.Write($"\n{name} eingeben (beende mit 'fertig'):");
+        _help.Write($"\n{name} eingeben (beende mit 'fertig'):");
         List<int> zahlen = new List<int>();
 
         while (true)
         {
-            help.Write($"Zahl {zahlen.Count + 1}: ");
-            string eingabe = Console.ReadLine();
+            string eingabe = _help.Einlesen($"Zahl {zahlen.Count + 1}: ");
 
             if (eingabe.ToLower() == "fertig")
                 break;

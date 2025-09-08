@@ -5,24 +5,43 @@ namespace TaschenrechnerCore.Services;
 
 public class BenutzerManagement
 {
-    static Hilfsfunktionen help = new();
-    static BenutzerEinstellungen benutzerE = new();
-    protected Benutzer aktuellerBenutzer = null;
-    private static TaschenrechnerContext DbContext;
-    static KonfigVerwaltung konfigV = new();
+    private Hilfsfunktionen _help;
+    private BenutzerEinstellungen _benutzerEinstellungen;
+    private Benutzer _aktuellerBenutzer;
+    private KonfigVerwaltung _konfigVerwaltung;
+
+    private TaschenrechnerContext DbContext;
+
+    public void setKonfigVerwaltung(KonfigVerwaltung konfigVerwaltung)
+    {
+        _konfigVerwaltung = konfigVerwaltung;
+    }
+
+    public void setHelp(Hilfsfunktionen help)
+    {
+        _help = help;
+    }
+
+    public Hilfsfunktionen getHelp()
+    {
+        return _help;
+    }
+    public void setBenutzerEinstellungen(BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
 
     public void BenutzerAnmelden()
     {
         DbContext = new TaschenrechnerContext();
         DbContext.Database.EnsureCreated();
 
-        help.Write("=== BENUTZER-ANMELDUNG ===");
-        help.Write("Benutzername: ");
-        string name = Console.ReadLine()?.Trim();
+        _help.Write("\n=== BENUTZER-ANMELDUNG ===");
+        string name = _help.Einlesen("Benutzername: ")?.Trim();
 
         if (string.IsNullOrEmpty(name))
         {
-            help.Write("Ungültiger Benutzername!");
+            _help.Write("Ungültiger Benutzername!");
             return;
         }
 
@@ -32,26 +51,25 @@ public class BenutzerManagement
         if (benutzer == null)
         {
             // Neuen Benutzer erstellen
-            help.Write($"Benutzer '{name}' nicht gefunden.");
-            help.Write("Neuen Benutzer erstellen? (j/n): ");
+            _help.Write($"Benutzer '{name}' nicht gefunden.");
 
-            if (Console.ReadLine()?.ToLower() == "j")
+            if (_help.Einlesen("Neuen Benutzer erstellen? (j/n): ")?.ToLower() == "j")
             {
                 benutzer = BenutzerErstellen(name, DbContext);
-                aktuellerBenutzer = benutzer;
+                _aktuellerBenutzer = benutzer;
             }
         }
         else
         {
-            aktuellerBenutzer = benutzer;
-            benutzerE.StandardEinstellungenErstellen(aktuellerBenutzer.Id, DbContext);
+            _aktuellerBenutzer = benutzer;
+            _benutzerEinstellungen.StandardEinstellungenErstellen(_aktuellerBenutzer.Id, DbContext);
         }
         try
         {
-            help.Write($"Angemeldet als: {aktuellerBenutzer.Name}");
+            _help.Write($"Angemeldet als: {_aktuellerBenutzer.Name}");
 
-            string benutzerOrdner = Path.Join("Benutzer", aktuellerBenutzer.Name);
-            konfigV.KonfigurationLaden();
+            string benutzerOrdner = Path.Join("Benutzer", _aktuellerBenutzer.Name);
+            _konfigVerwaltung.KonfigurationLaden();
 
             if (!Directory.Exists(benutzerOrdner))
             {
@@ -60,16 +78,15 @@ public class BenutzerManagement
         }
         catch (Exception ex)
         {
-            help.Write("ACHTUNG! " + ex);
+            _help.Write("ACHTUNG! " + ex);
         }
         // Benutzereinstellungen laden
-        benutzerE.BenutzereinstellungenLaden();
+        _benutzerEinstellungen.BenutzereinstellungenLaden();
     }
 
-    static Benutzer BenutzerErstellen(string name, TaschenrechnerContext context)
+    public Benutzer BenutzerErstellen(string name, TaschenrechnerContext context)
     {
-        help.Write("Email (optional): ");
-        string email = Console.ReadLine()?.Trim();
+        string email = _help.Einlesen("Email (optional): ")?.Trim();
 
         var neuerBenutzer = new Benutzer
         {
@@ -84,14 +101,14 @@ public class BenutzerManagement
             context.SaveChanges();
 
             // Standard-Einstellungen erstellen
-            benutzerE.StandardEinstellungenErstellen(neuerBenutzer.Id, context);
+            _benutzerEinstellungen.StandardEinstellungenErstellen(neuerBenutzer.Id, context);
 
-            help.Write($"Benutzer '{name}' erfolgreich erstellt!");
+            _help.Write($"Benutzer '{name}' erfolgreich erstellt!");
             return neuerBenutzer;
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Erstellen des Benutzers: {ex.Message}");
+            _help.Write($"Fehler beim Erstellen des Benutzers: {ex.Message}");
             return null;
         }
     }
@@ -103,13 +120,12 @@ public class BenutzerManagement
 
     public void BenutzerLöschen()
     {
-        help.Write("Welchen Benutzer möchtest du löschen?");
-        help.Write("Benutzername: ");
-        string name = Console.ReadLine()?.Trim();
+        _help.Write("Welchen Benutzer möchtest du löschen?");
+        string name = _help.Einlesen("Benutzername: ")?.Trim();
 
         if (string.IsNullOrEmpty(name))
         {
-            help.Write("Ungültiger Benutzername!");
+            _help.Write("Ungültiger Benutzername!");
             return;
         }
 
@@ -117,16 +133,15 @@ public class BenutzerManagement
 
         if (benutzer == null)
         {
-            help.Write($"Benutzer '{name}' nicht gefunden.");
+            _help.Write($"Benutzer '{name}' nicht gefunden.");
             return;
         }
 
-        help.Write($"Bist du sicher, dass du den Benutzer '{benutzer.Name}' und alle zugehörigen Daten löschen möchtest? (j/n): ");
-        string bestaetigung = Console.ReadLine()?.ToLower();
+        string bestaetigung = _help.Einlesen($"Bist du sicher, dass du den Benutzer '{benutzer.Name}' und alle zugehörigen Daten löschen möchtest? (j/n): ")?.ToLower();
 
         if (bestaetigung != "j")
         {
-            help.Write("Löschung abgebrochen.");
+            _help.Write("Löschung abgebrochen.");
             return;
         }
 
@@ -138,16 +153,16 @@ public class BenutzerManagement
             // Benutzer löschen
             DbContext.Benutzer.Remove(benutzer);
             DbContext.SaveChanges();
-            help.Write($"Benutzer '{benutzer.Name}' und alle zugehörigen Daten wurden gelöscht.");
+            _help.Write($"Benutzer '{benutzer.Name}' und alle zugehörigen Daten wurden gelöscht.");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Löschen des Benutzers: {ex.Message}");
+            _help.Write($"Fehler beim Löschen des Benutzers: {ex.Message}");
         }
     }
 
     public Benutzer getBenutzer()
     {
-        return aktuellerBenutzer;
+        return _aktuellerBenutzer;
     }
 }

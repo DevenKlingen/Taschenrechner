@@ -5,11 +5,22 @@ namespace TaschenrechnerCore.Services;
 
 public class MatrixMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static MatrixAusgabe matrixA = new MatrixAusgabe();
-    static MatrixDeterminante matrixD = new MatrixDeterminante();
-    static Addition a = new Addition();
-    static Multiplikation m = new Multiplikation();
+    private readonly Hilfsfunktionen _help;
+    private readonly MatrixDeterminante _matrixDeterminante;
+    private readonly Addition _addition;
+    private readonly Multiplikation _multiplikation;
+
+    public MatrixMenu(
+        Hilfsfunktionen help, 
+        MatrixDeterminante matrixDeterminante, 
+        Addition addition, 
+        Multiplikation multiplikation)
+    {
+        _help = help;
+        _matrixDeterminante = matrixDeterminante;
+        _addition = addition;
+        _multiplikation = multiplikation;
+    }
 
     public void Show()
     {
@@ -17,40 +28,39 @@ public class MatrixMenu : IMenu
 
         while (matrixRechnerAktiv)
         {
-            help.Mischen();
+            _help.Mischen();
 
-            help.Write("\n=== MATRIX-RECHNER (2x2) ===");
-            help.Write("1. Matrix-Addition");
-            help.Write("2. Matrix-Multiplikation");
-            help.Write("3. Determinante berechnen");
-            help.Write("4. Zurück zum Rechenmenü");
-            help.Write("Deine Wahl (1-4): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Write("\n=== MATRIX-RECHNER (2x2) ===");
+            _help.Write("1. Matrix-Addition");
+            _help.Write("2. Matrix-Multiplikation");
+            _help.Write("3. Determinante berechnen");
+            _help.Write("4. Zurück zum Rechenmenü");
+            _help.Write("Deine Wahl (1-4): ");
+            int wahl = _help.MenuWahlEinlesen();
 
             switch (wahl)
             {
                 case 1:
-                    a.MatrixAddition();
+                    _addition.MatrixAddition();
                     break;
                 case 2:
-                    m.MatrixMultiplikation();
+                    _multiplikation.MatrixMultiplikation();
                     break;
                 case 3:
-                    matrixD.DeterminanteErmitteln();
+                    _matrixDeterminante.DeterminanteErmitteln();
                     break;
                 case 4:
                     matrixRechnerAktiv = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    _help.Write("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    help.Write("Ungültige Wahl!");
+                    _help.Write("Ungültige Wahl!");
                     break;
             }
 
             if (matrixRechnerAktiv)
             {
-                help.Write("\nDrücke Enter für Menü...");
-                Console.ReadLine();
+                _help.Einlesen("\nDrücke Enter für Menü...");
             }
         }
     }

@@ -5,28 +5,35 @@ namespace TaschenrechnerCore.Services;
 
 public class BenutzerMenu : IMenu
 {
-    static BenutzerManagement benutzerManagement = new();
-    static Hilfsfunktionen help = new Hilfsfunktionen();
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly Hilfsfunktionen _help;
 
+    public BenutzerMenu(
+        BenutzerManagement benutzerManagement, 
+        Hilfsfunktionen help)
+    {
+        _benutzerManagement = benutzerManagement;
+        _help = help;
+    }
     public void Show()
     {
-        help.Write("=== BENUTZER-MANAGEMENT ===");
-        help.Write("1. Benutzer wechseln");
-        help.Write("2. Benutzer löschen");
-        help.Write("3. Zurück zum Hauptmenü");
-        int wahl = (int)help.ZahlEinlesen("Deine Wahl: ");
+        _help.Write("\n=== BENUTZER-MANAGEMENT ===");
+        _help.Write("1. Benutzer wechseln");
+        _help.Write("2. Benutzer löschen");
+        _help.Write("3. Zurück zum Hauptmenü");
+        int wahl = (int)_help.ZahlEinlesen("Deine Wahl: ");
         switch (wahl)
         {
             case 1:
-                benutzerManagement.BenutzerWechseln();
+                _benutzerManagement.BenutzerWechseln();
                 break;
             case 2:
-                benutzerManagement.BenutzerLöschen();
+                _benutzerManagement.BenutzerLöschen();
                 break;
             case 3:
                 return; // Zurück zum Hauptmenü
             default:
-                help.Write("Ungültige Wahl!");
+                _help.Write("Ungültige Wahl!");
                 break;
         }
     }

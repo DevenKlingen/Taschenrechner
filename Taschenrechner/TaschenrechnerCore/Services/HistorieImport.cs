@@ -6,9 +6,24 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorieImport
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static BenutzerManagement benutzerManagement = new();
-    static HistorieVerwaltung historieVerwaltung = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly HistorieVerwaltung _historieVerwaltung;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public HistorieImport(
+        Hilfsfunktionen help, 
+        BenutzerManagement benutzerManagement,
+        HistorieVerwaltung historieVerwaltung,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _benutzerManagement = benutzerManagement;
+        _historieVerwaltung = historieVerwaltung;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
+
 
     /// <summary>
     /// Importiert die Historie aus einer XML-Datei
@@ -17,12 +32,12 @@ public class HistorieImport
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string xmlDatei = $"Benutzer/{akt.Name}/Backups/berechnungen.xml";
 
             if (!File.Exists(xmlDatei))
             {
-                help.Write("Keine XML-Dateizum Importieren gefunden.");
+                _help.Write("Keine XML-Dateizum Importieren gefunden.");
                 return;
             }
 
@@ -37,6 +52,7 @@ public class HistorieImport
                 try
                 {
                     var berechnung = new Berechnung();
+                    berechnung.setBenutzerEinstellungen(_benutzerEinstellungen);
 
                     // Zeitstempelparsen
                     string zeitString = node.SelectSingleNode("Zeitstempel")?.InnerText;
@@ -68,21 +84,21 @@ public class HistorieImport
                     //Kommentar
                     berechnung.Kommentar = node.SelectSingleNode("Kommentar")?.InnerText ?? "";
 
-                    historieVerwaltung.detaillierteBerechnungen.Add(berechnung);
-                    historieVerwaltung.berechnungsHistorie.Add(berechnung.ToString());
+                    _historieVerwaltung._detaillierteBerechnungen.Add(berechnung);
+                    _historieVerwaltung._berechnungsHistorie.Add(berechnung.ToString());
                     importiert++;
                 }
                 catch (Exception ex)
                 {
-                    help.Write($"Fehler beimImportieren einerBerechnung: {ex.Message}");
+                    _help.Write($"Fehler beimImportieren einerBerechnung: {ex.Message}");
                 }
             }
 
-            help.Write($"{importiert} Berechnungen ausXML importiert.");
+            _help.Write($"{importiert} Berechnungen ausXML importiert.");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim XML-Import:{ex.Message}");
+            _help.Write($"Fehler beim XML-Import:{ex.Message}");
         }
     }
 }

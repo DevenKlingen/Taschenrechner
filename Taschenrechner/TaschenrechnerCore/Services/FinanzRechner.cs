@@ -1,11 +1,15 @@
 using TaschenrechnerCore.Interfaces;
+using TaschenrechnerCore.Utils;
 
 namespace TaschenrechnerCore.Services;
 
 public class FinanzRechner : BaseRechner
 {
-    public FinanzRechner() : base("Finanz-Rechner")
+    Hilfsfunktionen _help;
+    public FinanzRechner(BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen)
+        : base(benutzerManagement, datenbankBerechnungen, "Finanz-Rechner")
     {
+        _help = benutzerManagement.getHelp();
     }
 
     public override double Berechnen(string operation, params double[] werte)
@@ -65,17 +69,17 @@ public class FinanzRechner : BaseRechner
     // Spezielle Methoden für Finanzberechnungen
     public void KreditPlanErstellen(double kreditsumme, double zinssatz, int laufzeitJahre)
     {
-        Console.WriteLine("=== TILGUNGSPLAN ===");
-        Console.WriteLine($"Kreditsumme: {kreditsumme:C}");
-        Console.WriteLine($"Zinssatz: {zinssatz:F2}%");
-        Console.WriteLine($"Laufzeit: {laufzeitJahre} Jahre\n");
+        _help.Write("\n=== TILGUNGSPLAN ===");
+        _help.Write($"Kreditsumme: {kreditsumme:C}");
+        _help.Write($"Zinssatz: {zinssatz:F2}%");
+        _help.Write($"Laufzeit: {laufzeitJahre} Jahre\n");
 
         double annuitaet = Berechnen("annuitaet", kreditsumme, zinssatz, laufzeitJahre);
         double restschuld = kreditsumme;
 
-        Console.WriteLine($"Jährliche Annuität: {annuitaet:C}\n");
-        Console.WriteLine("Jahr\tZinsen\t\tTilgung\t\tRestschuld");
-        Console.WriteLine(new string('-', 50));
+        _help.Write($"Jährliche Annuität: {annuitaet:C}\n");
+        _help.Write("Jahr\tZinsen\t\tTilgung\t\tRestschuld");
+        _help.Write(new string('-', 50));
 
         for (int jahr = 1; jahr <= laufzeitJahre; jahr++)
         {
@@ -83,7 +87,7 @@ public class FinanzRechner : BaseRechner
             double tilgungJahr = annuitaet - zinsenJahr;
             restschuld -= tilgungJahr;
 
-            Console.WriteLine($"{jahr}\t{zinsenJahr:C}\t{tilgungJahr:C}\t{Math.Max(0, restschuld):C}");
+            _help.Write($"{jahr}\t{zinsenJahr:C}\t{tilgungJahr:C}\t{Math.Max(0, restschuld):C}");
         }
     }
 }

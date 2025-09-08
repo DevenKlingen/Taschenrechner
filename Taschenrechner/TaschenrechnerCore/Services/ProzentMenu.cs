@@ -5,47 +5,51 @@ namespace TaschenrechnerCore.Services;
 
 public class ProzentMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static ProzentRechnung prozentR = new ProzentRechnung();
+    private readonly Hilfsfunktionen _help;
+    private readonly ProzentRechnung _prozentRechnung;
+    public ProzentMenu(Hilfsfunktionen help, ProzentRechnung prozentRechnung)
+    {
+        _help = help;
+        _prozentRechnung = prozentRechnung;
+    }
 
     public void Show()
     {
         bool prozentRechnerAktiv = true;
         while (prozentRechnerAktiv)
         {
-            help.Mischen();
+            _help.Mischen();
 
-            help.Write("\n=== Prozentrechner ===");
-            help.Write("1. Prozentrechnung");
-            help.Write("2. Prozentualer Anteil");
-            help.Write("3. Grundwert");
-            help.Write("4. Zurück zum Rechenmenü");
-            help.Write("Deine Wahl (1-4): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Write("\n=== Prozentrechner ===");
+            _help.Write("1. Prozentrechnung");
+            _help.Write("2. Prozentualer Anteil");
+            _help.Write("3. Grundwert");
+            _help.Write("4. Zurück zum Rechenmenü");
+            _help.Write("Deine Wahl (1-4): ");
+            int wahl = _help.MenuWahlEinlesen();
             switch (wahl)
             {
                 case 1:
-                    prozentR.Prozentwert();
+                    _prozentRechnung.Prozentwert();
                     break;
                 case 2:
-                    prozentR.ProzentualerAnteil();
+                    _prozentRechnung.ProzentualerAnteil();
                     break;
                 case 3:
-                    prozentR.Grundwert();
+                    _prozentRechnung.Grundwert();
                     break;
                 case 4:
                     prozentRechnerAktiv = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    _help.Write("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    help.Write("Ungültige Wahl!");
+                    _help.Write("Ungültige Wahl!");
                     break;
             }
 
             if (prozentRechnerAktiv)
             {
-                help.Write("\nDrücke Enter für Menü...");
-                Console.ReadLine();
+                _help.Einlesen("\nDrücke Enter für Menü...");
             }
         }
     }

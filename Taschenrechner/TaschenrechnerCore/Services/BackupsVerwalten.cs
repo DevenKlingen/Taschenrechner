@@ -4,11 +4,25 @@ namespace TaschenrechnerCore.Services;
 
 public class BackupsVerwalten
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static KonfigVerwaltung konfigV = new KonfigVerwaltung();
-    static HistorienBearbeitung historieB = new HistorienBearbeitung();
-    static BenutzerManagement benutzerManagement = new();
-    static HistorieVerwaltung historieVerwaltung = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly KonfigVerwaltung _konfigVerwaltung;
+    private readonly HistorienBearbeitung _historienBearbeitung;
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly HistorieVerwaltung _historieVerwaltung;
+
+    public BackupsVerwalten(
+        Hilfsfunktionen help,
+        KonfigVerwaltung konfigVerwaltung,
+        HistorienBearbeitung historienBearbeitung,
+        BenutzerManagement benutzerManagement,
+        HistorieVerwaltung historieVerwaltung)
+    {
+        _help = help;
+        _konfigVerwaltung = konfigVerwaltung;
+        _historienBearbeitung = historienBearbeitung;
+        _benutzerManagement = benutzerManagement;
+        _historieVerwaltung = historieVerwaltung;
+    }
 
     /// <summary>
     /// Zeigt alle verfügbaren Backups im Backup-Ordner an
@@ -17,13 +31,13 @@ public class BackupsVerwalten
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string backup = "Backups";
             string backupOrdner = Path.Join("Benutzer", akt.Name, backup);
 
             if (!Directory.Exists(backupOrdner))
             {
-                help.Write("Kein Backup-Ordner vorhanden.");
+                _help.Write("Kein Backup-Ordner vorhanden.");
                 return;
             }
 
@@ -31,20 +45,20 @@ public class BackupsVerwalten
 
             if (backupDateien.Length == 0)
             {
-                help.Write("Keine Backups vorhanden.");
+                _help.Write("Keine Backups vorhanden.");
                 return;
             }
 
-            help.Write("=== VERFÜGBARE BACKUPS ===");
+            _help.Write("\n=== VERFÜGBARE BACKUPS ===");
             for (int i = 0; i < backupDateien.Length; i++)
             {
                 FileInfo info = new FileInfo(backupDateien[i]);
-                help.Write($"{i + 1}. {info.Name} ({info.LastWriteTime:dd.MM.yyyy HH:mm})");
+                _help.Write($"{i + 1}. {info.Name} ({info.LastWriteTime:dd.MM.yyyy HH:mm})");
             }
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Anzeigen der Backups: {ex.Message}");
+            _help.Write($"Fehler beim Anzeigen der Backups: {ex.Message}");
         }
     }
 
@@ -55,24 +69,24 @@ public class BackupsVerwalten
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string backup = "Backups";
             string backupOrdner = Path.Join("Benutzer", akt.Name, backup);
 
             if (!Directory.Exists(backupOrdner))
             {
-                help.Write("Kein Backup-Ordner vorhanden.");
+                _help.Write("Kein Backup-Ordner vorhanden.");
                 return;
             }
             foreach (string datei in Directory.GetFiles(backupOrdner))
             {
                 File.Delete(datei);
             }
-            help.Write("Alle Backups wurden gelöscht.");
+            _help.Write("Alle Backups wurden gelöscht.");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Löschen der Backups: {ex.Message}");
+            _help.Write($"Fehler beim Löschen der Backups: {ex.Message}");
         }
     }
 
@@ -83,44 +97,44 @@ public class BackupsVerwalten
     {
         try
         {
-            var akt = benutzerManagement.getBenutzer();
+            var akt = _benutzerManagement.getBenutzer();
             string backup = "Backups";
             string backupOrdner = Path.Join("Benutzer", akt.Name, backup);
 
             if (!Directory.Exists(backupOrdner))
             {
-                help.Write("Kein Backup-Ordner vorhanden.");
+                _help.Write("Kein Backup-Ordner vorhanden.");
                 return;
             }
             string[] backupDateien = Directory.GetFiles(backupOrdner);
             if (backupDateien.Length == 0)
             {
-                help.Write("Keine Backups vorhanden.");
+                _help.Write("Keine Backups vorhanden.");
                 return;
             }
-            help.Write("=== VERFÜGBARE BACKUPS ZUM WIEDERHERSTELLEN ===");
+            _help.Write("\n=== VERFÜGBARE BACKUPS ZUM WIEDERHERSTELLEN ===");
             for (int i = 0; i < backupDateien.Length; i++)
             {
                 FileInfo info = new FileInfo(backupDateien[i]);
-                help.Write($"{i + 1}. {info.Name} ({info.LastWriteTime:dd.MM.yyyy HH:mm})");
+                _help.Write($"{i + 1}. {info.Name} ({info.LastWriteTime:dd.MM.yyyy HH:mm})");
             }
-            help.Write("Wähle ein Backup zum Wiederherstellen (1-" + backupDateien.Length + "): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Write("Wähle ein Backup zum Wiederherstellen (1-" + backupDateien.Length + "): ");
+            int wahl = _help.MenuWahlEinlesen();
             if (wahl < 1 || wahl > backupDateien.Length)
             {
-                help.Write("Ungültige Wahl!");
+                _help.Write("Ungültige Wahl!");
                 return;
             }
             string gewaehltesBackup = backupDateien[wahl - 1];
-            File.Copy(gewaehltesBackup, historieVerwaltung.getHistorieDatei(), true);
-            konfigV.KonfigurationLaden(); // Konfiguration neu laden
-            historieB.HistorieHinzufuegen($"Backup wiederhergestellt: {gewaehltesBackup}");
+            File.Copy(gewaehltesBackup, _historieVerwaltung.getHistorieDatei(), true);
+            _konfigVerwaltung.KonfigurationLaden(); // Konfiguration neu laden
+            _historienBearbeitung.HistorieHinzufuegen($"Backup wiederhergestellt: {gewaehltesBackup}");
 
-            help.Write($"Backup wiederhergestellt: {gewaehltesBackup}");
+            _help.Write($"Backup wiederhergestellt: {gewaehltesBackup}");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Wiederherstellen des Backups: {ex.Message}");
+            _help.Write($"Fehler beim Wiederherstellen des Backups: {ex.Message}");
         }
     }
 }

@@ -5,36 +5,49 @@ namespace TaschenrechnerCore.Services;
 
 public class WaehrungsRechner
 {
-    static Hilfsfunktionen help = new();
-    static HistorienBearbeitung historienB = new();
-    static DatenbankBerechnungen datenbankB = new();
-    
+    private readonly Hilfsfunktionen _help;
+    private readonly HistorienBearbeitung _historienBearbeitung;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+    public WaehrungsRechner(
+        Hilfsfunktionen help, 
+        HistorienBearbeitung historienB, 
+        DatenbankBerechnungen datenbankB,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _historienBearbeitung = historienB;
+        _datenbankBerechnungen = datenbankB;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
+
+
     /// <summary>
     /// Rechnet Euro in Dollar mit einem Wechselkurs von 1.1 um
     /// </summary>
     public void WaehrungsRechnung()
     {
-        help.Write("\n=== WÄHRUNGSRECHNER ===");
-        help.Write("Betrag in Euro: ");
+        _help.Write("\n=== WÄHRUNGSRECHNER ===");
         bool umgerechnet = false;
         while (!umgerechnet)
         {
-            if (decimal.TryParse(Console.ReadLine(), out decimal euro))
+            if (decimal.TryParse(_help.Einlesen("Betrag in Euro: "), out decimal euro))
             {
-                Console.OutputEncoding = Encoding.UTF8;
+                _help.setEncoding();
                 decimal dollar = euro * 1.1m; // Beispiel-Wechselkurs
-                help.Write($"{euro}€ = ${dollar}");
+                _help.Write($"{euro}€ = ${dollar}");
 
                 double euroDouble = (double)euro;
                 double dollarDouble = (double)dollar;
                 double[] eingaben = { euroDouble };
-                historienB.BerechnungHinzufuegen("$", eingaben, dollarDouble);
-                datenbankB.BerechnungInDatenbankSpeichern("$", eingaben, dollarDouble);
+                _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "$", eingaben, dollarDouble);
+                _datenbankBerechnungen.BerechnungInDatenbankSpeichern("$", eingaben, dollarDouble);
                 umgerechnet = true;
             }
             else
             {
-                help.Write("Ungültige Eingabe!");
+                _help.Write("Ungültige Eingabe!");
             }
         }
     }

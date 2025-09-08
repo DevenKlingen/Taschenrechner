@@ -5,8 +5,12 @@ namespace TaschenrechnerCore.Services;
 
 public class StatistikRechner : BaseRechner
 {
-    public StatistikRechner() : base("Statistik-Rechner")
+    private readonly Hilfsfunktionen _help;
+
+    public StatistikRechner(BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen, Hilfsfunktionen hilfsfunktionen)
+        : base(benutzerManagement, datenbankBerechnungen, "Statistik-Rechner")
     {
+        _help = hilfsfunktionen; // Speichere die Instanz der Hilfsfunktionen
     }
 
     public override double Berechnen(string operation, params double[] werte)
@@ -73,14 +77,14 @@ public class StatistikRechner : BaseRechner
 
     public void VollstaendigeStatistik(double[] werte)
     {
-        Console.WriteLine("=== VOLLSTÄNDIGE STATISTIK ===");
-        Console.WriteLine($"Anzahl Werte: {werte.Length}");
-        Console.WriteLine($"Mittelwert: {Berechnen("mittelwert", werte):F2}");
-        Console.WriteLine($"Median: {Berechnen("median", werte):F2}");
-        Console.WriteLine($"Minimum: {Berechnen("min", werte):F2}");
-        Console.WriteLine($"Maximum: {Berechnen("max", werte):F2}");
-        Console.WriteLine($"Spannweite: {Berechnen("spannweite", werte):F2}");
-        Console.WriteLine($"Standardabweichung: {Berechnen("standardabweichung", werte):F2}");
-        Console.WriteLine($"Varianz: {Berechnen("varianz", werte):F2}");
+        _help.Write("\n=== VOLLSTÄNDIGE STATISTIK ===");
+        _help.Write($"Anzahl Werte: {werte.Length}");
+        _help.Write($"Mittelwert: {Berechnen("mittelwert", werte):F2}");
+        _help.Write($"Median: {Berechnen("median", werte):F2}");
+        _help.Write($"Minimum: {Berechnen("min", werte):F2}");
+        _help.Write($"Maximum: {Berechnen("max", werte):F2}");
+        _help.Write($"Spannweite: {Berechnen("spannweite", werte):F2}");
+        _help.Write($"Standardabweichung: {Berechnen("standardabweichung", werte):F2}");
+        _help.Write($"Varianz: {Berechnen("varianz", werte):F2}");
     }
 }

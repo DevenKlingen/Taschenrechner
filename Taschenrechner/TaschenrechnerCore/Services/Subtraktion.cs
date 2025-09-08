@@ -4,25 +4,40 @@ namespace TaschenrechnerCore.Services;
 
 public class Subtraktion
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static HistorienBearbeitung historienB = new();
-    static DatenbankBerechnungen datenbankB = new();
-    
+    private readonly Hilfsfunktionen _help;
+    private readonly HistorienBearbeitung _historienBeabeitung;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public Subtraktion(
+        Hilfsfunktionen help, 
+        HistorienBearbeitung historienB, 
+        DatenbankBerechnungen datenbankB,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _historienBeabeitung = historienB;
+        _datenbankBerechnungen = datenbankB;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
+
+
     /// <summary>
     /// Subtraktion zweier Zahlen
     /// </summary>
     public void Subtrahieren()
     {
-        double zahl1 = help.ZahlEinlesen("Gib die erste Zahl ein: ");
-        double zahl2 = help.ZahlEinlesen("Gib die zweite Zahl ein: ");
+        double zahl1 = _help.ZahlEinlesen("Gib die erste Zahl ein: ");
+        double zahl2 = _help.ZahlEinlesen("Gib die zweite Zahl ein: ");
 
         double ergebnis = zahl1 - zahl2;
-        help.Write($"Ergebnis: {zahl1} - {zahl2} = {ergebnis}");
+        _help.Write($"Ergebnis: {zahl1} - {zahl2} = {ergebnis}");
 
         double[] eingaben = { zahl1, zahl2 };
-        historienB.BerechnungHinzufuegen("-", eingaben, ergebnis);
+        _historienBeabeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "-", eingaben, ergebnis);
 
-        datenbankB.BerechnungInDatenbankSpeichern("-", eingaben, ergebnis);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("-", eingaben, ergebnis);
     }
 
     /// <summary>
@@ -30,14 +45,13 @@ public class Subtraktion
     /// </summary>
     public void MehrfachSubtrahieren()
     {
-        help.Write("\n=== MEHRFACH-SUBTRAKTION ===");
-        help.Write("Gib mehrere Zahlen ein (beende mit 'fertig'):");
+        _help.Write("\n=== MEHRFACH-SUBTRAKTION ===");
+        _help.Write("Gib mehrere Zahlen ein (beende mit 'fertig'):");
         List<double> zahlen = new List<double>();
 
         while (true)
         {
-            help.Write($"Zahl {zahlen.Count + 1}: ");
-            string eingabe = Console.ReadLine();
+            string eingabe = _help.Einlesen($"Zahl {zahlen.Count + 1}: ");
             if (eingabe.ToLower() == "fertig")
                 break;
             if (double.TryParse(eingabe, out double zahl))
@@ -48,7 +62,7 @@ public class Subtraktion
 
         if (zahlen.Count < 2)
         {
-            help.Write("Mindestens zwei Zahlen erforderlich!");
+            _help.Write("Mindestens zwei Zahlen erforderlich!");
             return;
         }
 
@@ -60,10 +74,10 @@ public class Subtraktion
         }
 
         string berechnung = $"{string.Join(" - ", zahlen)} = {ergebnis}";
-        help.Write($"Ergebnis: {berechnung}");
+        _help.Write($"Ergebnis: {berechnung}");
 
-        historienB.BerechnungHinzufuegen("-", zahlen.ToArray(), ergebnis);
+        _historienBeabeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "-", zahlen.ToArray(), ergebnis);
 
-        datenbankB.BerechnungInDatenbankSpeichern("-", zahlen.ToArray(), ergebnis);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("-", zahlen.ToArray(), ergebnis);
     }
 }

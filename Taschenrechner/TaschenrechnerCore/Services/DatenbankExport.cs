@@ -6,14 +6,23 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankExport
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static BenutzerManagement benutzerManagement = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerManagement _benutzerManagement;
+
+    public DatenbankExport(
+        Hilfsfunktionen help, 
+        BenutzerManagement benutzerManagement)
+    {
+        _help = help;
+        _benutzerManagement = benutzerManagement;
+    }
+
     public void DatenbankExportieren()
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
+        Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            help.Write("Kein Benutzer angemeldet!");
+            _help.Write("Kein Benutzer angemeldet!");
             return;
         }
 
@@ -50,11 +59,11 @@ public class DatenbankExport
             });
 
             File.WriteAllText(exportDatei, json);
-            help.Write($"Datenbank exportiert nach: {exportDatei}");
+            _help.Write($"Datenbank exportiert nach: {exportDatei}");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Export: {ex.Message}");
+            _help.Write($"Fehler beim Export: {ex.Message}");
         }
     }
 }

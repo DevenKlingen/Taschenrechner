@@ -7,30 +7,41 @@ namespace TaschenrechnerCore.Services;
 
 public class HistorieZeigen
 {
-    static HistorieVerwaltung historieVerwaltung = new();
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static BenutzerEinstellungen benutzerEinstellungen = new();
+    private readonly HistorieVerwaltung _historieVerwaltung;
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public HistorieZeigen(
+        HistorieVerwaltung historieVerwaltung, 
+        Hilfsfunktionen help, 
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _historieVerwaltung = historieVerwaltung;
+        _help = help;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
+
 
     /// <summary>
     /// Zeigt die aktuelle Historie an
     /// </summary>
     public void HistorieAnzeigen()
     {
-        help.Write("\nMöchtest du die Historie aus der Datei (1) oder aus der DB (2)?");
-        double.TryParse(Console.ReadLine(), out double wahl);
+        double.TryParse(_help.Einlesen("\nMöchtest du die Historie aus der Datei (1) oder aus der DB (2)?"), out double wahl);
         if (wahl == 1)
         {
-            help.Write("\n=== BERECHNUNGSHISTORIE ===");
-            if (historieVerwaltung.berechnungsHistorie.Count == 0)
+            _help.Write("\n=== BERECHNUNGSHISTORIE ===");
+            if (_historieVerwaltung._berechnungsHistorie.Count == 0)
             {
-                help.Write("Keine Berechnungen durchgeführt.");
+                _help.Write("Keine Berechnungen durchgeführt.");
                 return;
             }
             else
             {
-                foreach (var eintrag in historieVerwaltung.berechnungsHistorie)
+                foreach (var eintrag in _historieVerwaltung._berechnungsHistorie)
                 {
-                    help.Write(eintrag);
+                    _help.Write(eintrag);
                 }
             }
         }
@@ -42,11 +53,11 @@ public class HistorieZeigen
 
             while (dbHistorie)
             {
-                help.Write("\n=== BERECHNUNGSHISTORIE AUS DER DB ===");
-                help.Write("Vorige Seite: <");
-                help.Write("Nächste Seite: >");
-                help.Write("Beenden: 0");
-                help.Write("Seite " + seite + ":");
+                _help.Write("\n=== BERECHNUNGSHISTORIE AUS DER DB ===");
+                _help.Write("Vorige Seite: <");
+                _help.Write("Nächste Seite: >");
+                _help.Write("Beenden: 0");
+                _help.Write("Seite " + seite + ":");
 
                 using var context = new TaschenrechnerContext();
 
@@ -58,7 +69,7 @@ public class HistorieZeigen
 
                 if (berechnungen.Count == 0)
                 {
-                    help.Write("Keine Berechnungen in der Datenbank gefunden.");
+                    _help.Write("Keine Berechnungen in der Datenbank gefunden.");
                     dbHistorie = false;
                     continue;
                 }
@@ -70,37 +81,36 @@ public class HistorieZeigen
                         double[] eingaben = JsonSerializer.Deserialize<double[]>(berechnung.Eingaben);
                         if (berechnung.Operation == "$")
                         {
-                            Console.OutputEncoding = Encoding.UTF8;
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingaben[0]}€ = ${berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            _help.setEncoding();
+                            _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingaben[0]}€ = ${berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
                         else if (berechnung.Operation == "/, *")
                         {
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} / {eingaben[1]}) * {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} / {eingaben[1]}) * {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
                         else if (berechnung.Operation == "*, /")
                         {
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} * {eingaben[1]}) / {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} * {eingaben[1]}) / {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
                         else
                         {
                             string eingabenStr = string.Join($" {berechnung.Operation} ", eingaben);
 
-                            help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingabenStr} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                            _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingabenStr} = {berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                         }
 
                         if (!string.IsNullOrEmpty(berechnung.Kommentar))
                         {
-                            help.Write($"    Kommentar: {berechnung.Kommentar}");
+                            _help.Write($"    Kommentar: {berechnung.Kommentar}");
                         }
                     }
                     catch (Exception ex)
                     {
-                        help.Write($"Fehler beim Anzeigen einer Berechnung: {ex.Message}");
+                        _help.Write($"Fehler beim Anzeigen einer Berechnung: {ex.Message}");
                     }
                 }
 
-                help.Write("");
-                string input = Console.ReadLine();
+                string input = _help.Einlesen("");
                 if (input == "<")
                 {
                     if (seite > 1)
@@ -115,17 +125,17 @@ public class HistorieZeigen
                 else if (input == "0")
                 {
                     dbHistorie = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    _help.Write("Zurück zum Hauptmenü.");
                 }
                 else
                 {
-                    help.Write("Ungültige Eingabe!");
+                    _help.Write("Ungültige Eingabe!");
                 }
             }
         }
         else
         {
-            help.Write("Ungültige Wahl!");
+            _help.Write("Ungültige Wahl!");
         }
     }
 }

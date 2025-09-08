@@ -5,9 +5,19 @@ namespace TaschenrechnerCore.Services;
 
 public class KonfigMenu : IMenu
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static KonfigBearbeiten konfigB = new KonfigBearbeiten();
-    static KonfigVerwaltung konfigV = new KonfigVerwaltung();
+    private readonly Hilfsfunktionen _help;
+    private readonly KonfigBearbeiten _konfigBearbeiten;
+    private readonly KonfigVerwaltung _konfigVerwaltung;
+
+    public KonfigMenu(
+        Hilfsfunktionen help, 
+        KonfigBearbeiten konfigBearbeiten, 
+        KonfigVerwaltung konfigVerwaltung)
+    {
+        _help = help;
+        _konfigBearbeiten = konfigBearbeiten;
+        _konfigVerwaltung = konfigVerwaltung;
+    }
 
     /// <summary>
     /// Zeigt das Konfiurationsmenü an, wrtet die Eingabe aus und führt die dazugehörige Funktion aus
@@ -17,43 +27,42 @@ public class KonfigMenu : IMenu
         bool konfigurierung = true;
         while (konfigurierung)
         {
-            help.Mischen();
+            _help.Mischen();
 
-            help.Write("\n=== KONFIGURATIONSMENU ===");
-            help.Write("1. Konfiguration laden");
-            help.Write("2. Konfiguration anzeigen");
-            help.Write("3. Konfiguration bearbeiten");
-            help.Write("4. Konfiguration speichern");
-            help.Write("5. Zurück zum Hauptmenü");
-            help.Write("Deine Wahl (1-5): ");
-            int wahl = help.MenuWahlEinlesen();
+            _help.Write("\n=== KONFIGURATIONSMENU ===");
+            _help.Write("1. Konfiguration laden");
+            _help.Write("2. Konfiguration anzeigen");
+            _help.Write("3. Konfiguration bearbeiten");
+            _help.Write("4. Konfiguration speichern");
+            _help.Write("5. Zurück zum Hauptmenü");
+            _help.Write("Deine Wahl (1-5): ");
+            int wahl = _help.MenuWahlEinlesen();
             switch (wahl)
             {
                 case 1:
-                    konfigV.KonfigurationLaden();
+                    _konfigVerwaltung.KonfigurationLaden();
                     break;
                 case 2:
-                    konfigV.KonfigurationAnzeigen();
+                    _konfigVerwaltung.KonfigurationAnzeigen();
                     break;
                 case 3:
-                    konfigB.KonfigurationAendern();
+                    _konfigBearbeiten.KonfigurationAendern();
                     break;
                 case 4:
-                    konfigV.KonfigurationSpeichern();
+                    _konfigVerwaltung.KonfigurationSpeichern();
                     break;
                 case 5:
                     konfigurierung = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    _help.Write("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    help.Write("Ungültige Wahl!");
+                    _help.Write("Ungültige Wahl!");
                     break;
             }
 
             if (konfigurierung)
             {
-                help.Write("\nDrücke Enter für Menü...");
-                Console.ReadLine();
+                _help.Einlesen("\nDrücke Enter für Menü...");
             }
         }
     }

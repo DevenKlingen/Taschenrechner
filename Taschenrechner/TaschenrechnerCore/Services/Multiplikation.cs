@@ -4,27 +4,46 @@ namespace TaschenrechnerCore.Services;
 
 public class Multiplikation
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static HistorienBearbeitung historienB = new HistorienBearbeitung();
-    static DatenbankBerechnungen datenbankB = new DatenbankBerechnungen();
-    static MatrixLesen matrixL = new MatrixLesen();
-    static MatrixAusgabe matrixAus = new MatrixAusgabe();
+    private readonly Hilfsfunktionen _help;
+    private readonly HistorienBearbeitung _historienBearbeitung;
+    private readonly DatenbankBerechnungen _datenbankBerechnungen;
+    private readonly MatrixLesen _matrixLesen;
+    private readonly MatrixAusgabe _matrixAusgabe;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public Multiplikation(
+        Hilfsfunktionen help, 
+        HistorienBearbeitung historienB, 
+        DatenbankBerechnungen datenbankB, 
+        MatrixLesen matrixL, 
+        MatrixAusgabe matrixAus,
+        BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _historienBearbeitung = historienB;
+        _datenbankBerechnungen = datenbankB;
+        _matrixLesen = matrixL;
+        _matrixAusgabe = matrixAus;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
+
 
     /// <summary>
     /// Multiplikation zweier Zahlen
     /// </summary>
     public void Multiplizieren()
     {
-        double zahl1 = help.ZahlEinlesen("Gib die erste Zahl ein: ");
-        double zahl2 = help.ZahlEinlesen("Gib die zweite Zahl ein: ");
+        double zahl1 = _help.ZahlEinlesen("Gib die erste Zahl ein: ");
+        double zahl2 = _help.ZahlEinlesen("Gib die zweite Zahl ein: ");
 
         double ergebnis = zahl1 * zahl2;
-        help.Write($"Ergebnis: {zahl1} * {zahl2} = {ergebnis}");
+        _help.Write($"Ergebnis: {zahl1} * {zahl2} = {ergebnis}");
 
         double[] eingaben = { zahl1, zahl2 };
-        historienB.BerechnungHinzufuegen("*", eingaben, ergebnis);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "*", eingaben, ergebnis);
 
-        datenbankB.BerechnungInDatenbankSpeichern("*", eingaben, ergebnis);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("*", eingaben, ergebnis);
     }
 
     /// <summary>
@@ -32,15 +51,14 @@ public class Multiplikation
     /// </summary>
     public void MehrfachMultiplizieren()
     {
-        help.Write("\n=== MEHRFACH-MULTIPLIKATION ===");
-        help.Write("Gib mehrere Zahlen ein (beende mit 'fertig'):");
+        _help.Write("\n=== MEHRFACH-MULTIPLIKATION ===");
+        _help.Write("Gib mehrere Zahlen ein (beende mit 'fertig'):");
 
         List<double> zahlen = new List<double>();
 
         while (true)
         {
-            help.Write($"Zahl {zahlen.Count + 1}: ");
-            string eingabe = Console.ReadLine();
+            string eingabe = _help.Einlesen($"Zahl {zahlen.Count + 1}: ");
             if (eingabe.ToLower() == "fertig")
                 break;
             if (double.TryParse(eingabe, out double zahl))
@@ -51,7 +69,7 @@ public class Multiplikation
 
         if (zahlen.Count < 2)
         {
-            help.Write("Mindestens zwei Zahlen erforderlich!");
+            _help.Write("Mindestens zwei Zahlen erforderlich!");
             return;
         }
 
@@ -63,11 +81,11 @@ public class Multiplikation
         }
 
         string berechnung = $"{string.Join(" * ", zahlen)} = {ergebnis}";
-        help.Write($"Ergebnis: {berechnung}");
+        _help.Write($"Ergebnis: {berechnung}");
 
-        historienB.BerechnungHinzufuegen("*", zahlen.ToArray(), ergebnis);
+        _historienBearbeitung.BerechnungHinzufuegen(_benutzerEinstellungen, "*", zahlen.ToArray(), ergebnis);
 
-        datenbankB.BerechnungInDatenbankSpeichern("*", zahlen.ToArray(), ergebnis);
+        _datenbankBerechnungen.BerechnungInDatenbankSpeichern("*", zahlen.ToArray(), ergebnis);
     }
     
     /// <summary>
@@ -75,8 +93,8 @@ public class Multiplikation
     /// </summary>
     public void MatrixMultiplikation()
     {
-        double[,] matrixA = matrixL.MatrixEinlesen("Matrix A");
-        double[,] matrixB = matrixL.MatrixEinlesen("Matrix B");
+        double[,] matrixA = _matrixLesen.MatrixEinlesen("Matrix A");
+        double[,] matrixB = _matrixLesen.MatrixEinlesen("Matrix B");
         double[,] ergebnis = new double[2, 2];
 
         for (int zeile = 0; zeile < 2; zeile++)
@@ -87,6 +105,6 @@ public class Multiplikation
             }
         }
 
-        matrixAus.MatrixAusgeben(ergebnis, "Ergebnis der Matrix-Multiplikation");
+        _matrixAusgabe.MatrixAusgeben(ergebnis, "Ergebnis der Matrix-Multiplikation");
     }
 }

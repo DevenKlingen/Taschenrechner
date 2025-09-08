@@ -5,24 +5,32 @@ namespace TaschenrechnerCore.Services;
 
 public class StatistikMonatsReport
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static BenutzerManagement benutzerManagement = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerManagement _benutzerManagement;
+
+    public StatistikMonatsReport(
+        Hilfsfunktionen help, 
+        BenutzerManagement benutzerManagement)
+    {
+        _help = help;
+        _benutzerManagement = benutzerManagement;
+    }
+
     public void MonatsReport()
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
+        Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            help.Write("Kein Benutzer angemeldet!");
+            _help.Write("Kein Benutzer angemeldet!");
             return;
         }
 
-        help.Write("Jahr und Monat (yyyy-mm): ");
-        string eingabe = Console.ReadLine();
+        string eingabe = _help.Einlesen("Jahr und Monat (yyyy-mm): ");
 
         if (!DateTime.TryParseExact($"{eingabe}-01", "yyyy-MM-dd", null,
             System.Globalization.DateTimeStyles.None, out DateTime monat))
         {
-            help.Write("Ungültiges Format! Beispiel: 2025-01");
+            _help.Write("Ungültiges Format! Beispiel: 2025-01");
             return;
         }
 
@@ -38,12 +46,12 @@ public class StatistikMonatsReport
             .OrderBy(b => b.Zeitstempel)
             .ToList();
 
-        help.Write($"\n=== MONATS-REPORT {monat:MMMM yyyy} ===");
-        help.Write($"Berechnungen gesamt: {berechnungen.Count}");
+        _help.Write($"\n=== MONATS-REPORT {monat:MMMM yyyy} ===");
+        _help.Write($"Berechnungen gesamt: {berechnungen.Count}");
 
         if (!berechnungen.Any())
         {
-            help.Write("Keine Berechnungen in diesem Monat.");
+            _help.Write("Keine Berechnungen in diesem Monat.");
             return;
         }
 
@@ -52,10 +60,10 @@ public class StatistikMonatsReport
             .GroupBy(b => b.Zeitstempel.Day)
             .OrderBy(g => g.Key);
 
-        help.Write("\nTägliche Aufschlüsselung:");
+        _help.Write("\nTägliche Aufschlüsselung:");
         foreach (var gruppe in tagegruppen)
         {
-            help.Write($"  {gruppe.Key:00}.{monat.Month:00}: {gruppe.Count()} Berechnungen");
+            _help.Write($"  {gruppe.Key:00}.{monat.Month:00}: {gruppe.Count()} Berechnungen");
         }
 
         // Top-Operationen des Monats
@@ -65,10 +73,10 @@ public class StatistikMonatsReport
             .OrderByDescending(x => x.Count)
             .Take(3);
 
-        help.Write("\nTop-Operationen:");
+        _help.Write("\nTop-Operationen:");
         foreach (var op in topOps)
         {
-            help.Write($"  {op.Op}: {op.Count} mal");
+            _help.Write($"  {op.Op}: {op.Count} mal");
         }
     }
 }

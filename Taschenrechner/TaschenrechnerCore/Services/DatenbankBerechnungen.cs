@@ -2,19 +2,27 @@ using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 using System.Text.Json;
 
-namespace TaschenrechnerCore.Services;
-
-public class DatenbankBerechnungen
-{
-    static BenutzerManagement benutzerManagement = new();
-    static Hilfsfunktionen help = new Hilfsfunktionen();
+namespace TaschenrechnerCore.Services;                                                                             
+                                                                                                                   
+public class DatenbankBerechnungen                                                                                 
+{                                                                                                                  
+    private readonly BenutzerManagement _benutzerManagement;                                                        
+    private readonly Hilfsfunktionen _help;         
+         
+    public DatenbankBerechnungen(
+        BenutzerManagement benutzerManagement, 
+        Hilfsfunktionen help)
+    {
+        _benutzerManagement = benutzerManagement;
+        _help = help;
+    }
 
     public void BerechnungInDatenbankSpeichern(string operation, double[] eingaben, double ergebnis, string kommentar = "", string rechnertyp = "Basis")
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
+        Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            help.Write("Kein Benutzer angemeldet!");
+            _help.Write("Kein Benutzer angemeldet!");
             return;
         }
 
@@ -36,30 +44,30 @@ public class DatenbankBerechnungen
             context.Berechnungen.Add(berechnungDB);
             context.SaveChanges();
 
-            help.Write("Berechnung in Datenbank gespeichert.");
+            _help.Write("Berechnung in Datenbank gespeichert.");
         }
         catch (Exception ex)
         {
-            help.Write($"Fehler beim Speichern in Datenbank: {ex.Message}");
+            _help.Write($"Fehler beim Speichern in Datenbank: {ex.Message}");
         }
     }
 
     public void BerechnungenSuchen()
     {
-        Benutzer akt = benutzerManagement.getBenutzer();
+        Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            help.Write("Kein Benutzer angemeldet!");
+            _help.Write("Kein Benutzer angemeldet!");
             return;
         }
 
-        help.Write("=== BERECHNUNGEN SUCHEN ===");
-        help.Write("1. Nach Operation suchen (+, -, *, /)");
-        help.Write("2. Nach Datum suchen");
-        help.Write("3. Nach Rechnertyp suchen");
-        help.Write("4. Nach Ergebnis-Bereich suchen");
+        _help.Write("\n=== BERECHNUNGEN SUCHEN ===");
+        _help.Write("1. Nach Operation suchen (+, -, *, /)");
+        _help.Write("2. Nach Datum suchen");
+        _help.Write("3. Nach Rechnertyp suchen");
+        _help.Write("4. Nach Ergebnis-Bereich suchen");
 
-        int wahl = (int)help.ZahlEinlesen("Deine Wahl (1-4): ");
+        int wahl = (int)_help.ZahlEinlesen("Deine Wahl (1-4): ");
 
         using var context = new TaschenrechnerContext();
         IQueryable<BerechnungDB> query = context.Berechnungen
@@ -68,14 +76,12 @@ public class DatenbankBerechnungen
         switch (wahl)
         {
             case 1:
-                help.Write("Operation eingeben (+, -, *, /, etc.): ");
-                string operation = Console.ReadLine();
+                string operation = _help.Einlesen("Operation eingeben (+, -, *, /, etc.): ");
                 query = query.Where(b => b.Operation == operation);
                 break;
 
             case 2:
-                help.Write("Datum (yyyy-mm-dd): ");
-                if (DateTime.TryParse(Console.ReadLine(), out DateTime datum))
+                if (DateTime.TryParse(_help.Einlesen("Datum (yyyy-mm-dd): "), out DateTime datum))
                 {
                     var startDatum = datum.Date;
                     var endDatum = startDatum.AddDays(1);
@@ -84,31 +90,30 @@ public class DatenbankBerechnungen
                 break;
 
             case 3:
-                help.Write("Rechnertyp (Basis, Wissenschaftlich, Finanz): ");
-                string rechnertyp = Console.ReadLine();
+                string rechnertyp = _help.Einlesen("Rechnertyp (Basis, Wissenschaftlich, Finanz): ");
                 query = query.Where(b => b.Rechnertyp.Contains(rechnertyp));
                 break;
 
             case 4:
-                double min = help.ZahlEinlesen("Minimum: ");
-                double max = help.ZahlEinlesen("Maximum: ");
+                double min = _help.ZahlEinlesen("Minimum: ");
+                double max = _help.ZahlEinlesen("Maximum: ");
                 query = query.Where(b => b.Ergebnis >= min && b.Ergebnis <= max);
                 break;
 
             default:
-                help.Write("Ungültige Wahl!");
+                _help.Write("Ungültige Wahl!");
                 return;
         }
 
         var ergebnisse = query.OrderByDescending(b => b.Zeitstempel).ToList();
 
-        help.Write($"\n{ergebnisse.Count} Ergebnisse gefunden:");
+        _help.Write($"\n{ergebnisse.Count} Ergebnisse gefunden:");
         foreach (var berechnung in ergebnisse)
         {
             double[] eingaben = JsonSerializer.Deserialize<double[]>(berechnung.Eingaben);
             string eingabenStr = string.Join($" {berechnung.Operation} ", eingaben);
 
-            help.Write($"[{berechnung.Zeitstempel:dd.MM.yyyy HH:mm}] " +
+            _help.Write($"[{berechnung.Zeitstempel:dd.MM.yyyy HH:mm}] " +
                   $"{eingabenStr} = {berechnung.Ergebnis} ({berechnung.Rechnertyp})");
         }
     }

@@ -6,16 +6,24 @@ namespace TaschenrechnerCore.Services;
 
 public class DatenbankHistorie
 {
-    static Hilfsfunktionen help = new Hilfsfunktionen();
-    static BenutzerManagement benutzerManagement = new();
-    static BenutzerEinstellungen benutzerEinstellungen = new();
+    private readonly Hilfsfunktionen _help;
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly BenutzerEinstellungen _benutzerEinstellungen;
+
+    public DatenbankHistorie(Hilfsfunktionen help, BenutzerManagement benutzerManagement, BenutzerEinstellungen benutzerEinstellungen)
+    {
+        _help = help;
+        _benutzerManagement = benutzerManagement;
+        _benutzerEinstellungen = benutzerEinstellungen;
+    }
+
     public void DatenbankHistorieAnzeigen()
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Benutzer akt = benutzerManagement.getBenutzer();
+        Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            help.Write("Kein Benutzer angemeldet!");
+            _help.Write("Kein Benutzer angemeldet!");
             return;
         }
 
@@ -29,11 +37,11 @@ public class DatenbankHistorie
 
         if (!berechnungen.Any())
         {
-            help.Write("Keine Berechnungen in der Datenbank gefunden.");
+            _help.Write("Keine Berechnungen in der Datenbank gefunden.");
             return;
         }
 
-        help.Write("=== DATENBANK-HISTORIE (letzte 20) ===");
+        _help.Write("\n=== DATENBANK-HISTORIE (letzte 20) ===");
         foreach (var berechnung in berechnungen)
         {
             try
@@ -41,31 +49,31 @@ public class DatenbankHistorie
                 double[] eingaben = JsonSerializer.Deserialize<double[]>(berechnung.Eingaben);
                 if (berechnung.Operation == "$")
                 {
-                    help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingaben[0]}€ = ${berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                    _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingaben[0]}€ = ${berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                 }
                 else if (berechnung.Operation == "/, *")
                 {
-                    help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} / {eingaben[1]}) * {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                    _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} / {eingaben[1]}) * {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                 }
                 else if (berechnung.Operation == "*, /")
                 {
-                    help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} * {eingaben[1]}) / {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                    _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"({eingaben[0]} * {eingaben[1]}) / {eingaben[2]} = {berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                 }
                 else
                 {
                     string eingabenStr = string.Join($" {berechnung.Operation} ", eingaben);
 
-                    help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingabenStr} = {berechnung.Ergebnis.ToString($"F{benutzerEinstellungen.config.Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
+                    _help.Write($"[{berechnung.Zeitstempel:HH:mm:ss}] " + $"{eingabenStr} = {berechnung.Ergebnis.ToString($"F{_benutzerEinstellungen.getConfig().Nachkommastellen}")} " + $"({berechnung.Rechnertyp})");
                 }
 
                 if (!string.IsNullOrEmpty(berechnung.Kommentar))
                 {
-                    help.Write($"    Kommentar: {berechnung.Kommentar}");
+                    _help.Write($"    Kommentar: {berechnung.Kommentar}");
                 }
             }
             catch (Exception ex)
             {
-                help.Write($"Fehler beim Anzeigen einer Berechnung: {ex.Message}");
+                _help.Write($"Fehler beim Anzeigen einer Berechnung: {ex.Message}");
             }
         }
     }
