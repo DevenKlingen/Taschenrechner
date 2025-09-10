@@ -8,23 +8,23 @@ public class DatenbankMenu : IMenu
     private readonly Hilfsfunktionen _help;
     private readonly DatenbankHistorie _datenbankHistorie;
     private readonly DatenbankBerechnungen _datenbankBerechnungen;
-    private readonly DatenbankExport _datenbankExport;
     private readonly DatenbankReinigung _datenbankReinigung;
     private readonly Backup _backup;
+    private readonly BenutzerManagement _benutzerManagement;
 
     public DatenbankMenu(
         Hilfsfunktionen help, 
         DatenbankHistorie datenbankHistorie, 
         DatenbankBerechnungen datenbankBerechnungen, 
-        DatenbankExport datenbankExport, 
         DatenbankReinigung datenbankReinigung, 
+        BenutzerManagement benutzerManagement,
         Backup backup)
     {
         _help = help;
         _datenbankHistorie = datenbankHistorie;
         _datenbankBerechnungen = datenbankBerechnungen;
-        _datenbankExport = datenbankExport;
         _datenbankReinigung = datenbankReinigung;
+        _benutzerManagement = benutzerManagement;
         _backup = backup;
     }
 
@@ -34,43 +34,44 @@ public class DatenbankMenu : IMenu
         while (datenbankMenuAktiv)
         {
             _help.Mischen();
-            _help.Write("\n=== DATENBANK-MENÜ ===");
-            _help.Write("1. Datenbank-Historie anzeigen");
-            _help.Write("2. Berechnungen suchen");
-            _help.Write("3. Datenbank exportieren");
-            _help.Write("4. Datenbank bereinigen");
-            _help.Write("5. Datenbank Backup");
-            _help.Write("6. Zurück zum Hauptmenü");
-            _help.Write("Deine Wahl (1-6): ");
-            int wahl = _help.MenuWahlEinlesen();
+            _help.WriteInfo("\n=== DATENBANK-MENÜ ===");
+            _help.WriteInfo("1. Datenbank-Historie anzeigen");
+            _help.WriteInfo("2. Berechnungen suchen");
+            _help.WriteInfo("3. Datenbank bereinigen");
+            _help.WriteInfo("4. Datenbank Backup");
+            _help.WriteInfo("5. Import-Export-Service");
+            _help.WriteInfo("0. Zurück zum Hauptmenü");
+            int wahl = (int)_help.ZahlEinlesen("Deine Wahl: ");
+
             switch (wahl)
             {
                 case 1:
-                    _datenbankHistorie.DatenbankHistorieAnzeigen();
+                    _datenbankHistorie.HistorieAnzeigen();
                     break;
                 case 2:
                     _datenbankBerechnungen.BerechnungenSuchen();
                     break;
                 case 3:
-                    _datenbankExport.DatenbankExportieren();
-                    break;
-                case 4:
                     _datenbankReinigung.DatenbankBereinigen();
                     break;
-                case 5:
+                case 4:
                     _backup.DatenbankBackup();
                     break;
-                case 6:
+                case 5:
+                    ImportExportMenu _importExportMenu = new ImportExportMenu(_help, new ImportExportService(_help, _benutzerManagement, _datenbankBerechnungen));
+                    _importExportMenu.Show();
+                    break;
+                case 0:
                     datenbankMenuAktiv = false;
-                    _help.Write("Zurück zum Hauptmenü.");
+                    _help.WriteInfo("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    _help.Write("Ungültige Wahl!");
+                    _help.WriteInfo("Ungültige Wahl!");
                     break;
             }
             if (datenbankMenuAktiv)
             {
-                _help.Write("\nDrücke Enter für Menü...");
+                _help.WriteInfo("\nDrücke Enter für Menü...");
                 Console.ReadLine();
             }
         }

@@ -1,7 +1,9 @@
+using TaschenrechnerCore.Interfaces;
+
 namespace TaschenrechnerCore.Utils;
 
 // Static Klasse für Eingabe-Validierung
-public static class ValidationUtils
+public class ValidationUtils : IValidationService
 {
     public static bool IstGueltigeZahl(string eingabe, out double zahl)
     {
@@ -21,5 +23,13 @@ public static class ValidationUtils
     public static bool IstGanzzahl(double zahl)
     {
         return zahl == Math.Floor(zahl);
+    }
+    public bool isKonstante(string eingabe)
+    {
+        bool konst = false;
+        string konstante = eingabe.ToLower();
+        if (konstante == "pi" || konstante == "phi" || konstante == "e" || konstante == "wurzel2")
+            konst = true;
+        return konst;
     }
 }

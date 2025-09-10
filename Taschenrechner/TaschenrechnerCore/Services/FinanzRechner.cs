@@ -3,7 +3,7 @@ using TaschenrechnerCore.Utils;
 
 namespace TaschenrechnerCore.Services;
 
-public class FinanzRechner : BaseRechner
+public class FinanzRechner : BaseRechner, IRechner
 {
     Hilfsfunktionen _help;
     public FinanzRechner(BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen)
@@ -62,24 +62,30 @@ public class FinanzRechner : BaseRechner
                 throw new NotSupportedException($"Finanz-Operation '{operation}' nicht unterstützt.");
         }
 
-        BerechnungSpeichern(operation, werte, ergebnis);
+        List<double> werteliste = new List<double>();
+        foreach (var entry in werte)
+        {
+            werteliste.Add(entry);
+        }
+
+        BerechnungSpeichern(operation, werteliste, ergebnis);
         return ergebnis;
     }
 
     // Spezielle Methoden für Finanzberechnungen
     public void KreditPlanErstellen(double kreditsumme, double zinssatz, int laufzeitJahre)
     {
-        _help.Write("\n=== TILGUNGSPLAN ===");
-        _help.Write($"Kreditsumme: {kreditsumme:C}");
-        _help.Write($"Zinssatz: {zinssatz:F2}%");
-        _help.Write($"Laufzeit: {laufzeitJahre} Jahre\n");
+        _help.WriteInfo("\n=== TILGUNGSPLAN ===");
+        _help.WriteInfo($"Kreditsumme: {kreditsumme:C}");
+        _help.WriteInfo($"Zinssatz: {zinssatz:F2}%");
+        _help.WriteInfo($"Laufzeit: {laufzeitJahre} Jahre\n");
 
         double annuitaet = Berechnen("annuitaet", kreditsumme, zinssatz, laufzeitJahre);
         double restschuld = kreditsumme;
 
-        _help.Write($"Jährliche Annuität: {annuitaet:C}\n");
-        _help.Write("Jahr\tZinsen\t\tTilgung\t\tRestschuld");
-        _help.Write(new string('-', 50));
+        _help.WriteInfo($"Jährliche Annuität: {annuitaet:C}\n");
+        _help.WriteInfo("Jahr\tZinsen\t\tTilgung\t\tRestschuld");
+        _help.WriteInfo(new string('-', 50));
 
         for (int jahr = 1; jahr <= laufzeitJahre; jahr++)
         {
@@ -87,7 +93,7 @@ public class FinanzRechner : BaseRechner
             double tilgungJahr = annuitaet - zinsenJahr;
             restschuld -= tilgungJahr;
 
-            _help.Write($"{jahr}\t{zinsenJahr:C}\t{tilgungJahr:C}\t{Math.Max(0, restschuld):C}");
+            _help.WriteInfo($"{jahr}\t{zinsenJahr:C}\t{tilgungJahr:C}\t{Math.Max(0, restschuld):C}");
         }
     }
 }

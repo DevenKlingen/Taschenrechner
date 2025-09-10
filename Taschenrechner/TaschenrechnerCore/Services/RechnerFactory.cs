@@ -12,38 +12,26 @@ public static class RechnerFactory
     static BenutzerManagement _benutzerManagement;
     static DatenbankBerechnungen _datenbankBerechnungen;
 
-    // Static Dictionary für Rechner-Registry
     private static readonly Dictionary<RechnerTyp, Func<BaseRechner>> rechnerRegistry
         = new Dictionary<RechnerTyp, Func<BaseRechner>>();
 
     // Static Constructor für Initialisierung
-    static RechnerFactory()
+    public static void Initialisiere(
+         Hilfsfunktionen help,
+         RechnerManager rechnerManager,
+         BenutzerManagement benutzerManagement,
+         DatenbankBerechnungen datenbankBerechnungen)
     {
-
-        RegistriereRechner();
-    }
-
-    public static void setHelp(Hilfsfunktionen hilfsfunktionen)
-    {
-        _help = hilfsfunktionen;
-    }
-    public static void setDatenbankBerechnungen(DatenbankBerechnungen datenbankBerechnungen)
-    {
-        _datenbankBerechnungen = datenbankBerechnungen;
-    }
-
-    public static void setRechnerManager(RechnerManager rechnerManager)
-    {
+        _help = help;
         _rechnerManager = rechnerManager;
-    }
-
-    public static void setBenutzerManagement(BenutzerManagement benutzerManager)
-    {
-        _benutzerManagement = benutzerManager;
+        _benutzerManagement = benutzerManagement;
+        _datenbankBerechnungen = datenbankBerechnungen;
+        RegistriereRechner();
     }
 
     private static void RegistriereRechner()
     {
+        rechnerRegistry.Clear();
         rechnerRegistry[RechnerTyp.Basis] = () => new BasisRechner(_benutzerManagement, _datenbankBerechnungen);
         rechnerRegistry[RechnerTyp.Wissenschaftlich] = () => new WissenschaftlicherRechner(_benutzerManagement, _datenbankBerechnungen);
         rechnerRegistry[RechnerTyp.Finanz] = () => new FinanzRechner(_benutzerManagement, _datenbankBerechnungen);
@@ -78,12 +66,12 @@ public static class RechnerFactory
 
     public static void ZeigeVerfuegbareRechner()
     {
-        _help.Write("\n=== VERFÜGBARE RECHNER ===");
+        _help.WriteInfo("\n=== VERFÜGBARE RECHNER ===");
         var typen = GetVerfuegbareRechnerTypen();
 
         for (int i = 0; i < typen.Count; i++)
         {
-            _help.Write($"{i + 1}. {typen[i]}");
+            _help.WriteInfo($"{i + 1}. {typen[i]}");
         }
     }
 }

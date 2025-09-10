@@ -2,7 +2,7 @@ using TaschenrechnerCore.Interfaces;
 
 namespace TaschenrechnerCore.Services;
 
-public class BasisRechner : BaseRechner
+public class BasisRechner : BaseRechner, IRechner
 {
     public BasisRechner(BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen) 
         : base(benutzerManagement, datenbankBerechnungen, "Basis-Rechner")
@@ -47,8 +47,14 @@ public class BasisRechner : BaseRechner
                 throw new NotSupportedException($"Operation '{operation}' wird nicht unterstützt.");
         }
 
+        List<double> werteliste = new List<double>();
+        foreach (var entry in werte) 
+        {
+            werteliste.Add(entry);
+        }
+
         // Berechnung automatisch speichern
-        BerechnungSpeichern(operation, werte, ergebnis);
+        BerechnungSpeichern(operation, werteliste, ergebnis);
 
         return ergebnis;
     }

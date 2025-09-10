@@ -4,7 +4,7 @@ using TaschenrechnerCore.Models;
 
 namespace TaschenrechnerCore.Services;
 
-public class MatrixRechner : BaseRechner
+public class MatrixRechner : BaseRechner, IRechner
 {
     private readonly Hilfsfunktionen _help;
     private readonly RechnerManager _rechnerManager;
@@ -80,44 +80,22 @@ public class MatrixRechner : BaseRechner
         int zeilen = matrix.GetLength(0);
         int spalten = matrix.GetLength(1);
 
-        _help.WriteInline($"{name} ({zeilen}x{spalten}):");
+        _help.WriteInfo($"{name} ({zeilen}x{spalten}):", false, true);
         for (int i = 0; i < zeilen; i++)
         {
-            _help.WriteInline("| ");
+            _help.WriteInfo("| ", true, true);
             for (int j = 0; j < spalten; j++)
             {
-                _help.WriteInline($"{matrix[i, j]:F2} ");
+                _help.WriteInfo($"{matrix[i, j]:F2} ", true, true);
             }
-            _help.Write("|");
+            _help.WriteInfo("|", false, true);
         }
-    }
-
-    public void ZeigeMatrixMenue()
-    {
-        Benutzer akt = _benutzerManagement.getBenutzer();
-        _help.Mischen();
-        _help.Clear();
-        string aktueller = _rechnerManager.AktuellerRechner?.RechnerTyp ?? "Kein Rechner aktiv";
-        _help.Write($"\n=== TASCHENRECHNER v2.0 ===");
-        _help.Write($"Aktueller Rechner: {aktueller}");
-        _help.Write($"Benutzer: {akt?.Name ?? "Nicht angemeldet"}");
-        _help.Write("");
-        _help.Write("1. Mögliche Berechnungen ansehen");
-        _help.Write("2. Rechner wechseln");
-        _help.Write("3. Historie anzeigen");
-        _help.Write("4. Aktive Rechner anzeigen");
-        _help.Write("5. Datenbank-Historie");
-        _help.Write("6. Statistiken");
-        _help.Write("7. Einstellungen");
-        _help.Write("8. Benutzer-Management");
-        _help.Write("0. Beenden");
-        _help.Write("");
     }
 
     public void MatrixBerechnen(string berechnung)
     {
 
-        _help.Write("Wie viele Zeilen und Spalten sollen die Matrizen haben?");
+        _help.WriteInfo("Wie viele Zeilen und Spalten sollen die Matrizen haben?");
 
         int zeilenA;
         int.TryParse(_help.Einlesen("Anzahl der Zeilen (A): "), out zeilenA);
@@ -135,12 +113,12 @@ public class MatrixRechner : BaseRechner
 
         if (berechnung.ToLower() == "multiplikation" && zeilenA != spaltenB)
         {
-            _help.Write("Für die Multiplikation müssen die Zeilen von Matrix A gleich den Spalten von Matrix B sein.");
+            _help.WriteWarning("Für die Multiplikation müssen die Zeilen von Matrix A gleich den Spalten von Matrix B sein.");
             return;
         }
 
         int mengeA = zeilenA * spaltenA;
-        _help.Write($"Gib die Werte für die {mengeA} Elemente der Matrix A ein:");
+        _help.WriteInfo($"Gib die Werte für die {mengeA} Elemente der Matrix A ein:");
         for (int i = 0; i < zeilenA; i++)
         {
             for (int j = 0; j < spaltenA; j++)
@@ -148,7 +126,7 @@ public class MatrixRechner : BaseRechner
                 double wert;
                 while (!double.TryParse(_help.Einlesen($"Element [{i + 1}, {j + 1}]: "), out wert))
                 {
-                    _help.Write("Ungültige Eingabe! Bitte eine Zahl eingeben.");
+                    _help.WriteWarning("Ungültige Eingabe! Bitte eine Zahl eingeben.");
                 }
                 matrixA[i, j] = wert;
             }
@@ -156,7 +134,7 @@ public class MatrixRechner : BaseRechner
 
         int mengeB = zeilenB * spaltenB;
         double[,] matrixB = new double[zeilenB, spaltenB];
-        _help.Write($"Gib die Werte für die {mengeB} Elemente der Matrix B ein:");
+        _help.WriteInfo($"Gib die Werte für die {mengeB} Elemente der Matrix B ein:");
         for (int i = 0; i < zeilenB; i++)
         {
             for (int j = 0; j < spaltenB; j++)
@@ -164,7 +142,7 @@ public class MatrixRechner : BaseRechner
                 double wert;
                 while (!double.TryParse(_help.Einlesen($"Element [{i + 1}, {j + 1}]: "), out wert))
                 {
-                    _help.Write("Ungültige Eingabe! Bitte eine Zahl eingeben.");
+                    _help.WriteWarning("Ungültige Eingabe! Bitte eine Zahl eingeben.");
                 }
                 matrixB[i, j] = wert;
             }
@@ -181,7 +159,7 @@ public class MatrixRechner : BaseRechner
                 MatrixAusgeben(ergebnisMult, "Ergebnis der Multiplikation");
                 break;
             default:
-                _help.Write("Ungültige Berechnung!");
+                _help.WriteWarning("Ungültige Berechnung!");
                 break;
         }
     }
@@ -190,11 +168,11 @@ public class MatrixRechner : BaseRechner
     {
         _help.Mischen();
         _help.Clear();
-        _help.Write("\n=== Mögliche Matrix-Berechnungen ===");
-        _help.Write("1. Matrix Addition");
-        _help.Write("2. Matrix Multiplikation");
-        _help.Write("0. Zurück zum Hauptmenü");
-        _help.Write("");
+        _help.WriteInfo("\n=== Mögliche Matrix-Berechnungen ===");
+        _help.WriteInfo("1. Matrix Addition");
+        _help.WriteInfo("2. Matrix Multiplikation");
+        _help.WriteInfo("0. Zurück zum Hauptmenü");
+        _help.WriteInfo("");
 
         int wahl = _help.MenuWahlEinlesen();
         switch (wahl)
@@ -206,10 +184,10 @@ public class MatrixRechner : BaseRechner
                 MatrixBerechnen("Multiplikation");
                 break;
             case 0:
-                _help.Write("Zurück zum Hauptmenü.");
+                _help.WriteInfo("Zurück zum Hauptmenü.");
                 break;
             default:
-                _help.Write("Ungültige Wahl!");
+                _help.WriteWarning("Ungültige Wahl!");
                 break;
         }
     }

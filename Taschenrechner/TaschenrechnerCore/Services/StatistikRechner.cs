@@ -3,7 +3,7 @@ using TaschenrechnerCore.Utils;
 
 namespace TaschenrechnerCore.Services;
 
-public class StatistikRechner : BaseRechner
+public class StatistikRechner : BaseRechner, IRechner
 {
     private readonly Hilfsfunktionen _help;
 
@@ -56,7 +56,13 @@ public class StatistikRechner : BaseRechner
                 throw new NotSupportedException($"Statistik-Operation '{operation}' nicht unterstützt.");
         }
 
-        BerechnungSpeichern(operation, werte, ergebnis);
+        List<double> werteliste = new List<double>();
+        foreach (var entry in werte)
+        {
+            werteliste.Add(entry);
+        }
+
+        BerechnungSpeichern(operation, werteliste, ergebnis);
         return ergebnis;
     }
 
@@ -77,14 +83,14 @@ public class StatistikRechner : BaseRechner
 
     public void VollstaendigeStatistik(double[] werte)
     {
-        _help.Write("\n=== VOLLSTÄNDIGE STATISTIK ===");
-        _help.Write($"Anzahl Werte: {werte.Length}");
-        _help.Write($"Mittelwert: {Berechnen("mittelwert", werte):F2}");
-        _help.Write($"Median: {Berechnen("median", werte):F2}");
-        _help.Write($"Minimum: {Berechnen("min", werte):F2}");
-        _help.Write($"Maximum: {Berechnen("max", werte):F2}");
-        _help.Write($"Spannweite: {Berechnen("spannweite", werte):F2}");
-        _help.Write($"Standardabweichung: {Berechnen("standardabweichung", werte):F2}");
-        _help.Write($"Varianz: {Berechnen("varianz", werte):F2}");
+        _help.WriteInfo("\n=== VOLLSTÄNDIGE STATISTIK ===");
+        _help.WriteInfo($"Anzahl Werte: {werte.Length}");
+        _help.WriteInfo($"Mittelwert: {Berechnen("mittelwert", werte):F2}");
+        _help.WriteInfo($"Median: {Berechnen("median", werte):F2}");
+        _help.WriteInfo($"Minimum: {Berechnen("min", werte):F2}");
+        _help.WriteInfo($"Maximum: {Berechnen("max", werte):F2}");
+        _help.WriteInfo($"Spannweite: {Berechnen("spannweite", werte):F2}");
+        _help.WriteInfo($"Standardabweichung: {Berechnen("standardabweichung", werte):F2}");
+        _help.WriteInfo($"Varianz: {Berechnen("varianz", werte):F2}");
     }
 }

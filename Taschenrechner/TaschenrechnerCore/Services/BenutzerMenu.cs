@@ -17,11 +17,12 @@ public class BenutzerMenu : IMenu
     }
     public void Show()
     {
-        _help.Write("\n=== BENUTZER-MANAGEMENT ===");
-        _help.Write("1. Benutzer wechseln");
-        _help.Write("2. Benutzer löschen");
-        _help.Write("3. Zurück zum Hauptmenü");
+        _help.WriteInfo("\n=== BENUTZER-MANAGEMENT ===");
+        _help.WriteInfo("1. Benutzer wechseln");
+        _help.WriteInfo("2. Benutzer löschen");
+        _help.WriteInfo("0. Zurück zum Hauptmenü");
         int wahl = (int)_help.ZahlEinlesen("Deine Wahl: ");
+
         switch (wahl)
         {
             case 1:
@@ -30,10 +31,10 @@ public class BenutzerMenu : IMenu
             case 2:
                 _benutzerManagement.BenutzerLöschen();
                 break;
-            case 3:
+            case 0:
                 return; // Zurück zum Hauptmenü
             default:
-                _help.Write("Ungültige Wahl!");
+                _help.WriteInfo("Ungültige Wahl!");
                 break;
         }
     }

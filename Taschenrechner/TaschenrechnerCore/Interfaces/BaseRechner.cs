@@ -3,7 +3,7 @@ using TaschenrechnerCore.Services;
 
 namespace TaschenrechnerCore.Interfaces;
 
-public abstract class BaseRechner
+public abstract class BaseRechner : IRechner
 {
     private readonly BenutzerManagement _benutzerManagement;
     private readonly DatenbankBerechnungen _datenbankmenu;
@@ -40,7 +40,7 @@ public abstract class BaseRechner
     public abstract double Berechnen(string operation, params double[] werte);
 
     // Virtuelle Methode - kann in abgeleiteten Klassen überschrieben werden
-    public virtual void BerechnungSpeichern(string operation, double[] eingaben, double ergebnis)
+    public virtual void BerechnungSpeichern(string operation, List<double> eingaben, double ergebnis)
     {
         Benutzer akt = _benutzerManagement.getBenutzer();
         var berechnungErgebnis = new BerechnungErgebnis

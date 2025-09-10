@@ -15,17 +15,28 @@ namespace TaschenrechnerCore.Utils
             _logger = logger;
         }
 
-        public void Write(string input)
+        public void WriteInfo(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
         {
-            Mischen(); // Hintergrund- und Textfarbe anpassen
-            _logger.Info(input); // Nachricht über den Logger ausgeben
+            _logger.Info(input, noNewLine, ignoreTimeStamp);
+            Mischen();
         }
 
-        public void WriteInline(string input)
+        public void WriteWarning(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
         {
-            Mischen(); // Hintergrund- und Textfarbe anpassen
-            Console.Write(input); // Nachricht ohne Zeilenumbruch ausgeben
-            _logger.Info(input); // Nachricht im Logger protokollieren
+            _logger.Warn(input, noNewLine, ignoreTimeStamp);
+            Mischen();
+        }
+
+        public void WriteError(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
+        {
+            _logger.Error(input, noNewLine, ignoreTimeStamp);
+            Mischen();
+        }
+
+        public void WriteDebug(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
+        {
+            _logger.Debug(input, noNewLine, ignoreTimeStamp);
+            Mischen();
         }
 
         /// <summary>
@@ -51,6 +62,7 @@ namespace TaschenrechnerCore.Utils
         public void Mischen()
         {
             Benutzer akt = _benutzerManagement.getBenutzer();
+
             using var context = new TaschenrechnerContext();
             if (akt != null)
             {
@@ -131,7 +143,7 @@ namespace TaschenrechnerCore.Utils
         {
             while (true)
             {
-                Write(nachricht); // Nachricht über den Logger ausgeben
+                WriteInfo(nachricht); // Nachricht über den Logger ausgeben
                 string eingabe = Console.ReadLine();
 
                 if (double.TryParse(eingabe, out double zahl))
@@ -140,13 +152,13 @@ namespace TaschenrechnerCore.Utils
                     return zahl;
                 }
 
-                Write("Bitte gib eine gültige Zahl ein!");
+                WriteWarning("Bitte gib eine gültige Zahl ein!");
             }
         }
 
         public string Einlesen(string nachricht)
         {
-            Write(nachricht); // Nachricht über den Logger ausgeben
+            WriteInfo(nachricht); // Nachricht über den Logger ausgeben
             string eingabe = Console.ReadLine();
 
             _logger.Info($"Benutzer hat {eingabe} eingegeben."); // Eingabe protokollieren

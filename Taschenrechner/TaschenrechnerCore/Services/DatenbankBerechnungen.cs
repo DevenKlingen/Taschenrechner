@@ -1,28 +1,29 @@
 using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 using System.Text.Json;
+using TaschenrechnerCore.Interfaces;
 
-namespace TaschenrechnerCore.Services;                                                                             
-                                                                                                                   
-public class DatenbankBerechnungen                                                                                 
-{                                                                                                                  
-    private readonly BenutzerManagement _benutzerManagement;                                                        
-    private readonly Hilfsfunktionen _help;         
-         
+namespace TaschenrechnerCore.Services;
+
+public class DatenbankBerechnungen
+{
+    private readonly BenutzerManagement _benutzerManagement;
+    private readonly Hilfsfunktionen _help;
+
     public DatenbankBerechnungen(
-        BenutzerManagement benutzerManagement, 
+        BenutzerManagement benutzerManagement,
         Hilfsfunktionen help)
     {
         _benutzerManagement = benutzerManagement;
         _help = help;
     }
 
-    public void BerechnungInDatenbankSpeichern(string operation, double[] eingaben, double ergebnis, string kommentar = "", string rechnertyp = "Basis")
+    public void BerechnungInDatenbankSpeichern(string operation, List<double> eingaben, double ergebnis, string kommentar = "", string rechnertyp = "Basis")
     {
         Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            _help.Write("Kein Benutzer angemeldet!");
+            _help.WriteInfo("Kein Benutzer angemeldet!");
             return;
         }
 
@@ -43,12 +44,10 @@ public class DatenbankBerechnungen
 
             context.Berechnungen.Add(berechnungDB);
             context.SaveChanges();
-
-            _help.Write("Berechnung in Datenbank gespeichert.");
         }
         catch (Exception ex)
         {
-            _help.Write($"Fehler beim Speichern in Datenbank: {ex.Message}");
+            _help.WriteError($"Fehler beim Speichern in Datenbank: {ex.Message}");
         }
     }
 
@@ -57,15 +56,15 @@ public class DatenbankBerechnungen
         Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            _help.Write("Kein Benutzer angemeldet!");
+            _help.WriteInfo("Kein Benutzer angemeldet!");
             return;
         }
 
-        _help.Write("\n=== BERECHNUNGEN SUCHEN ===");
-        _help.Write("1. Nach Operation suchen (+, -, *, /)");
-        _help.Write("2. Nach Datum suchen");
-        _help.Write("3. Nach Rechnertyp suchen");
-        _help.Write("4. Nach Ergebnis-Bereich suchen");
+        _help.WriteInfo("\n=== BERECHNUNGEN SUCHEN ===");
+        _help.WriteInfo("1. Nach Operation suchen (+, -, *, /)");
+        _help.WriteInfo("2. Nach Datum suchen");
+        _help.WriteInfo("3. Nach Rechnertyp suchen");
+        _help.WriteInfo("4. Nach Ergebnis-Bereich suchen");
 
         int wahl = (int)_help.ZahlEinlesen("Deine Wahl (1-4): ");
 
@@ -101,19 +100,19 @@ public class DatenbankBerechnungen
                 break;
 
             default:
-                _help.Write("Ungültige Wahl!");
+                _help.WriteInfo("Ungültige Wahl!");
                 return;
         }
 
         var ergebnisse = query.OrderByDescending(b => b.Zeitstempel).ToList();
 
-        _help.Write($"\n{ergebnisse.Count} Ergebnisse gefunden:");
+        _help.WriteInfo($"\n{ergebnisse.Count} Ergebnisse gefunden:");
         foreach (var berechnung in ergebnisse)
         {
             double[] eingaben = JsonSerializer.Deserialize<double[]>(berechnung.Eingaben);
             string eingabenStr = string.Join($" {berechnung.Operation} ", eingaben);
 
-            _help.Write($"[{berechnung.Zeitstempel:dd.MM.yyyy HH:mm}] " +
+            _help.WriteInfo($"[{berechnung.Zeitstempel:dd.MM.yyyy HH:mm}] " +
                   $"{eingabenStr} = {berechnung.Ergebnis} ({berechnung.Rechnertyp})");
         }
     }

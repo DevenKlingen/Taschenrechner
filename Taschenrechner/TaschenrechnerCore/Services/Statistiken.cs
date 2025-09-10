@@ -23,7 +23,7 @@ public class Statistiken
         
         if (aktuellerBenutzer == null)
         {
-            _help.Write("Kein Benutzer angemeldet!");
+            _help.WriteWarning("Kein Benutzer angemeldet!");
             return;
         }
 
@@ -35,14 +35,14 @@ public class Statistiken
 
         if (!berechnungen.Any())
         {
-            _help.Write("Keine Berechnungen vorhanden für Statistiken.");
+            _help.WriteWarning("Keine Berechnungen vorhanden für Statistiken.");
             return;
         }
 
-        _help.Write("\n=== BENUTZER-STATISTIKEN ===");
-        _help.Write($"Benutzer: {akt.Name}");
-        _help.Write($"Mitglied seit: {akt.ErstelltAm:dd.MM.yyyy}");
-        _help.Write($"Gesamt-Berechnungen: {berechnungen.Count}");
+        _help.WriteInfo("\n=== BENUTZER-STATISTIKEN ===");
+        _help.WriteInfo($"Benutzer: {akt.Name}");
+        _help.WriteInfo($"Mitglied seit: {akt.ErstelltAm:dd.MM.yyyy}");
+        _help.WriteInfo($"Gesamt-Berechnungen: {berechnungen.Count}");
 
         // Operationen-Statistik
         var operationenStats = berechnungen
@@ -51,10 +51,10 @@ public class Statistiken
             .OrderByDescending(x => x.Anzahl)
             .ToList();
 
-        _help.Write("\nHäufigste Operationen:");
+        _help.WriteInfo("\nHäufigste Operationen:");
         foreach (var stat in operationenStats)
         {
-            _help.Write($"  {stat.Operation}: {stat.Anzahl} mal");
+            _help.WriteInfo($"  {stat.Operation}: {stat.Anzahl} mal");
         }
 
         // Rechnertyp-Statistik
@@ -64,10 +64,10 @@ public class Statistiken
             .OrderByDescending(x => x.Anzahl)
             .ToList();
 
-        _help.Write("\nVerwendete Rechnertypen:");
+        _help.WriteInfo("\nVerwendete Rechnertypen:");
         foreach (var stat in rechnerStats)
         {
-            _help.Write($"  {stat.Typ}: {stat.Anzahl} mal");
+            _help.WriteInfo($"  {stat.Typ}: {stat.Anzahl} mal");
         }
 
         // Tages-Aktivität (letzte 7 Tage)
@@ -81,23 +81,23 @@ public class Statistiken
             .OrderBy(x => x.Datum)
             .ToList();
 
-        _help.Write("\nAktivität (letzte 7 Tage):");
+        _help.WriteInfo("\nAktivität (letzte 7 Tage):");
         for (int i = 6; i >= 0; i--)
         {
             var datum = heute.AddDays(-i);
             var stat = tagesStats.FirstOrDefault(t => t.Datum == datum);
             int anzahl = stat?.Anzahl ?? 0;
-            _help.Write($"  {datum:dd.MM.yyyy}: {anzahl} Berechnungen");
+            _help.WriteInfo($"  {datum:dd.MM.yyyy}: {anzahl} Berechnungen");
         }
 
         // Durchschnitte und Extreme
         var ergebnisse = berechnungen.Select(b => b.Ergebnis).ToList();
         if (ergebnisse.Any())
         {
-            _help.Write("\nErgebnis-Statistiken:");
-            _help.Write($"  Kleinster Wert: {ergebnisse.Min():F2}");
-            _help.Write($"  Größter Wert: {ergebnisse.Max():F2}");
-            _help.Write($"  Durchschnitt: {ergebnisse.Average():F2}");
+            _help.WriteInfo("\nErgebnis-Statistiken:");
+            _help.WriteInfo($"  Kleinster Wert: {ergebnisse.Min():F2}");
+            _help.WriteInfo($"  Größter Wert: {ergebnisse.Max():F2}");
+            _help.WriteInfo($"  Durchschnitt: {ergebnisse.Average():F2}");
         }
 
         // Berechnung der letzten 30 Tage
@@ -131,7 +131,7 @@ public class Statistiken
 
         // Durchschnitt berechnen
         var durchschnitt = vollständigeStats.Average(g => g.Anzahl);
-        _help.Write($"Durchschnittliche Berechnungen pro Tag (letzte 30 Tage): {durchschnitt}");
+        _help.WriteInfo($"Durchschnittliche Berechnungen pro Tag (letzte 30 Tage): {durchschnitt}");
 
         // Korrelation zwischen Tageszeit und Rechnertyp
         var korrelationStats = berechnungen;
@@ -142,11 +142,11 @@ public class Statistiken
             .OrderBy(x => x.Hour)
             .ToList();
 
-        _help.Write("\nKorrelation zwischen Tageszeit und Rechnertyp:");
+        _help.WriteInfo("\nKorrelation zwischen Tageszeit und Rechnertyp:");
 
         foreach (var stat in korrelation)
         {
-            _help.Write($"  {stat.Hour:00}:00 - {stat.Rechnertyp}: {stat.Count} mal");
+            _help.WriteInfo($"  {stat.Hour:00}:00 - {stat.Rechnertyp}: {stat.Count} mal");
         }
     }
 
@@ -157,7 +157,7 @@ public class Statistiken
         if (!DateTime.TryParseExact(eingabe, "dd.MM.yyyy", null,
             System.Globalization.DateTimeStyles.None, out DateTime tag))
         {
-            _help.Write("Ungültiges Format! Beispiel: 01.01.2025");
+            _help.WriteWarning("Ungültiges Format! Beispiel: 01.01.2025");
             return;
         }
 
@@ -165,7 +165,7 @@ public class Statistiken
 
         if (akt == null)
         {
-            _help.Write("Kein Benutzer angemeldet!");
+            _help.WriteWarning("Kein Benutzer angemeldet!");
             return;
         }
 
@@ -176,7 +176,7 @@ public class Statistiken
 
         if (!berechnungen.Any())
         {
-            _help.Write("Keine Berechnungen für diesen Tag gefunden.");
+            _help.WriteWarning("Keine Berechnungen für diesen Tag gefunden.");
             return;
         }
 
@@ -187,12 +187,12 @@ public class Statistiken
 
         if (gesamtBerechnungen == 0)
         {
-            _help.Write("Keine vorherigen Berechnungen gefunden, Wachstumstrend kann nicht berechnet werden.");
+            _help.WriteWarning("Keine vorherigen Berechnungen gefunden, Wachstumstrend kann nicht berechnet werden.");
             return;
         }
 
         var wachstum = (anzahlBerechnungen - gesamtBerechnungen) / (double)gesamtBerechnungen * 100;
 
-        _help.Write($"Wachstumstrend für {tag:dd.MM.yyyy}: {wachstum:F2}%");
+        _help.WriteInfo($"Wachstumstrend für {tag:dd.MM.yyyy}: {wachstum:F2}%");
     }
 }

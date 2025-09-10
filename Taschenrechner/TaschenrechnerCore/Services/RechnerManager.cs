@@ -9,6 +9,8 @@ public class RechnerManager
     private Dictionary<RechnerTyp, BaseRechner> aktiveRechner;
     private BaseRechner aktuellerRechner;
     private Hilfsfunktionen _help;
+    private BenutzerManagement _benutzerManagement;
+    private DatenbankBerechnungen _datenbankBerechnungen;
 
     public BaseRechner AktuellerRechner
     {
@@ -16,10 +18,13 @@ public class RechnerManager
         private set { aktuellerRechner = value; }
     }
 
-    public RechnerManager(Hilfsfunktionen help)
+    public RechnerManager(Hilfsfunktionen help, BenutzerManagement benutzerManagement, DatenbankBerechnungen datenbankBerechnungen)
     {
         aktiveRechner = new Dictionary<RechnerTyp, BaseRechner>();
         _help = help;
+        _benutzerManagement = benutzerManagement;
+        _datenbankBerechnungen = datenbankBerechnungen;
+        RechnerFactory.Initialisiere(_help, this, _benutzerManagement, _datenbankBerechnungen);
     }
 
     public BaseRechner WechsleZuRechner(RechnerTyp typ)
@@ -28,29 +33,29 @@ public class RechnerManager
         if (!aktiveRechner.ContainsKey(typ))
         {
             aktiveRechner[typ] = RechnerFactory.ErstelleRechner(typ);
-            _help.Write($"{typ}-Rechner wurde erstellt.");
+            _help.WriteInfo($"{typ}-Rechner wurde erstellt.");
         }
 
         AktuellerRechner = aktiveRechner[typ];
-        _help.Write($"Gewechselt zu: {AktuellerRechner.RechnerTyp}");
+        _help.WriteInfo($"Gewechselt zu: {AktuellerRechner.RechnerTyp}");
 
         return AktuellerRechner;
     }
 
     public void ZeigeAktiveRechner()
     {
-        _help.Write("\n=== AKTIVE RECHNER ===");
+        _help.WriteInfo("\n=== AKTIVE RECHNER ===");
 
         if (aktiveRechner.Count == 0)
         {
-            _help.Write("Keine Rechner aktiv.");
+            _help.WriteWarning("Keine Rechner aktiv.");
             return;
         }
 
         foreach (var kvp in aktiveRechner)
         {
             string marker = (kvp.Value == AktuellerRechner) ? " [AKTIV]" : "";
-            _help.Write($"- {kvp.Key}: {kvp.Value.AnzahlBerechnungen} Berechnungen{marker}");
+            _help.WriteInfo($"- {kvp.Key}: {kvp.Value.AnzahlBerechnungen} Berechnungen{marker}");
         }
     }
 
@@ -64,7 +69,7 @@ public class RechnerManager
             }
 
             aktiveRechner.Remove(typ);
-            _help.Write($"{typ}-Rechner wurde geschlossen.");
+            _help.WriteInfo($"{typ}-Rechner wurde geschlossen.");
         }
     }
 
@@ -72,6 +77,27 @@ public class RechnerManager
     {
         aktiveRechner.Clear();
         AktuellerRechner = null;
-        _help.Write("Alle Rechner wurden geschlossen.");
+        _help.WriteInfo("Alle Rechner wurden geschlossen.");
+    }
+
+    public void RechnerWechseln()
+    {
+        _help.WriteInfo("=== RECHNER WECHSELN ===");
+        RechnerFactory.ZeigeVerfuegbareRechner();
+
+        int wahl = (int)_help.ZahlEinlesen("Rechner wählen (Nummer): ");
+
+        var verfuegbareTypen = RechnerFactory.GetVerfuegbareRechnerTypen();
+
+        if (wahl >= 1 && wahl <= verfuegbareTypen.Count)
+        {
+            string typName = verfuegbareTypen[wahl - 1];
+            RechnerTyp typ = (RechnerTyp)Enum.Parse(typeof(RechnerTyp), typName);
+            WechsleZuRechner(typ);
+        }
+        else
+        {
+            _help.WriteWarning("Ungültige Wahl!");
+        }
     }
 }

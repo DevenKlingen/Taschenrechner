@@ -2,6 +2,6 @@
 {
     public interface ILogTarget
     {
-        void WriteLog(string message);
+        void WriteLog(string message, bool NoNewLine = false);
     }
 }

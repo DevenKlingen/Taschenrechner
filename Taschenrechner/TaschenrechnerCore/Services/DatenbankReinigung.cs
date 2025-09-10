@@ -21,12 +21,12 @@ public class DatenbankReinigung
         Benutzer akt = _benutzerManagement.getBenutzer();
         if (akt == null)
         {
-            _help.Write("Kein Benutzer angemeldet!");
+            _help.WriteWarning("Kein Benutzer angemeldet!");
             return;
         }
 
-        _help.Write("\n=== DATENBANK BEREINIGEN ===");
-        _help.Write("Warnung: Diese Aktion löscht alte Berechnungen unwiderruflich!");
+        _help.WriteInfo("\n=== DATENBANK BEREINIGEN ===");
+        _help.WriteWarning("Warnung: Diese Aktion löscht alte Berechnungen unwiderruflich!");
 
         int tage = (int)_help.ZahlEinlesen("Berechnungen älter als wie viele Tage löschen? ");
 
@@ -39,8 +39,8 @@ public class DatenbankReinigung
                        b.Zeitstempel < grenzDatum)
             .ToList();
 
-        _help.Write($"{zuLoeschendeEintraege.Count} Berechnungen würden gelöscht werden.");
-        _help.Write("Fortfahren? (ja/nein): ");
+        _help.WriteInfo($"{zuLoeschendeEintraege.Count} Berechnungen würden gelöscht werden.");
+        _help.WriteInfo("Fortfahren? (ja/nein): ");
 
         if (Console.ReadLine()?.ToLower() == "ja")
         {
@@ -48,16 +48,16 @@ public class DatenbankReinigung
             {
                 context.Berechnungen.RemoveRange(zuLoeschendeEintraege);
                 context.SaveChanges();
-                _help.Write($"{zuLoeschendeEintraege.Count} Berechnungen gelöscht.");
+                _help.WriteInfo($"{zuLoeschendeEintraege.Count} Berechnungen gelöscht.");
             }
             catch (Exception ex)
             {
-                _help.Write($"Fehler beim Löschen: {ex.Message}");
+                _help.WriteError($"Fehler beim Löschen: {ex.Message}");
             }
         }
         else
         {
-            _help.Write("Bereinigung abgebrochen.");
+            _help.WriteInfo("Bereinigung abgebrochen.");
         }
     }
 }

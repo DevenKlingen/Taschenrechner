@@ -8,7 +8,8 @@ public class BenutzerEinstellungen
     private readonly Hilfsfunktionen _help;
     private readonly BenutzerManagement _benutzerManagement;
     private TaschenrechnerKonfiguration _config;
-   
+
+    
     public BenutzerEinstellungen(
         Hilfsfunktionen help, 
         BenutzerManagement benutzerManagement, 
@@ -66,11 +67,11 @@ public class BenutzerEinstellungen
         {
             context.Einstellungen.AddRange(fehlendeEinstellungen);
             context.SaveChanges();
-            _help.Write($"Es wurden {fehlendeEinstellungen.Count} fehlende Standardeinstellungen hinzugefügt.");
+            _help.WriteInfo($"Es wurden {fehlendeEinstellungen.Count} fehlende Standardeinstellungen hinzugefügt.");
         }
         else
         {
-            _help.Write("Alle Standardeinstellungen sind bereits vorhanden.");
+            _help.WriteInfo("Alle Standardeinstellungen sind bereits vorhanden.");
         }
     }
 
@@ -79,7 +80,7 @@ public class BenutzerEinstellungen
         var aktuellerBenutzer = _benutzerManagement.getBenutzer();
         if (aktuellerBenutzer == null)
         {
-            _help.Write("Kein Benutzer angemeldet! Konnte keine Einstellungen laden!");
+            _help.WriteWarning("Kein Benutzer angemeldet! Konnte keine Einstellungen laden!");
             return;
         }
         using var context = new TaschenrechnerContext();
@@ -118,7 +119,7 @@ public class BenutzerEinstellungen
             }
         }
 
-        _help.Write("Benutzereinstellungen geladen.");
+        _help.WriteInfo("Benutzereinstellungen geladen.");
     }
 
     public TaschenrechnerKonfiguration getConfig() {  return _config; }

@@ -94,8 +94,14 @@ public class WissenschaftlicherRechner : BaseRechner
                 var basisRechner = new BasisRechner(_benutzerManagement, _datenbankBerechnungen);
                 return basisRechner.Berechnen(operation, werte);
         }
+        
+        List<double> werteliste = new List<double>();
+        foreach (var entry in werte)
+        {
+            werteliste.Add(entry);
+        }
 
-        BerechnungSpeichern(operation, werte, ergebnis);
+        BerechnungSpeichern(operation, werteliste, ergebnis);
         return ergebnis;
     }
 
@@ -161,7 +167,7 @@ public class WissenschaftlicherRechner : BaseRechner
     public long BerechneFakultaet(int n)
     {
         long ergebnis = MathUtils.Fakultaet(n);
-        BerechnungSpeichern("fakultät", new double[] { n }, ergebnis);
+        BerechnungSpeichern("fakultät", new List<double> { n }, ergebnis);
         return ergebnis;
     }
 

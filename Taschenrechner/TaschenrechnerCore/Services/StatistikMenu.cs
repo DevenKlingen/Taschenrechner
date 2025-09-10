@@ -26,13 +26,12 @@ public class StatistikMenu : IMenu
         while (statistikMenuAktiv)
         {
             help.Mischen();
-            help.Write("\n=== STATISTIK-MENÜ ===");
-            help.Write("1. Benutzer Statistik anzeigen");
-            help.Write("2. Monatsreport");
-            help.Write("3. Wachstumstrend für einen Tag");
-            help.Write("4. Zurück zum Hauptmenü");
-            help.Write("Deine Wahl (1-4): ");
-            int wahl = help.MenuWahlEinlesen();
+            help.WriteInfo("\n=== STATISTIK-MENÜ ===");
+            help.WriteInfo("1. Benutzer Statistik anzeigen");
+            help.WriteInfo("2. Monatsreport");
+            help.WriteInfo("3. Wachstumstrend für einen Tag");
+            help.WriteInfo("0. Zurück zum Hauptmenü");
+            int wahl = (int)help.ZahlEinlesen("Deine Wahl: ");
 
             switch (wahl)
             {
@@ -45,12 +44,12 @@ public class StatistikMenu : IMenu
                 case 3:
                     stats.Wachstumstrend();
                     break;
-                case 4:
+                case 0:
                     statistikMenuAktiv = false;
-                    help.Write("Zurück zum Hauptmenü.");
+                    help.WriteInfo("Zurück zum Hauptmenü.");
                     break;
                 default:
-                    help.Write("Ungültige Wahl!");
+                    help.WriteWarning("Ungültige Wahl!");
                     break;
             }
             if (statistikMenuAktiv)

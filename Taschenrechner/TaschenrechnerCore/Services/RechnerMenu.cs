@@ -1,156 +1,76 @@
-using System.Net;
-using TaschenrechnerCore.Interfaces;
+﻿using TaschenrechnerCore.Interfaces;
 using TaschenrechnerCore.Utils;
 
-namespace TaschenrechnerCore.Services;
-
-public class RechnerMenu : IMenu
+namespace TaschenrechnerCore.Services
 {
-    private readonly Hilfsfunktionen _help;
-    private readonly Addition _addition;
-    private readonly Subtraktion _subtraktion;
-    private readonly Multiplikation _multiplikation;
-    private readonly Division _division;
-    private readonly WaehrungsRechner _waehrungsRechner;
-    private readonly Potenzierer _potenzierer;
-    private readonly ProzentMenu _ProzentMenu;
-    private readonly DecimalRechner _decimalRechner;
-    private readonly MatrixMenu _matrixMenu;
-    private readonly ListRechnerMenu _listRechnerMenu;
-    private readonly MehrfachRechnerMenu _mehrfachRechnerMenu;
-    private readonly Fibonacci _fibonacci;
-    private readonly PrimzahlenRechner _primzahlenRechner;
-    private readonly Konstanten _konstanten;
-
-    public RechnerMenu(
-        Hilfsfunktionen help, 
-        Addition addition, 
-        Subtraktion subtraktion, 
-        Multiplikation multiplikation, 
-        Division division, 
-        WaehrungsRechner waehrungsRechner, 
-        Potenzierer potenzierer, 
-        ProzentMenu prozentMenu, 
-        DecimalRechner decimalRechner, 
-        StatistikRechner statistikRechner, 
-        MatrixMenu matrixMenu, 
-        ListRechnerMenu listRechnerMenu, 
-        MehrfachRechnerMenu mehrfachRechnerMenu, 
-        Fibonacci fibonacci, 
-        PrimzahlenRechner primzahlenRechner, 
-        Konstanten konstanten)
+    public  class RechnerMenu :IMenu
     {
-        _help = help;
-        _addition = addition;
-        _subtraktion = subtraktion;
-        _multiplikation = multiplikation;
-        _division = division;
-        _waehrungsRechner = waehrungsRechner;
-        _potenzierer = potenzierer;
-        _ProzentMenu = prozentMenu;
-        _decimalRechner = decimalRechner;
-        _matrixMenu = matrixMenu;
-        _listRechnerMenu = listRechnerMenu;
-        _mehrfachRechnerMenu = mehrfachRechnerMenu;
-        _fibonacci = fibonacci;
-        _primzahlenRechner = primzahlenRechner;
-        _konstanten = konstanten;
-    }
+        private Hilfsfunktionen _help;
+        private string aktueller;
+        private MatrixRechner _matrixRechner;
+        private Operationen _operationen;
+        private RechnerManager _rechnerManager;
+        public RechnerMenu(Hilfsfunktionen help, string aktuellerRechner, MatrixRechner matrixRechner, Operationen operationen, RechnerManager rechnerManager) 
+        { 
+            _help = help; 
+            aktueller = aktuellerRechner;
+            _matrixRechner = matrixRechner;
+            _operationen = operationen;
+            _rechnerManager = rechnerManager;
+        }
 
-    public void Show()
-    {
-        bool programmLaeuft = true;
-
-        while (programmLaeuft)
+        public void Show()
         {
-            _help.Mischen();
-
-            _help.Write("\n=== RECHENMENÜ ===");
-            _help.Write("Wähle eine Operation:");
-            _help.Write("1. Addition");
-            _help.Write("2. Subtraktion");
-            _help.Write("3. Multiplikation");
-            _help.Write("4. Division");
-            _help.Write("5. Währungsrechner");
-            _help.Write("6. Potenz");
-            _help.Write("7. Prozentrechner");
-            _help.Write("8. Zahl in Binär umwandeln");
-            _help.Write("9. Zahl in Hexadezimal umwandeln");
-            _help.Write("10. Matrix-Rechner");
-            _help.Write("11. Listen-Rechner");
-            _help.Write("12. Mehrfach-Berechnungen");
-            _help.Write("13. Fibonacci-Zahlen");
-            _help.Write("14. Primzahlen-Rechner");
-            _help.Write("15. Suche im Dictionary");
-            _help.Write("16. Zurück zum Hauptmenü");
-            _help.Write("Deine Wahl (1-16): ");
-            int wahl = _help.MenuWahlEinlesen();
-
-            switch (wahl)
+            bool rechnerMenuAktiv = true;
+            while (rechnerMenuAktiv)
             {
-                case 1:
-                    _addition.Addieren();
-                    break;
-                case 2:
-                    _subtraktion.Subtrahieren();
-                    break;
-                case 3:
-                    _multiplikation.Multiplizieren();
-                    break;
-                case 4:
-                    _division.Dividieren();
-                    break;
-                case 5:
-                    _waehrungsRechner.WaehrungsRechnung();
-                    break;
-                case 6:
-                    _potenzierer.Potenz();
-                    break;
-                case 7:
-                    _ProzentMenu.Show();
-                    break;
-                case 8:
-                    _decimalRechner.ToBinary();
-                    break;
-                case 9:
-                    _decimalRechner.ToHexadecimal();
-                    break;
-                case 10:
-                    _matrixMenu.Show();
-                    break;
-                case 11:
-                    _listRechnerMenu.Show();
-                    break;
-                case 12:
-                    _mehrfachRechnerMenu.Show();
-                    break;
-                case 13:
-                    _fibonacci.FibonacciErstellen();
-                    break;
-                case 14:
-                    _primzahlenRechner.PrimzahlenErmitteln();
-                    break;
-                case 15:
-                    _konstanten.Suche();
-                    break;
-                case 16:
-                    programmLaeuft = false;
-                    _help.Write("Zurück zum Hauptmenü.");
-                    break;
-                default:
-                    _help.Write("Ungültige Wahl!");
-                    break;
-            }
+                _help.Mischen();
+                _help.WriteInfo("\n=== RECHNER-MENÜ ===");
+                _help.WriteInfo("1. Berechnung durchführen");
+                _help.WriteInfo("2. Rechner wechseln");
+                _help.WriteInfo("3. Aktive Rechner anzeigen");
+                _help.WriteInfo("0. Zurück zum Hauptmenü");
+                int wahl = (int)_help.ZahlEinlesen("Deine Wahl: ");
 
-            if (programmLaeuft)
-            {
-                _help.Einlesen("\nDrücke Enter für Menü...");
+                switch (wahl)
+                {
+                    case 1: // Berechnung durchführen
+                        if (aktueller.ToLower() == "matrix-rechner")
+                        { 
+                            _matrixRechner.ZeigeBerechnungen();
+                        }
+                        else
+                        {
+                            _operationen.BerechnungDurchfuehren();
+                        }
+                        break;
+                    case 2: // Rechner wechseln
+                        _rechnerManager.RechnerWechseln();
+                        break;
+                    case 4: // Aktive Rechner anzeigen
+                        _rechnerManager.ZeigeAktiveRechner();
+                        break;
+                    case 0:
+                        rechnerMenuAktiv = false;
+                        _help.WriteInfo("Zurück zum Hauptmenü.");
+                        break;
+                    default:
+                        _help.WriteInfo("Ungültige Wahl!");
+                        break;
+                }
+                if (rechnerMenuAktiv)
+                {
+                    _help.WriteInfo("\nDrücke Enter für Menü...");
+                    Console.ReadLine();
+                }
             }
         }
-    }
 
-    public string GetMenuTitle(int optionTitle)
-    {
-        return $"{optionTitle}. Rechenmenu";
+
+        public string GetMenuTitle(int optionTitle)
+        {
+            return $"{optionTitle}. Rechner-Menu";
+        }
+        //Rechner Wechseln, Berechnung durchführen, Aktive rechner anzeigen
     }
 }
