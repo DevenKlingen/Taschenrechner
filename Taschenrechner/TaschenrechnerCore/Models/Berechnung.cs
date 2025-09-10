@@ -10,6 +10,7 @@ public class Berechnung
     public List<double> Eingaben { get; set; } = new List<double>();
     public double Ergebnis { get; set; }
     public string Kommentar { get; set; } = "";
+    public string RechnerTyp { get; set; } = "";
 
     public void setBenutzerEinstellungen(BenutzerEinstellungen benutzerEinstellungen)
     {
