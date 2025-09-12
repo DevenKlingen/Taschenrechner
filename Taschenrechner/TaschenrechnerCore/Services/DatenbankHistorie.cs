@@ -2,7 +2,6 @@ using TaschenrechnerCore.Utils;
 using TaschenrechnerCore.Models;
 using System.Text.Json;
 using TaschenrechnerCore.Interfaces;
-using System.Security.Cryptography.X509Certificates;
 
 namespace TaschenrechnerCore.Services;
 

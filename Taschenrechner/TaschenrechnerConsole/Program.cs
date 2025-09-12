@@ -9,9 +9,11 @@ public class OptimierterRechner
 {
     static void Main(string[] args)
     {
+
         BenutzerManagement _benutzerManagement = new BenutzerManagement();
+        FlexibleLogger _dateiLogger = new FlexibleLogger(new DateiLogTarget(), _benutzerManagement);
         FlexibleLogger _logger = new FlexibleLogger(new ConsoleLogTarget(), _benutzerManagement);
-        Hilfsfunktionen _help = new Hilfsfunktionen(_benutzerManagement, _logger);
+        Hilfsfunktionen _help = new Hilfsfunktionen(_benutzerManagement, _logger, _dateiLogger);
         _benutzerManagement.setHelp( _help );
 
         DatenbankBerechnungen _datenbankBerechnungen = new DatenbankBerechnungen(_benutzerManagement, _help);

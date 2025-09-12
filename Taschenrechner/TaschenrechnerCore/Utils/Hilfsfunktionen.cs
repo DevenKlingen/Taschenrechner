@@ -8,34 +8,42 @@ namespace TaschenrechnerCore.Utils
     {
         private readonly BenutzerManagement _benutzerManagement;
         private readonly FlexibleLogger _logger;
+        private readonly FlexibleLogger _dateiLogger;
 
-        public Hilfsfunktionen(BenutzerManagement benutzer, FlexibleLogger logger)
+        public Hilfsfunktionen(BenutzerManagement benutzer, FlexibleLogger logger, FlexibleLogger dateiLogger)
         {
             _benutzerManagement = benutzer;
             _logger = logger;
+            _dateiLogger = dateiLogger;
+            DateiLogTarget tmp = new DateiLogTarget();
+            tmp.Clear();
         }
 
         public void WriteInfo(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
         {
             _logger.Info(input, noNewLine, ignoreTimeStamp);
+            _dateiLogger.Info(input, noNewLine, ignoreTimeStamp);
             Mischen();
         }
 
         public void WriteWarning(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
         {
             _logger.Warn(input, noNewLine, ignoreTimeStamp);
+            _dateiLogger.Warn(input, noNewLine, ignoreTimeStamp);
             Mischen();
         }
 
         public void WriteError(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
         {
             _logger.Error(input, noNewLine, ignoreTimeStamp);
+            _dateiLogger.Error(input, noNewLine, ignoreTimeStamp);
             Mischen();
         }
 
         public void WriteDebug(string input, bool noNewLine = false, bool ignoreTimeStamp = false)
         {
             _logger.Debug(input, noNewLine, ignoreTimeStamp);
+            _dateiLogger.Debug(input, noNewLine, ignoreTimeStamp);
             Mischen();
         }
 
@@ -46,7 +54,7 @@ namespace TaschenrechnerCore.Utils
         public int MenuWahlEinlesen()
         {
             string eingabe = Console.ReadLine();
-            _logger.Info($"Benutzer hat eingegeben: {eingabe}"); // Eingabe protokollieren
+            _dateiLogger.Info($"Benutzer hat eingegeben: {eingabe}"); // Eingabe protokollieren
             int.TryParse(eingabe, out int zahl);
             return zahl;
         }
@@ -148,7 +156,7 @@ namespace TaschenrechnerCore.Utils
 
                 if (double.TryParse(eingabe, out double zahl))
                 {
-                    _logger.Info($"Benutzer hat die Zahl {zahl} eingegeben."); // Eingabe protokollieren
+                    _dateiLogger.Info($"Benutzer hat die Zahl {zahl} eingegeben."); // Eingabe protokollieren
                     return zahl;
                 }
 
@@ -161,7 +169,7 @@ namespace TaschenrechnerCore.Utils
             WriteInfo(nachricht); // Nachricht über den Logger ausgeben
             string eingabe = Console.ReadLine();
 
-            _logger.Info($"Benutzer hat {eingabe} eingegeben."); // Eingabe protokollieren
+            _dateiLogger.Info($"Benutzer hat {eingabe} eingegeben."); // Eingabe protokollieren
             return eingabe;
         }
 

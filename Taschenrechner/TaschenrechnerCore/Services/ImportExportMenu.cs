@@ -25,9 +25,12 @@ namespace TaschenrechnerCore.Services
             {
                 _help.Clear();
                 _help.WriteInfo("\n=== IMPORT-EXPORT-MENU ===");
-                _help.WriteInfo("1. Datenbank in Textdatei exportieren");
-                _help.WriteInfo("2. Datenbank zu XML exportieren");
-                _help.WriteInfo("3. Datenbank aus XML importieren");
+                _help.WriteInfo("1. Datenbank zu JSON exportieren");
+                _help.WriteInfo("2. Datenbank aus JSON importieren");
+                _help.WriteInfo("3. Datenbank zu XML exportieren");
+                _help.WriteInfo("4. Datenbank aus XML importieren");
+                _help.WriteInfo("5. Datenbank zu CSV exportieren");
+                _help.WriteInfo("6. Datenbank von CSV importieren");
                 _help.WriteInfo("0. Zurück zum Datenbank-Menu");
                 //TODO: Menu hier einfügen
                 int wahl = (int)_help.ZahlEinlesen("Deine Wahl: ");
@@ -35,13 +38,22 @@ namespace TaschenrechnerCore.Services
                 switch (wahl)
                 {
                     case 1:
-                        _service.DatenbankExportieren();
+                        _service.DatenbankZuJSON();
                         break;
                     case 2:
-                        _service.DatenbankZuXML();
+                        _service.DatenbankVonJSON();
                         break;
                     case 3:
+                        _service.DatenbankZuXML();
+                        break;
+                    case 4:
                         _service.DatenbankVonXML();
+                        break;
+                    case 5:
+                        _service.DatenbankzuCSV();
+                        break;
+                    case 6:
+                        _service.DatenbankVonCSV();
                         break;
                     case 0:
                         importExportMenuAktiv = false;

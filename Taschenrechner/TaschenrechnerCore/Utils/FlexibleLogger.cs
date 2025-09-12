@@ -29,7 +29,7 @@ namespace TaschenrechnerCore.Utils
             }
 
             switch(level){
-                case "WARN":
+                case "WARNING":
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
                 case "ERROR":
